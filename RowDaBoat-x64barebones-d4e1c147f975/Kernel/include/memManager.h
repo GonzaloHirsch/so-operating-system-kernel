@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-enum STATE {FREE = 0, NOT_FREE = 1};
+enum STATE {FREE = 1, NOT_FREE = 0};
 
 typedef struct t_node * Node;
 

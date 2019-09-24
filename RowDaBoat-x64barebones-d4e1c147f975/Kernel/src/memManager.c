@@ -30,6 +30,7 @@ struct t_list {
 typedef struct t_list * List;
 
 Node first_fit(Node node, size_t size);
+int free_memory(Node actual, Node previous, void * ptr);
 
 static List mem_blocks;
 
@@ -97,15 +98,87 @@ Node first_fit(Node node, size_t size){
     void * --> Puntero a la direccion de memoria para empezar a alocar
 */
 void * m_alloc(size_t size){
-  Node node = first_fit(List->Head, size);
+  Node node = first_fit(List->head, size);
   if (ptr == NULL){
     return NULL;
   }
   return node->mem_ptr;
 }
 
+/*
+  Metodo para liberar la memoria de forma RECURSIVA.
+  Hay 4 posibles escenarios en la liberacion:
+  Caso 1:
+        Nodo Anterior --> Ocupado/null
+        Nodo Siguiente --> Ocupado/null
+  --> Libero al encontrado
+  Caso 2:
+        Nodo Anterior --> Libre
+        Nodo Siguiente --> Ocupado/null
+  --> Mergeo el actual al anterior
+  Caso 3:
+        Nodo Anterior --> Libre
+        Nodo Siguiente --> Libre
+  --> Mergeo el actual y el siguiente al anterior
+  Caso 4:
+        Nodo Anterior --> Ocupado/null
+        Nodo Siguiente --> Libre
+  --> Mergeo el siguiente al actual
+  Parametros:
+    Node actual --> Nodo actual que se esta navegando
+    Node previous --> Nodo anterior por el que se navego
+    void * ptr --> Puntero a liberar
+  Devuelve:
+    int --> 1 si fue exitoso, 0 si no lo fue
+*/
+int free_memory(Node actual, Node previous, void * ptr){
+  // En el caso de que lleguemos al final o que nos pasen un puntero nulo
+  if (actual == NULL || ptr == NULL){
+    return 0;
+  }
+
+  // En este caso encontramos al puntero que buscamos
+  if (actual->mem_ptr == ptr){
+    // Caso de ANTERIOR --> OCUPADO o NULL y SIGUIENTE --> OCUPADO o NULL
+    if ((previous == NULL || (previous != NULL && previous->state == NOT_FREE)) && ((actual->next != NULL && actual->next->state == NOT_FREE) || actual->next == NULL)){
+      actual->state = FREE;
+      return 1;
+    }
+    // Caso de ANTERIOR --> LIBRE y SIGUIENTE --> OCUPADO o NULL
+    else if (previous != NULL && previous->state == FREE && ((actual->next != NULL && actual->next->state == NOT_FREE) || actual->next == NULL)){
+      previous->size = previous->size + actual->size + sizeof(Node);
+      previous->next = actual->next;
+      return 1;
+    }
+    // Caso de ANTERIOR --> LIBRE y SIGUIENTE --> LIBRE
+    else if (previous != NULL && actual->next != NULL && previous->state == FREE && actual->next->state == FREE){
+      previous->size = previous->size + actual->size + actual->next->size + (2 * sizeof(Node));
+      previous->next = actual->next->next;
+      return 1;
+    }
+    // Caso de ANTERIOR --> OCUPADO o NULL y SIGUIENTE --> LIBRE
+    else if ((previous == NULL || (previous != NULL && actual->next != NULL)) && previous->state == NOT_FREE && actual->next->state == FREE){
+      actual->size = actual->size + actual->next->size + sizeof(Node);
+      actual->next = actual->next->next;
+      return 1;
+    } else {
+      return 0;
+    }
+  } else {
+    return free_memory(actual->next, actual, ptr);
+  }
+}
+
+/*
+  Metodo para liberar la memoria.
+  Parametros:
+    void * ptr --> Puntero a liberar
+  Devuelve:
+    int --> 1 si fue exitoso, 0 si no lo fue
+*/
 int m_free(void * ptr){
-  // TODO
+  int result = free_memory(List->head, NULL, ptr);
+  return result;
 }
 
 /*
@@ -128,11 +201,11 @@ void init_list(void * start_dir, size_t total_size){
   mem_blocks->head = (void * ) ((char *)start_dir + sizeof(List));
 
   // Settea el siguiente en null porque es el primer bloque
-  mem_blocks->Head->next = NULL;
+  mem_blocks->head->next = NULL;
   // Calcula el puntero a la memoria usando el puntero al primer nodo mas su tamaño
-  mem_blocks->Head->mem_ptr = (void * ) ((char *)mem_blocks->Head + sizeof(Node));
+  mem_blocks->head->mem_ptr = (void * ) ((char *)mem_blocks->head + sizeof(Node));
   // Calcula el tamaño de la memoria para alocar, teniendo en cuenta el tamaño de la lista y el nodo ya alocados
-  mem_blocks->Head->size = total_size - sizeof(List) - sizeof(Node);
+  mem_blocks->head->size = total_size - sizeof(List) - sizeof(Node);
   // Marca al nodo como libre
-  mem_blocks->Head->state = FREE;
+  mem_blocks->head->state = FREE;
 }
