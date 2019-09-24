@@ -7,7 +7,7 @@ struct t_node {
   // Proximo nodo
   struct t_node * next;
   // Puntero a memoria libre
-  void * mem_ptr;
+  void * memPtr;
   // Tamaño de esa memoria libre
   size_t size;
   // Estado del bloque
@@ -21,18 +21,18 @@ struct t_list {
   // Primer elemento de la lista
   struct Node head;
   // Puntero al comienzo de la memoria
-  void * start_dir;
+  void * startDir;
   // Tamaño total de la memoria
-  size_t total_size;
+  size_t totalSize;
 }
 
 // Redefinicion del puntero al tipo lista
 typedef struct t_list * List;
 
-Node first_fit(Node node, size_t size);
-int free_memory(Node actual, Node previous, void * ptr);
+Node firstFit(Node node, size_t size);
+int freeMemory(Node actual, Node previous, void * ptr);
 
-static List mem_blocks;
+static List memBlocks;
 
 /*
   Algoritmo de FIRST FIT, es RECURSIVO.
@@ -44,7 +44,7 @@ static List mem_blocks;
   Devuelve:
     Node --> Nodo que tiene el tamaño requerido para alocar
 */
-Node first_fit(Node node, size_t size){
+Node firstFit(Node node, size_t size){
   // En el caso de que no haya espacio o lleguemos al final de la lista
   if (node == null || node->size == 0){
     return NULL;
@@ -59,20 +59,20 @@ Node first_fit(Node node, size_t size){
     }
     else if (node->size > size){
       // Calcula la cantidad de memoria que sobraria despues de otorgar lo que se pide
-      int space_left = node->size - size;
+      int spaceLeft = node->size - size;
 
       // En el caso de que haya sobre la cantidad como para armar un nodo mas, lo aloca
-      if (space_left > sizeof(Node)){
+      if (spaceLeft > sizeof(Node)){
         // Calcula el puntero del nuevo nodo
-        Node aux = (void *)((char *)node->mem_ptr + size);
+        Node aux = (void *)((char *)node->memPtr + size);
         // Para no perder la referencia al siguiente
         aux->next = node->next;
         // Marca al nodo como libre
         aux->state = FREE;
         // Calcula el puntero a la memoria, sin contar el tamaño de este nodo
-        aux->mem_ptr = (void *)((char *)aux + sizeof(Node));
+        aux->memPtr = (void *)((char *)aux + sizeof(Node));
         // Calcula el tamaño de la memoria porque se uso parte para el nodo
-        aux->size = space_left - sizeof(Node);
+        aux->size = spaceLeft - sizeof(Node);
 
         // Le cambia el tamaño al bloque porque se corto la cantidad de memoria que tiene
         node->size = size;
@@ -86,7 +86,7 @@ Node first_fit(Node node, size_t size){
     }
   }
 
-  return first_fit(node->next, size);
+  return firstFit(node->next, size);
 }
 
 /*
@@ -98,11 +98,11 @@ Node first_fit(Node node, size_t size){
     void * --> Puntero a la direccion de memoria para empezar a alocar
 */
 void * m_alloc(size_t size){
-  Node node = first_fit(List->head, size);
+  Node node = firstFit(List->head, size);
   if (ptr == NULL){
     return NULL;
   }
-  return node->mem_ptr;
+  return node->memPtr;
 }
 
 /*
@@ -131,14 +131,14 @@ void * m_alloc(size_t size){
   Devuelve:
     int --> 1 si fue exitoso, 0 si no lo fue
 */
-int free_memory(Node actual, Node previous, void * ptr){
+int freeMemory(Node actual, Node previous, void * ptr){
   // En el caso de que lleguemos al final o que nos pasen un puntero nulo
   if (actual == NULL || ptr == NULL){
     return 0;
   }
 
   // En este caso encontramos al puntero que buscamos
-  if (actual->mem_ptr == ptr){
+  if (actual->memPtr == ptr){
     // Caso de ANTERIOR --> OCUPADO o NULL y SIGUIENTE --> OCUPADO o NULL
     if ((previous == NULL || (previous != NULL && previous->state == NOT_FREE)) && ((actual->next != NULL && actual->next->state == NOT_FREE) || actual->next == NULL)){
       actual->state = FREE;
@@ -165,7 +165,7 @@ int free_memory(Node actual, Node previous, void * ptr){
       return 0;
     }
   } else {
-    return free_memory(actual->next, actual, ptr);
+    return freeMemory(actual->next, actual, ptr);
   }
 }
 
@@ -177,7 +177,7 @@ int free_memory(Node actual, Node previous, void * ptr){
     int --> 1 si fue exitoso, 0 si no lo fue
 */
 int m_free(void * ptr){
-  int result = free_memory(List->head, NULL, ptr);
+  int result = freeMemory(List->head, NULL, ptr);
   return result;
 }
 
@@ -186,26 +186,26 @@ int m_free(void * ptr){
   Calcula el tamaño del primer nodo y de la lista, teniendo en cuenta el espacio que ocupa el
   puntero a la lista y al primer nodo.
   Parametros:
-    void * start_dir --> Direccion donde comienza la memoria
-    size_t total_size --> Tamaño de la memoria
+    void * startDir --> Direccion donde comienza la memoria
+    size_t totalSize --> Tamaño de la memoria
 */
-void init_list(void * start_dir, size_t total_size){
+void init_list(void * startDir, size_t totalSize){
   // El puntero a la lista es donde comienza la memoria
-  mem_blocks = start_dir;
+  memBlocks = startDir;
 
   // Tamaño total de memoria
-  mem_blocks->total_size = total_size;
+  memBlocks->totalSize = totalSize;
   // Direccion de donde comienza toda la memoria
-  mem_blocks->start_dir = start_dir;
+  memBlocks->startDir = startDir;
   // Puntero al primer nodo, se calcula teniendo en cuenta el tamaño del puntero a la lista.
-  mem_blocks->head = (void * ) ((char *)start_dir + sizeof(List));
+  memBlocks->head = (void * ) ((char *)startDir + sizeof(List));
 
   // Settea el siguiente en null porque es el primer bloque
-  mem_blocks->head->next = NULL;
+  memBlocks->head->next = NULL;
   // Calcula el puntero a la memoria usando el puntero al primer nodo mas su tamaño
-  mem_blocks->head->mem_ptr = (void * ) ((char *)mem_blocks->head + sizeof(Node));
+  memBlocks->head->memPtr = (void * ) ((char *)memBlocks->head + sizeof(Node));
   // Calcula el tamaño de la memoria para alocar, teniendo en cuenta el tamaño de la lista y el nodo ya alocados
-  mem_blocks->head->size = total_size - sizeof(List) - sizeof(Node);
+  memBlocks->head->size = totalSize - sizeof(List) - sizeof(Node);
   // Marca al nodo como libre
-  mem_blocks->head->state = FREE;
+  memBlocks->head->state = FREE;
 }
