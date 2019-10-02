@@ -97,7 +97,7 @@ Node firstFit(Node node, size_t size){
   Devuelve:
     void * --> Puntero a la direccion de memoria para empezar a alocar
 */
-void * m_alloc(size_t size){
+void * mAlloc(size_t size){
   Node node = firstFit(List->head, size);
   if (ptr == NULL){
     return NULL;
@@ -176,7 +176,7 @@ int freeMemory(Node actual, Node previous, void * ptr){
   Devuelve:
     int --> 1 si fue exitoso, 0 si no lo fue
 */
-int m_free(void * ptr){
+int mFree(void * ptr){
   int result = freeMemory(List->head, NULL, ptr);
   return result;
 }
@@ -189,7 +189,7 @@ int m_free(void * ptr){
     void * startDir --> Direccion donde comienza la memoria
     size_t totalSize --> Tamaño de la memoria
 */
-void init_list(void * startDir, size_t totalSize){
+void initList(void * startDir, size_t totalSize){
   // El puntero a la lista es donde comienza la memoria
   memBlocks = startDir;
 
