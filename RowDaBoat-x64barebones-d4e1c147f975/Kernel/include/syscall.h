@@ -2,14 +2,14 @@
 #define SYSCALL_H
 
 #include <stdint.h>
-#include <keyboard.h>
-#include <time.h>
-#include <io_read.h>
-#include <sound.h>
-#include <console.h>
-#include <videoDriver.h>
-#include <types.h>
-#include <interrupts.h>
+#include "keyboard.h"
+#include "time.h"
+#include "io_read.h"
+#include "sound.h"
+#include "console.h"
+#include "videoDriver.h"
+#include "types.h"
+#include "interrupts.h"
 
 #define READ 1
 #define WRITE 2

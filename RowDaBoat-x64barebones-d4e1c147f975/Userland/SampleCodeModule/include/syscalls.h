@@ -2,9 +2,9 @@
 #define SYSCALLS_H
 
 //Incluye a interrupts para poder hacer la llamada a la int 80
-#include <interrupts.h>
+#include "interrupts.h"
 #include <stdint.h>
-#include <utils.h>
+#include "utils.h"
 
 #define READ 1
 #define WRITE 2

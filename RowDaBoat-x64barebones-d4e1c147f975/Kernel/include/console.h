@@ -5,11 +5,11 @@
 #ifndef ARQUI_TPE_CONSOLE_H
 #define ARQUI_TPE_CONSOLE_H
 
-#include <types.h>
-#include <pixelMap.h>
-#include <strings.h>
+#include "types.h"
+#include "pixelMap.h"
+#include "strings.h"
 #include <stdarg.h>
-#include <videoDriver.h>
+#include "videoDriver.h"
 
 void init_console();
 

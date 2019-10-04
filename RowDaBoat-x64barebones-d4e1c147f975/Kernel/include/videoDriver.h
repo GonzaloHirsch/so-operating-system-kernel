@@ -6,9 +6,9 @@
 #define ARQUI_TPE_VIDEODRIVER_H
 
 #include <stdint.h>
-#include <lib.h>
-#include <pixelMap.h>
-#include <types.h>
+#include "lib.h"
+#include "pixelMap.h"
+#include "types.h"
 
 void initVideoDriver(void);
 
