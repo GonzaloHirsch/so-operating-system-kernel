@@ -18,9 +18,10 @@ GLOBAL _exception14Handler
 EXTERN irqDispatcher
 EXTERN handleSyscall
 EXTERN exceptionDispatcher
+EXTERN getNextProcess
 
-Extern printInteger
-extern print
+EXTERN printInteger
+EXTERN print
 
 %macro pushState 0
 	push rax
@@ -97,6 +98,25 @@ _irq80Handler:
     ;mov al, 20h
     ;out 20h, al
 
+    iretq
+
+_force_change_process:
+    int 0x70
+    ret
+
+#rtc handler
+_irq70Handler:
+    pushState
+    mov rdi, rsp
+    call getNextProcess
+    mov rsp, rax
+    popState
+    iretq
+
+_delete_process:
+
+    mov rsp, rdi
+    popState
     iretq
 
 _exception00Handler:
