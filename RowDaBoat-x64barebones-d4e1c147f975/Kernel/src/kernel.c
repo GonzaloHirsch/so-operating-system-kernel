@@ -14,6 +14,7 @@
 #include <console.h>
 #include <pixelMap.h>
 #include <exceptions.h>
+#include <memManager.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -27,6 +28,7 @@ static const uint64_t PageSize = 0x1000;
 //Addresses a donde copia los modulos
 static void * const sampleCodeModuleAddress = (void*)0x400000;
 static void * const sampleDataModuleAddress = (void*)0x500000;
+static void * const memoryStartAddress = (void*)0x700000;
 
 typedef int (*EntryPoint)();
 
@@ -70,13 +72,32 @@ void * initializeKernelBinary()
 
  	load_idt();
 	loadExceptions();
+	initializeMemManagerList(memoryStartAddress, 80*1048576); //80MB de memoria dinamica
 
 	return getStackBase();
 }
 
 int main()
 {
-  goToUserland();
+
+    uint64_t size = 1000000;
+    while(1){
+        int * array = mAlloc(sizeof(int) * size);
+        if(array!=NULL) {
+            for (int i = 0; i < 10; i++) {
+                array[i] = i;
+            }
+            for (int i = 0; i < 10; i++) {
+                print("%d-", i);
+            }
+        }
+        else {
+            print("got null bish\n");
+        }
+        //mFree(array);
+    }
+
+  //goToUserland();
 	return 0;
 
 }

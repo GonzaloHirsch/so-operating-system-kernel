@@ -1,4 +1,5 @@
 #include <memManager.h>
+#include <memManager.h>
 
 /*
   Estructura del tipo Nodo
@@ -11,20 +12,19 @@ struct t_node {
   // Tamaño de esa memoria libre
   size_t size;
   // Estado del bloque
-  STATE state;
-}
-
+  enum STATE state;
+};
 /*
   Estructura del tipo Lista
 */
 struct t_list {
   // Primer elemento de la lista
-  struct Node head;
+  struct t_node * head;
   // Puntero al comienzo de la memoria
   void * startDir;
   // Tamaño total de la memoria
   size_t totalSize;
-}
+};
 
 // Redefinicion del puntero al tipo lista
 typedef struct t_list * List;
@@ -46,7 +46,7 @@ static List memBlocks;
 */
 Node firstFit(Node node, size_t size){
   // En el caso de que no haya espacio o lleguemos al final de la lista
-  if (node == null || node->size == 0){
+  if (node == NULL || node->size == 0){
     return NULL;
   }
 
@@ -97,9 +97,9 @@ Node firstFit(Node node, size_t size){
   Devuelve:
     void * --> Puntero a la direccion de memoria para empezar a alocar
 */
-void * m_alloc(size_t size){
-  Node node = firstFit(List->head, size);
-  if (ptr == NULL){
+void * mAlloc(size_t size){
+  Node node = firstFit(memBlocks->head, size);
+  if (node == NULL){
     return NULL;
   }
   return node->memPtr;
@@ -157,7 +157,7 @@ int freeMemory(Node actual, Node previous, void * ptr){
       return 1;
     }
     // Caso de ANTERIOR --> OCUPADO o NULL y SIGUIENTE --> LIBRE
-    else if ((previous == NULL || (previous != NULL && actual->next != NULL)) && previous->state == NOT_FREE && actual->next->state == FREE){
+    else if ((previous == NULL || (previous != NULL && actual->next != NULL)) && previous->state == NOT_FREE && actual->next->state == FREE){
       actual->size = actual->size + actual->next->size + sizeof(Node);
       actual->next = actual->next->next;
       return 1;
@@ -176,8 +176,8 @@ int freeMemory(Node actual, Node previous, void * ptr){
   Devuelve:
     int --> 1 si fue exitoso, 0 si no lo fue
 */
-int m_free(void * ptr){
-  int result = freeMemory(List->head, NULL, ptr);
+int mFree(void * ptr){
+  int result = freeMemory(memBlocks->head, NULL, ptr);
   return result;
 }
 
@@ -189,7 +189,7 @@ int m_free(void * ptr){
     void * startDir --> Direccion donde comienza la memoria
     size_t totalSize --> Tamaño de la memoria
 */
-void init_list(void * startDir, size_t totalSize){
+void initializeMemManagerList(void * startDir, size_t totalSize){
   // El puntero a la lista es donde comienza la memoria
   memBlocks = startDir;
 

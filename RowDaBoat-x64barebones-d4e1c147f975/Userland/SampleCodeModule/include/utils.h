@@ -3,9 +3,9 @@
 
 #include <stdint.h>
 #include <stdarg.h>
-#include <syscalls.h>
-#include <naiveConsole.h>
-#include <graphicsLibrary.h>
+#include "syscalls.h"
+#include "naiveConsole.h"
+#include "graphicsLibrary.h"
 
 #define SECONDS 0
 #define MINUTES 1
