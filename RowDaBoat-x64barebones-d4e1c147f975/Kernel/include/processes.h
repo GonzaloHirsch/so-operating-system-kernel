@@ -9,14 +9,21 @@
 #define PROCESS_STACK_SIZE 1024
 #define MAX_PROCESS_COUNT 256
 
+#include <stddef.h>
+#include <stdint.h>
+
+
 typedef struct ProcessCDT * Process;
 
 enum State{STATE_READY, STATE_RUNNING, STATE_BLOCKED, STATE_TERMINATED};
+
+void initProcesses();
 
 // constructors
 // Crea un proceso con el nombre especificado (limitarse al nombre del
 // programa al que pertenecen) y la agrega al scheduler.
 Process createProcess(char * processName, uint64_t functionAddress);
+
 
 // destructors
 void removeProcess(Process process);

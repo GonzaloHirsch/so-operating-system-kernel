@@ -6,6 +6,8 @@
 #include "../include/processes.h"
 #include "../include/memManager.h"
 
+extern void _popaqIretq(uint64_t stackPtr);
+
 static void startProcess(Process process);
 
 typedef struct ProcessControlBlockCDT{

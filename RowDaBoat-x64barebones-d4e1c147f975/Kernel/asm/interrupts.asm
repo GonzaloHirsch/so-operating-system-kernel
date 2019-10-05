@@ -7,6 +7,7 @@ GLOBAL halt
 
 GLOBAL _irq00Handler
 GLOBAL _irq01Handler
+GLOBAL _irq70Handler
 GLOBAL _irq80Handler
 
 GLOBAL _exception00Handler

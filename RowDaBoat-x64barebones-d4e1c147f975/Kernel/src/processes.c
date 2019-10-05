@@ -13,7 +13,7 @@
 //Devuelve el current rsp del proceso
 static uint64_t initializeProcessStack(uint64_t stackBaseAddress, uint64_t functionAddress, int pid);
 //El wrapper para ejecutar las funciones que son los procesos
-static int entryPoint(uint64_t functionAddress);
+static int entryPoint(uint64_t functionAddress, int pid);
 
 struct ProcessCDT{
 
@@ -59,7 +59,7 @@ typedef struct ProcessStack{
 static int pidCounter;
 static Process processList[MAX_PROCESS_COUNT];
 
-initProcesses(){
+void initProcesses(){
     pidCounter = 0;
     memset(processList, 0x0, MAX_PROCESS_COUNT*sizeof(Process));
 }
@@ -73,9 +73,9 @@ Process newProcess(char * process_name, uint64_t functionAddress){
     aux->ppid = (pidCounter!=0) ? getCurrentProcess()->pid : 0;
     aux->functionAddress = functionAddress;
     aux->stackBaseAddress = (uint64_t) mAlloc(PROCESS_STACK_SIZE);
-    aux->stackPointer = initializeProcessStack(aux->stackBaseAddress);
+    aux->stackPointer = initializeProcessStack(aux->stackBaseAddress, functionAddress, pidCounter);
     aux->state = STATE_READY;
-    processList[++pidCounter] = aux;
+    processList[pidCounter++] = aux;
     newPCB(aux);
     return aux;
 }
@@ -83,10 +83,10 @@ Process newProcess(char * process_name, uint64_t functionAddress){
 static uint64_t initializeProcessStack(uint64_t stackBaseAddress, uint64_t functionAddress, int pid){
 
     ProcessStack * processStack = (ProcessStack *)(stackBaseAddress + PROCESS_STACK_SIZE - sizeof(ProcessStack) - 1);
-    memset(processStack->gs, (uint32_t) 0x0000, sizeof(uint32_t)*2*10); //setteo a 0 todos los registros gs a r8
+    memset(&processStack->gs, (uint32_t) 0x0000, sizeof(uint32_t)*2*10); //setteo a 0 todos los registros gs a r8
     processStack->rdi = functionAddress; //Esto es para tener como parametro al functionAddress cuando llame al wrapper (entryPoint)
     processStack->rsi = pid;
-    memset(processStack->rsi, (uint32_t) 0x0000, sizeof(uint32_t)*2*5); //setteo los registros restantes a 0
+    memset(&processStack->rsi, (uint32_t) 0x0000, sizeof(uint32_t)*2*5); //setteo los registros restantes a 0
 
 
     //Interrupt Stack Frame
@@ -107,11 +107,12 @@ static uint64_t initializeProcessStack(uint64_t stackBaseAddress, uint64_t funct
 static int entryPoint(uint64_t functionAddress, int pid){
 
     // ejecuto  la funcion en functionAddress
-    ((void * ()()) functionAddress)();
+    ((void*(*)()) functionAddress)();
 
     // setteo el estado del proceso como terminado una vez finalizada
     // la ejecucion de la funcion
     processList[pid]->state = STATE_TERMINATED;
+    return 0;
 }
 
 // destructors
@@ -119,7 +120,7 @@ static int entryPoint(uint64_t functionAddress, int pid){
 void removeProcess(Process process){
     processList[process->pid] = NULL;
     // se libera el espacio reservado para el stack
-    mFree(process->stackBaseAddress);
+    mFree((void*) process->stackBaseAddress);
     // se libera el espacio reservado para el ADT de Process
     mFree(process);
 }

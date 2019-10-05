@@ -15,6 +15,8 @@
 #include <pixelMap.h>
 #include <exceptions.h>
 #include <memManager.h>
+#include <processes.h>
+#include <scheduler.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -67,12 +69,13 @@ void * initializeKernelBinary()
 
 	clearBSS(&bss, &endOfKernel - &bss);
 
-  initVideoDriver();
-  init_console();
+    initVideoDriver();
+    init_console();
+    initProcesses();
+    initializeMemManagerList(memoryStartAddress, 80*1048576); //80MB de memoria dinamica
 
  	load_idt();
 	loadExceptions();
-	initializeMemManagerList(memoryStartAddress, 80*1048576); //80MB de memoria dinamica
 
 	return getStackBase();
 }
@@ -80,23 +83,8 @@ void * initializeKernelBinary()
 int main()
 {
 
-    uint64_t size = 1000000;
-    while(1){
-        int * array = mAlloc(sizeof(int) * size);
-        if(array!=NULL) {
-            for (int i = 0; i < 10; i++) {
-                array[i] = i;
-            }
-            for (int i = 0; i < 10; i++) {
-                print("%d-", i);
-            }
-        }
-        else {
-            print("got null bish\n");
-        }
+    createProcess("shell", (uint64_t) (sampleCodeModuleAddress));
         //mFree(array);
-    }
-
   //goToUserland();
 	return 0;
 
