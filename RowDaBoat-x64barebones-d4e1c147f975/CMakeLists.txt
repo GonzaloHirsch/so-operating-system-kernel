@@ -1,2 +1,3 @@
 project(SO-TP2 C)
-add_executable(SO-TP2 ../RowDaBoat-x64barebones-d4e1c147f975)
+add_executable(SO-TP2 Kernel/src Kernel/include)
+target_include_directories(SO-TP2 Kernel/include)
