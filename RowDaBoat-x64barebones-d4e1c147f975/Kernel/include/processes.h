@@ -13,10 +13,15 @@ typedef struct ProcessCDT * Process;
 
 enum State{STATE_READY, STATE_RUNNING, STATE_BLOCKED, STATE_TERMINATED};
 
-//destructors
+// constructors
+// Crea un proceso con el nombre especificado (limitarse al nombre del
+// programa al que pertenecen) y la agrega al scheduler.
+Process createProcess(char * processName, uint64_t functionAddress);
+
+// destructors
 void removeProcess(Process process);
 
-//getters and setters
+// getters / setters
 uint64_t getStackPointer(Process process);
 void setStackPointer(Process process, uint64_t stackPtr);
 

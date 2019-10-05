@@ -66,6 +66,7 @@ initProcesses(){
 
 Process newProcess(char * process_name, uint64_t functionAddress){
 
+
     Process aux = (Process) mAlloc(sizeof(struct ProcessCDT));
     strcpy(aux->name, process_name);
     aux->pid = pidCounter;
@@ -75,6 +76,7 @@ Process newProcess(char * process_name, uint64_t functionAddress){
     aux->stackPointer = initializeProcessStack(aux->stackBaseAddress);
     aux->state = STATE_READY;
     processList[++pidCounter] = aux;
+    newPCB(aux);
     return aux;
 }
 
