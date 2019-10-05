@@ -113,8 +113,7 @@ _irq70Handler:
     popState
     iretq
 
-_delete_process:
-
+_popaqIretq:
     mov rsp, rdi
     popState
     iretq

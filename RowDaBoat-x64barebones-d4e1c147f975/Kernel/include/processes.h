@@ -13,4 +13,14 @@ typedef struct ProcessCDT * Process;
 
 enum State{STATE_READY, STATE_RUNNING, STATE_BLOCKED, STATE_TERMINATED};
 
+//destructors
+void removeProcess(Process process);
+
+//getters and setters
+uint64_t getStackPointer(Process process);
+void setStackPointer(Process process, uint64_t stackPtr);
+
+enum State getProcessState(Process process);
+void setProcessState(Process process, enum State state);
+
 #endif //SO_TP2_PROCESS_H

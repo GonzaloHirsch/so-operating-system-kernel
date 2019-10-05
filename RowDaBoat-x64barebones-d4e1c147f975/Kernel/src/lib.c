@@ -1,5 +1,9 @@
 #include <stdint.h>
 
+void strcpy(char * dst, char * src){
+    while((*dst++ = *src++));
+}
+
 void * memset(void * destination, int32_t c, uint64_t length)
 {
 	uint8_t chr = (uint8_t)c;
