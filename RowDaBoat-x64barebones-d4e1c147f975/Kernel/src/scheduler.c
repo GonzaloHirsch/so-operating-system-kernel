@@ -85,7 +85,7 @@ uint64_t getNextProcess(uint64_t currentProcessStack){
     setStackPointer(theProcessList.currentProcess->process, currentProcessStack);
     setProcessState(theProcessList.currentProcess->process, STATE_READY);
 
-    // Se settea el proximo current process...
+    // Se settea el nuevo current process...
     enum State state;
     for(state = getProcessState(theProcessList.currentProcess->process); state != STATE_READY; state = getProcessState(theProcessList.currentProcess->process)){
 
@@ -98,6 +98,8 @@ uint64_t getNextProcess(uint64_t currentProcessStack){
             // si el proceso actual esta terminado, hay que eliminarlo y seguir
             case STATE_TERMINATED:
                 deleteCurrentProcessPCB();
+                break;
+            default:
                 break;
         }
 
