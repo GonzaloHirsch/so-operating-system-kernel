@@ -15,6 +15,8 @@ GLOBAL _exception06Handler
 GLOBAL _exception13Handler
 GLOBAL _exception14Handler
 
+GLOBAL _popaqIretq
+GLOBAL _force_change_process
 
 EXTERN irqDispatcher
 EXTERN handleSyscall
@@ -105,7 +107,7 @@ _force_change_process:
     int 0x70
     ret
 
-#rtc handler
+;rtc handler
 _irq70Handler:
     pushState
     mov rdi, rsp

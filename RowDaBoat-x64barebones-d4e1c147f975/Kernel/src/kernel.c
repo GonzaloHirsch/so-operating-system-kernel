@@ -71,21 +71,49 @@ void * initializeKernelBinary()
 
     initVideoDriver();
     init_console();
-    initProcesses();
     initializeMemManagerList(memoryStartAddress, 80*1048576); //80MB de memoria dinamica
-
+    initProcesses();
  	load_idt();
 	loadExceptions();
 
 	return getStackBase();
 }
 
+void testFunction1(){
+    int i = 0;
+    while((i++)<100) {
+        print("Hello World!\n");
+    }
+    sleep(2000);
+}
+
+void testFunction2(){
+    int i = 0;
+    while((i++)<100) {
+        print("Trello world!\n");
+    }
+    sleep(2000);
+}
+
+void testFunction3(){
+    int i = 0;
+    while((i++)<100) {
+        print("Return world!\n");
+    }
+    sleep(2000);
+}
+
 int main()
 {
 
-    createProcess("shell", (uint64_t) (sampleCodeModuleAddress));
-        //mFree(array);
-  //goToUserland();
+    newProcess("function1", (uint64_t) &testFunction1);
+    newProcess("function2", (uint64_t) &testFunction2);
+    newProcess("function3", (uint64_t) &testFunction3);
+
+    //mFree(array);
+    //goToUserland();
+    for(int i = 0; i<10; i++)
+        print("Hey I'm done here\n");
 	return 0;
 
 }

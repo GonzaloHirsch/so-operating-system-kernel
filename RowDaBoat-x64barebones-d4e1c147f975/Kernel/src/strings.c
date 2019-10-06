@@ -4,10 +4,6 @@
 
 #include <strings.h>
 
-void strcpy(char * dst, char * src){
-    while((*dst++ = *src++));
-}
-
 int strlen(char * str){
     int ret = 0;
     while(*(str+ret) != 0) ret++;

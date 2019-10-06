@@ -5,7 +5,10 @@
 #include "../include/scheduler.h"
 #include "../include/processes.h"
 #include "../include/memManager.h"
+#include <lib.h>
+#include <console.h>
 
+extern void _force_change_process();
 extern void _popaqIretq(uint64_t stackPtr);
 
 static void startProcess(Process process);
@@ -84,9 +87,14 @@ uint64_t getNextProcess(uint64_t currentProcessStack){
 
     // Se guarda el stack pointer del proceso que se esta ejecutando ahora,
     // el estado pasa de STATE_RUNNING a STATE_READY
-    setStackPointer(theProcessList.currentProcess->process, currentProcessStack);
-    setProcessState(theProcessList.currentProcess->process, STATE_READY);
+    // Si esta funcion se llama con un proceso terminado, no guardar nada: seguir
+    // de largo y tratar este proceso como si fuera otro mas del recorrido hasta
+    // encontrar uno READY
+    if(getProcessState(theProcessList.currentProcess) != STATE_TERMINATED) {
+        setStackPointer(theProcessList.currentProcess->process, currentProcessStack);
 
+        setProcessState(theProcessList.currentProcess->process, STATE_READY);
+    }
     // Se settea el nuevo current process...
     enum State state;
     for(state = getProcessState(theProcessList.currentProcess->process); state != STATE_READY; state = getProcessState(theProcessList.currentProcess->process)){
