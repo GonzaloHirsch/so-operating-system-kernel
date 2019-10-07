@@ -23,6 +23,7 @@ struct ProcessCDT{
 
     int pid;
     int ppid;
+    int priority;
     enum State state;
     uint64_t stackBaseAddress;
     uint64_t stackPointer;
@@ -72,22 +73,22 @@ void initProcesses(){
     }
 }
 
-Process newProcess(char * process_name, uint64_t functionAddress){
+Process newProcess(char *processName, uint64_t functionAddress, int priority) {
 
 
     Process aux = (Process) mAlloc(sizeof(struct ProcessCDT));
-    strcpy(aux->name, process_name);
+    strcpy(aux->name, processName);
     //todo tests
     print(aux->name);
 
     aux->pid = pidCounter;
+    aux->priority = priority;
     aux->ppid = (pidCounter!=0) ? getCurrentProcess()->pid : 0;
     aux->functionAddress = functionAddress;
     aux->stackBaseAddress = (uint64_t) mAlloc(PROCESS_STACK_SIZE);
     aux->stackPointer = initializeProcessStack(aux->stackBaseAddress, functionAddress, pidCounter);
     aux->state = STATE_READY;
     processList[pidCounter++] = aux;
-    newPCB(aux);
     return aux;
 }
 
@@ -131,7 +132,11 @@ static void entryPoint(uint64_t functionAddress, int pid){
     for(int i =0; i<50; i++){
         print("fin del programa\n");
     }
-    _force_change_process();
+    //_force_change_process();
+    sleep(2000);
+    deleteCurrentProcessPCB();
+    print("changed Process\n");
+    sleep(2000);
 }
 
 // destructors
@@ -160,4 +165,12 @@ enum State getProcessState(Process process){
 
 void setProcessState(Process process, enum State state){
     process->state = state;
+}
+
+int getPid(Process process){
+    return process->pid;
+}
+
+void setPid(Process process, int pid){
+    process->pid = pid;
 }

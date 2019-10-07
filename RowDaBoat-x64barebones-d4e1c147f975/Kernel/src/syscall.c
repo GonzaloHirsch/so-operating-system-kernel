@@ -2,6 +2,8 @@
 #include <naiveConsole.h>
 #include <stdint.h>
 #include <console.h>
+#include <processes.h>
+#include <scheduler.h>
 
 extern void hang();
 extern void over_clock(int rate);
@@ -23,6 +25,8 @@ int handle_sys_time(uint64_t selector);
 void handle_sys_clear_console(void);
 
 void handle_sys_draw_pixel(int x, int y, int r, int g, int b);
+
+int handle_sys_new_process(char * name, void * functionAddress, int priority);
 
 //Handler de la llamada a la int 80
 uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
@@ -59,6 +63,9 @@ uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, u
 	        //del kernel. Se podria buscar una forma de apagar la PC
 	        //realmente, es decir, apagar el hardware.
             hang();
+        break;
+        case NEW_PROCESS:
+            return handle_sys_new_process(rsi, rdx, 1);
         break;
 	}
 	return 0;
@@ -118,4 +125,11 @@ void handle_sys_over_clock(int rate){
 //Recibe un selector que se utiliza para saber que registro acceder
 int handle_sys_time(uint64_t selector){
 	return get_time(selector);
+}
+
+int handle_sys_new_process(char * name, void * functionAddress, int priority){
+    Process nP = newProcess(name, functionAddress, priority);
+    //todo mejorar esto
+    newPCB(nP);
+    return getPid(nP);
 }

@@ -81,7 +81,7 @@ void * initializeKernelBinary()
 
 void testFunction1(){
     int i = 0;
-    while((i++)<100) {
+    while((i++)<10) {
         print("Hello World!\n");
     }
     sleep(2000);
@@ -89,7 +89,7 @@ void testFunction1(){
 
 void testFunction2(){
     int i = 0;
-    while((i++)<100) {
+    while((i++)<10) {
         print("Trello world!\n");
     }
     sleep(2000);
@@ -97,7 +97,7 @@ void testFunction2(){
 
 void testFunction3(){
     int i = 0;
-    while((i++)<100) {
+    while((i++)<10) {
         print("Return world!\n");
     }
     sleep(2000);
@@ -106,9 +106,9 @@ void testFunction3(){
 int main()
 {
 
-    newProcess("function1", (uint64_t) &testFunction1);
-    newProcess("function2", (uint64_t) &testFunction2);
-    newProcess("function3", (uint64_t) &testFunction3);
+    Process p1 = newProcess("function1", (uint64_t) &testFunction1);
+    Process p2 = newProcess("function2", (uint64_t) &testFunction2);
+    Process p3 = newProcess("function3", (uint64_t) &testFunction3);
 
     //mFree(array);
     //goToUserland();

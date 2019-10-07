@@ -80,6 +80,7 @@ void deleteCurrentProcessPCB(){
         // Se libera el espacio que se habia reservado para el PCB del Process
         removeProcess(aux->process);
         mFree(aux);
+        _popaqIretq();
     }
 }
 
@@ -90,30 +91,46 @@ uint64_t getNextProcess(uint64_t currentProcessStack){
     // Si esta funcion se llama con un proceso terminado, no guardar nada: seguir
     // de largo y tratar este proceso como si fuera otro mas del recorrido hasta
     // encontrar uno READY
+    for(int i = 0; i<5; i++){
+        print("%d\n", i);
+    }
     if(getProcessState(theProcessList.currentProcess) != STATE_TERMINATED) {
+
+        print("not terminated\n");
         setStackPointer(theProcessList.currentProcess->process, currentProcessStack);
 
         setProcessState(theProcessList.currentProcess->process, STATE_READY);
+    }else {
+        print("Process terminated\n");
+        sleep(2000);
     }
     // Se settea el nuevo current process...
     enum State state;
     for(state = getProcessState(theProcessList.currentProcess->process); state != STATE_READY; state = getProcessState(theProcessList.currentProcess->process)){
 
+
         switch(state){
 
             // si el proceso actual esta bloqueado, sigo con el proximo
             case STATE_BLOCKED:
+                print("blocked\n");
                 theProcessList.currentProcess = theProcessList.currentProcess->next;
                 break;
             // si el proceso actual esta terminado, hay que eliminarlo y seguir
             case STATE_TERMINATED:
+                print("terminated\n");
                 deleteCurrentProcessPCB();
+                sleep(2000);
                 break;
             default:
+                print("other state\n");
                 break;
         }
 
     }
+
+    print("Current process PID: %d", getPid(theProcessList.currentProcess->process));
+    sleep(2000);
 
     setProcessState(theProcessList.currentProcess->process, STATE_RUNNING);
 

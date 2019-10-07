@@ -17,6 +17,7 @@
 #define DRAW_PIXEL 9
 #define OVER_CLOCK 10
 #define SHUTDOWN 11
+#define NEW_PROCESS 12
 
 void sys_write(int fd, const char *buf, int count);
 
@@ -41,5 +42,7 @@ void sys_clear_console(void);
 int sys_time(int selector);
 
 void sys_shutdown();
+
+int sys_new_process(char * name, uint64_t functionAddress);
 
 #endif

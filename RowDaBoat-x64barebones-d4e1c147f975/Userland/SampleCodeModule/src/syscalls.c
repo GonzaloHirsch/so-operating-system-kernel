@@ -58,3 +58,7 @@ uint64_t sys_get_ticks(void){
 void sys_shutdown(){
     _int80(SHUTDOWN, 0, 0, 0, 0, 0);
 }
+
+int sys_new_process(char * name, uint64_t functionAddress){
+    return _int80(NEW_PROCESS, name, functionAddress);
+};

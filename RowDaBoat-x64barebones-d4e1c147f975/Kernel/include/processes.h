@@ -54,7 +54,7 @@ void initProcesses();
 // constructors
 // Crea un proceso con el nombre especificado (limitarse al nombre del
 // programa al que pertenecen) y la agrega al scheduler.
-Process newProcess(char * processName, uint64_t functionAddress);
+Process newProcess(char *processName, uint64_t functionAddress, int priority);
 
 
 // destructors
@@ -66,5 +66,8 @@ void setStackPointer(Process process, uint64_t stackPtr);
 
 enum State getProcessState(Process process);
 void setProcessState(Process process, enum State state);
+
+int getPid(Process process);
+void setPid(Process process, int pid);
 
 #endif //SO_TP2_PROCESS_H
