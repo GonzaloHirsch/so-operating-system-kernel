@@ -1,2 +1,14 @@
 
 .DS_Store
+./.idea
+#Binary Files
+*.bin
+*.sys
+
+#The images
+*.img
+*.qcow2
+*.vmdk
+
+#Object files
+*.o
