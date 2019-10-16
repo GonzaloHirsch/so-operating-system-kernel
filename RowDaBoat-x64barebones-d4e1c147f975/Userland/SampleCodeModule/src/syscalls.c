@@ -60,5 +60,5 @@ void sys_shutdown(){
 }
 
 int sys_new_process(char * name, uint64_t functionAddress){
-    return _int80(NEW_PROCESS, name, functionAddress);
+    return _int80(NEW_PROCESS, name, functionAddress, 0, 0, 0);
 };

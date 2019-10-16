@@ -80,7 +80,7 @@ void deleteCurrentProcessPCB(){
         // Se libera el espacio que se habia reservado para el PCB del Process
         removeProcess(aux->process);
         mFree(aux);
-        _popaqIretq();
+        _popaqIretq(getStackPointer(theProcessList.currentProcess->process));
     }
 }
 

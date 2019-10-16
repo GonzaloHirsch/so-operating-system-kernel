@@ -69,11 +69,18 @@ void * initializeKernelBinary()
 
 	clearBSS(&bss, &endOfKernel - &bss);
 
+	print("Initializing Video Driver\n");
     initVideoDriver();
+    print("Initializing Console\n");
     init_console();
+    print("Initializing Memmanager list\n");
     initializeMemManagerList(memoryStartAddress, 80*1048576); //80MB de memoria dinamica
+    print("Initializing Processes\n");
+    sleep(2000);
     initProcesses();
+    print("Loading idt\n");
  	load_idt();
+ 	print("Loading exceptions\n");
 	loadExceptions();
 
 	return getStackBase();
@@ -106,14 +113,18 @@ void testFunction3(){
 int main()
 {
 
-    Process p1 = newProcess("function1", (uint64_t) &testFunction1);
-    Process p2 = newProcess("function2", (uint64_t) &testFunction2);
-    Process p3 = newProcess("function3", (uint64_t) &testFunction3);
-
+    print("Starting kernel main\n");
+    sleep(2);
+    Process p1 = newProcess("function1", (uint64_t) &testFunction1, 0);
+    Process p2 = newProcess("function2", (uint64_t) &testFunction2, 0);
+    Process p3 = newProcess("function3", (uint64_t) &testFunction3, 0);
+    Process p4 = newProcess("shell", (uint64_t) sampleCodeModuleAddress, 0);
+    newPCB(p4);
     //mFree(array);
     //goToUserland();
     for(int i = 0; i<10; i++)
         print("Hey I'm done here\n");
-	return 0;
+	print("kernel stop\n");
+    return 0;
 
 }
