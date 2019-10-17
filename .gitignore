@@ -11,3 +11,6 @@
 
 #Object files
 *.o
+RowDaBoat-x64barebones-d4e1c147f975/Kernel/kernel.elf
+
+RowDaBoat-x64barebones-d4e1c147f975/Userland/0000-sampleCodeModule.elf
