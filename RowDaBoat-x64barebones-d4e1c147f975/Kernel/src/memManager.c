@@ -62,7 +62,7 @@ Node firstFit(Node node, size_t size){
       int spaceLeft = node->size - size;
 
       // En el caso de que haya sobre la cantidad como para armar un nodo mas, lo aloca
-      if (spaceLeft > sizeof(Node)){
+      if (spaceLeft > sizeof(struct t_node)){
         // Calcula el puntero del nuevo nodo
         Node aux = (void *)((char *)node->memPtr + size);
         // Para no perder la referencia al siguiente
@@ -70,9 +70,9 @@ Node firstFit(Node node, size_t size){
         // Marca al nodo como libre
         aux->state = FREE;
         // Calcula el puntero a la memoria, sin contar el tamaño de este nodo
-        aux->memPtr = (void *)((char *)aux + sizeof(Node));
+        aux->memPtr = (void *)((char *)aux + sizeof(struct t_node));
         // Calcula el tamaño de la memoria porque se uso parte para el nodo
-        aux->size = spaceLeft - sizeof(Node);
+        aux->size = spaceLeft - sizeof(struct t_node);
 
         // Le cambia el tamaño al bloque porque se corto la cantidad de memoria que tiene
         node->size = size;
@@ -146,19 +146,19 @@ int freeMemory(Node actual, Node previous, void * ptr){
     }
     // Caso de ANTERIOR --> LIBRE y SIGUIENTE --> OCUPADO o NULL
     else if (previous != NULL && previous->state == FREE && ((actual->next != NULL && actual->next->state == NOT_FREE) || actual->next == NULL)){
-      previous->size = previous->size + actual->size + sizeof(Node);
+      previous->size = previous->size + actual->size + sizeof(struct t_node);
       previous->next = actual->next;
       return 1;
     }
     // Caso de ANTERIOR --> LIBRE y SIGUIENTE --> LIBRE
     else if (previous != NULL && actual->next != NULL && previous->state == FREE && actual->next->state == FREE){
-      previous->size = previous->size + actual->size + actual->next->size + (2 * sizeof(Node));
+      previous->size = previous->size + actual->size + actual->next->size + (2 * sizeof(struct t_node));
       previous->next = actual->next->next;
       return 1;
     }
     // Caso de ANTERIOR --> OCUPADO o NULL y SIGUIENTE --> LIBRE
     else if ((previous == NULL || (previous != NULL && actual->next != NULL)) && previous->state == NOT_FREE && actual->next->state == FREE){
-      actual->size = actual->size + actual->next->size + sizeof(Node);
+      actual->size = actual->size + actual->next->size + sizeof(struct t_node);
       actual->next = actual->next->next;
       return 1;
     } else {
@@ -194,10 +194,10 @@ void initializeMemManagerList(void * startDir, size_t totalSize){
 
   memBlocks->totalSize = totalSize;
   memBlocks->startDir = startDir;
-  memBlocks->head = (void * ) ((char *)startDir + sizeof(List));
+  memBlocks->head = (void * ) ((char *)startDir + sizeof(struct t_list));
 
   memBlocks->head->next = NULL;
-  memBlocks->head->memPtr = (void * ) ((char *)memBlocks->head + sizeof(Node));
-  memBlocks->head->size = totalSize - sizeof(List) - sizeof(Node);
+  memBlocks->head->memPtr = (void * ) ((char *)memBlocks->head + sizeof(struct t_node));
+  memBlocks->head->size = totalSize - sizeof(struct t_list) - sizeof(struct t_node);
   memBlocks->head->state = FREE;
 }
