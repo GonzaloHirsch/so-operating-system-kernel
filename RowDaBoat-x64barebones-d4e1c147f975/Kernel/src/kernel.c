@@ -76,7 +76,6 @@ void * initializeKernelBinary()
     print("Initializing Memmanager list\n");
     initializeMemManagerList(memoryStartAddress, 80*1048576); //80MB de memoria dinamica
     print("Initializing Processes\n");
-    sleep(2000);
     initProcesses();
     print("Loading idt\n");
  	load_idt();

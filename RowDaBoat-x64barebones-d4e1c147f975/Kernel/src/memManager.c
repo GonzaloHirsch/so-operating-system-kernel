@@ -190,22 +190,14 @@ int mFree(void * ptr){
     size_t totalSize --> Tamaño de la memoria
 */
 void initializeMemManagerList(void * startDir, size_t totalSize){
-  // El puntero a la lista es donde comienza la memoria
   memBlocks = startDir;
 
-  // Tamaño total de memoria
   memBlocks->totalSize = totalSize;
-  // Direccion de donde comienza toda la memoria
   memBlocks->startDir = startDir;
-  // Puntero al primer nodo, se calcula teniendo en cuenta el tamaño del puntero a la lista.
   memBlocks->head = (void * ) ((char *)startDir + sizeof(List));
 
-  // Settea el siguiente en null porque es el primer bloque
   memBlocks->head->next = NULL;
-  // Calcula el puntero a la memoria usando el puntero al primer nodo mas su tamaño
   memBlocks->head->memPtr = (void * ) ((char *)memBlocks->head + sizeof(Node));
-  // Calcula el tamaño de la memoria para alocar, teniendo en cuenta el tamaño de la lista y el nodo ya alocados
   memBlocks->head->size = totalSize - sizeof(List) - sizeof(Node);
-  // Marca al nodo como libre
   memBlocks->head->state = FREE;
 }

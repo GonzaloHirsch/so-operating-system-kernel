@@ -70,8 +70,8 @@ void initProcesses(){
     //memset(&processList, 0x0, MAX_PROCESS_COUNT*sizeof(Process));
     for(int i = 0; i<MAX_PROCESS_COUNT; i++){
         processList[i] = NULL;
-        print("process %d\n", i);
-    }
+   }
+    return;
 }
 
 Process newProcess(char *processName, uint64_t functionAddress, int priority) {
