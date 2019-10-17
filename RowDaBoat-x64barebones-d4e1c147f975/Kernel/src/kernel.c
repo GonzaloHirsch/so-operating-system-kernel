@@ -17,6 +17,7 @@
 #include <memManager.h>
 #include <processes.h>
 #include <scheduler.h>
+#include "../include/processes.h"
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -81,6 +82,9 @@ void * initializeKernelBinary()
  	load_idt();
  	print("Loading exceptions\n");
 	loadExceptions();
+	print("Turning on rtc\n");
+	turn_on_rtc();
+
 
 	return getStackBase();
 }
@@ -90,7 +94,6 @@ void testFunction1(){
     while((i++)<10) {
         print("Hello World!\n");
     }
-    sleep(2000);
 }
 
 void testFunction2(){
@@ -112,12 +115,18 @@ void testFunction3(){
 int main()
 {
 
+    while(1){
+
+    }
     print("Starting kernel main\n");
     sleep(2);
     Process p1 = newProcess("function1", (uint64_t) &testFunction1, 0);
     Process p2 = newProcess("function2", (uint64_t) &testFunction2, 0);
     Process p3 = newProcess("function3", (uint64_t) &testFunction3, 0);
     Process p4 = newProcess("shell", (uint64_t) sampleCodeModuleAddress, 0);
+    newPCB(p1);
+    newPCB(p2);
+    newPCB(p3);
     newPCB(p4);
     //mFree(array);
     //goToUserland();

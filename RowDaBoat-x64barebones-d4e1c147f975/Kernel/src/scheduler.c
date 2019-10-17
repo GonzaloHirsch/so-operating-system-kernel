@@ -16,6 +16,7 @@ static void startProcess(Process process);
 typedef struct ProcessControlBlockCDT{
 
     Process process;
+    int currentPriority;
 
     struct ProcessControlBlockCDT * prev;
     struct ProcessControlBlockCDT * next;
@@ -36,6 +37,7 @@ void newPCB(Process process){
     PCB aux = mAlloc(sizeof(PCBCDT));
     aux->process = process;
     theProcessList.processCount++;
+    aux->currentPriority=0;
     if(theProcessList.processCount==1){
         theProcessList.currentProcess = aux;
         theProcessList.tail = aux;

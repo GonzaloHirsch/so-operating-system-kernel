@@ -32,6 +32,8 @@ void timer_handler();
 int ticks_elapsed();
 void sleep(uint64_t millis);
 void timer_wait(int ticks);
+void turn_on_rtc();
+
 
 /*
 void ncPrint(const char * string);

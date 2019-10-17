@@ -40,6 +40,16 @@ void set_time(){
   write_port(0x71, aux);
 }
 
+//osdev
+void turn_on_rtc(){
+    _cli();
+    write_port(0x70, 0x0B);
+    char prev = read_port(0x71);
+    write_port(0x70, 0x0B);
+    write_port(0x71, prev | 0x40);
+    _sti();
+}
+
 int get_time(int selector){
   _cli();
   set_time();
