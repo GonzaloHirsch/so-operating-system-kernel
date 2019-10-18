@@ -22,9 +22,11 @@ EXTERN irqDispatcher
 EXTERN handleSyscall
 EXTERN exceptionDispatcher
 EXTERN getNextProcess
+EXTERN timer_handler
 
 EXTERN printInteger
 EXTERN print
+EXTERN testFunction1 ;todo eliminar esto
 
 %macro pushState 0
 	push rax
@@ -88,7 +90,15 @@ EXTERN print
 %endmacro
 
 _irq00Handler:
-    irqHandlerMaster 0
+    call timer_handler
+    pushState
+    mov rdi, rsp
+    call getNextProcess
+    mov rsp, rax
+    mov al, 20h
+    out 20h, al
+    popState
+    iretq
 
 _irq01Handler:
     irqHandlerMaster 1
@@ -110,9 +120,11 @@ _force_change_process:
 ;rtc handler
 _irq70Handler:
     pushState
-    mov rdi, rsp
-    call getNextProcess
-    mov rsp, rax
+    ;mov rdi, rsp
+    call testFunction1
+    ;call getNextProcess
+    ;mov rsp, rax
+
     popState
     iretq
 
