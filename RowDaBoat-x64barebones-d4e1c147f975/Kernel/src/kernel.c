@@ -114,25 +114,47 @@ void testFunction3(){
 
 int main()
 {
+    print("\nIn main");
 
-    while(1){
+    uint64_t size = 1048576; //1mb
+
+    print("\n\n");
+    int i = 0,m=0;
+    int * array = 1;
+    int * aux2;
+
+    while(array != NULL){
+        i++;m=i;
+
+        if(i == 5){
+            mFree((void *)aux2);
+        }
+        else if(i == 2){
+            aux2 = array;
+        }
+
+
+        array= (int *) mAlloc(sizeof(int) * (size+m));
+
+        
+        if(array!=NULL) {
+            for (int i = 0; i < 10; i++) {  
+                array[i] = i;
+            }
+            for (int i = 0; i < 10; i++) {
+                print("%d-", array[i]);
+            }
+        }
+        else {
+            print("got null bish\n");
+        }
+
+        print(" megas: "); printInteger(array);
+        new_line();
+
+        
 
     }
-    print("Starting kernel main\n");
-    sleep(2);
-    Process p1 = newProcess("function1", (uint64_t) &testFunction1, 0);
-    Process p2 = newProcess("function2", (uint64_t) &testFunction2, 0);
-    Process p3 = newProcess("function3", (uint64_t) &testFunction3, 0);
-    Process p4 = newProcess("shell", (uint64_t) sampleCodeModuleAddress, 0);
-    newPCB(p1);
-    newPCB(p2);
-    newPCB(p3);
-    newPCB(p4);
-    //mFree(array);
-    //goToUserland();
-    for(int i = 0; i<10; i++)
-        print("Hey I'm done here\n");
-	print("kernel stop\n");
-    return 0;
 
+    return 0;
 }
