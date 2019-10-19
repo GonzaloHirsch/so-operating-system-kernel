@@ -8,7 +8,7 @@
 #define SO_TP2_PROCESS_H
 
 #define MAX_NAME_LENGTH 128
-#define PROCESS_STACK_SIZE 4096
+#define PROCESS_STACK_SIZE 8192
 #define MAX_PROCESS_COUNT 256
 
 #include <stddef.h>
@@ -18,13 +18,14 @@
 typedef struct ProcessCDT * Process;
 
 enum State{STATE_READY, STATE_RUNNING, STATE_BLOCKED, STATE_TERMINATED};
+enum Visibility{FOREGROUND, BACKGROUND};
 
 void initProcesses();
 
 // constructors
 // Crea un proceso con el nombre especificado (limitarse al nombre del
 // programa al que pertenecen) y la agrega al scheduler.
-Process newProcess(char *processName, uint64_t functionAddress, int priority);
+Process newProcess(char *processName, uint64_t functionAddress, int priority, enum Visibility isForeground);
 
 
 // destructors
@@ -37,11 +38,19 @@ void setStackPointer(Process process, uint64_t stackPtr);
 enum State getProcessState(Process process);
 void setProcessState(Process process, enum State state);
 
-int getPid(Process process);
+void setProcessStateByPid(int pid, enum State state);
+
+int getProcessPid(Process process);
 void setPid(Process process, int pid);
 
 char * getProcessName(Process process);
 
 int getPriority(Process process);
+
+void setPriorityByPid(int pid, int priority);
+
+int getPid();
+
+void listProcesses();
 
 #endif //SO_TP2_PROCESS_H

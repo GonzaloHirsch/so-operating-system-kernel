@@ -59,6 +59,20 @@ void sys_shutdown(){
     _int80(SHUTDOWN, 0, 0, 0, 0, 0);
 }
 
+//Processes - 7 calls
+
 int sys_new_process(char * name, uint64_t functionAddress){
     return _int80(NEW_PROCESS, name, functionAddress, 0, 0, 0);
 };
+
+int sys_get_pid(){
+    return _int80(GET_PID, 0,0,0,0,0);
+}
+
+int sys_list_processes(){
+    return _int80(LIST_PROCESSES, 0,0,0,0,0);
+}
+
+void sys_kill(int pid){
+    _int80(KILL_PROCESS, pid, 0, 0, 0, 0);
+}

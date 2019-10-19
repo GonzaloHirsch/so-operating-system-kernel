@@ -21,4 +21,6 @@ void deleteCurrentProcessPCB();
 uint64_t getNextProcess();
 
 
+
+
 #endif //SO_TP2_SCHEDULER_H

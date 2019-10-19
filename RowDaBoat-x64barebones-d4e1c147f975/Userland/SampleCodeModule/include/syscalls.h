@@ -18,6 +18,9 @@
 #define OVER_CLOCK 10
 #define SHUTDOWN 11
 #define NEW_PROCESS 12
+#define GET_PID 13
+#define LIST_PROCESSES 14
+#define KILL_PROCESS 15
 
 void sys_write(int fd, const char *buf, int count);
 
@@ -45,4 +48,9 @@ void sys_shutdown();
 
 int sys_new_process(char * name, uint64_t functionAddress);
 
+int sys_get_pid();
+
+void sys_list_processes();
+
+void sys_kill(int pid);
 #endif

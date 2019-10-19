@@ -30,27 +30,27 @@ typedef struct PCBListCDT{
     int processCount;
 }PCBList;
 
-static PCBList theProcessList /*= {NULL, NULL, NULL}*/;
+static PCBList thePCBList /*= {NULL, NULL, NULL}*/;
 
 void newPCB(Process process){
 
     PCB aux = mAlloc(sizeof(PCBCDT)); //TODO VER CON NUESTRO ALLOCATOR
     //PCB aux = mem_alloc(sizeof(PCBCDT));
     aux->process = process;
-    theProcessList.processCount++;
+    thePCBList.processCount++;
     aux->currentPriority=0;
-    if(theProcessList.processCount==1){
-        theProcessList.currentPCB = aux;
-        theProcessList.tail = aux;
+    if(thePCBList.processCount==1){
+        thePCBList.currentPCB = aux;
+        thePCBList.tail = aux;
         aux->next = aux->prev = aux;
         startProcess(aux->process);
     }
     else {
-        theProcessList.tail->next->prev = aux;
-        aux->next = theProcessList.tail->next;
-        aux->prev = theProcessList.tail;
-        theProcessList.tail->next = aux;
-        theProcessList.tail = aux;
+        thePCBList.tail->next->prev = aux;
+        aux->next = thePCBList.tail->next;
+        aux->prev = thePCBList.tail;
+        thePCBList.tail->next = aux;
+        thePCBList.tail = aux;
     }
 
 
@@ -62,43 +62,43 @@ void startProcess(Process process){
 }
 
 void initializeScheduler(){
-    theProcessList.currentPCB = NULL;
-    theProcessList.tail = NULL;
-    theProcessList.processCount = 0;
+    thePCBList.currentPCB = NULL;
+    thePCBList.tail = NULL;
+    thePCBList.processCount = 0;
 }
 
 Process getCurrentProcess(){
-    return theProcessList.currentPCB->process;
+    return thePCBList.currentPCB->process;
 }
 
 void deleteCurrentProcessPCB(){
-    if(theProcessList.currentPCB != NULL) {
-        theProcessList.processCount--;
-        PCB aux = theProcessList.currentPCB;
-        theProcessList.currentPCB = aux->next;
+    if(thePCBList.currentPCB != NULL) {
+        thePCBList.processCount--;
+        PCB aux = thePCBList.currentPCB;
+        thePCBList.currentPCB = aux->next;
 
         aux->next->prev = aux->prev;
         aux->prev->next = aux->next;
         removeProcess(aux->process);
         mFree(aux); //todo hacer con nuestro allocator
         //free_mem(aux);
-        //_popaqIretq(getStackPointer(theProcessList.currentPCB->process));
+        //_popaqIretq(getStackPointer(thePCBList.currentPCB->process));
     }
 }
 
 uint64_t getNextProcess(uint64_t currentProcessStack){
 
 
-        if (theProcessList.processCount > 1) {
+        if (thePCBList.processCount > 1) {
 
-            if (theProcessList.currentPCB->currentPriority < getPriority(theProcessList.currentPCB->process)) {
-                theProcessList.currentPCB->currentPriority++;
+            if (thePCBList.currentPCB->currentPriority < getPriority(thePCBList.currentPCB->process)) {
+                thePCBList.currentPCB->currentPriority++;
                 return currentProcessStack;
             } else {
-                theProcessList.currentPCB->currentPriority=0; //resetteo la cantidad de cuantos a 0
-                if (getProcessState(theProcessList.currentPCB->process) != STATE_TERMINATED) {
+                thePCBList.currentPCB->currentPriority=0; //resetteo la cantidad de cuantos a 0
+                if (getProcessState(thePCBList.currentPCB->process) != STATE_TERMINATED) {
 
-                    setStackPointer(theProcessList.currentPCB->process, currentProcessStack);
+                    setStackPointer(thePCBList.currentPCB->process, currentProcessStack);
 
                 } else {
 
@@ -106,8 +106,8 @@ uint64_t getNextProcess(uint64_t currentProcessStack){
                 // Se settea el nuevo current process...
                 enum State state;
 
-                for (state = getProcessState(theProcessList.currentPCB->process);
-                     state != STATE_READY; state = getProcessState(theProcessList.currentPCB->process)) {
+                for (state = getProcessState(thePCBList.currentPCB->process);
+                     state != STATE_READY; state = getProcessState(thePCBList.currentPCB->process)) {
 
 
                     switch (state) {
@@ -118,28 +118,28 @@ uint64_t getNextProcess(uint64_t currentProcessStack){
                             break;
                             // si el proceso actual esta terminado, hay que eliminarlo y seguir
                         case STATE_TERMINATED:
-                            //print("Process %s : terminated\n", getProcessName(theProcessList.currentPCB->process));
+                            //print("Process %s : terminated\n", getProcessName(thePCBList.currentPCB->process));
                             deleteCurrentProcessPCB();
                             break;
                         case STATE_RUNNING:
-                            //print("Process %s : running\n", getProcessName(theProcessList.currentPCB->process));
-                            setProcessState(theProcessList.currentPCB->process, STATE_READY);
+                            //print("Process %s : running\n", getProcessName(thePCBList.currentPCB->process));
+                            setProcessState(thePCBList.currentPCB->process, STATE_READY);
                             break;
                         default:
                             break;
                     }
 
-                    theProcessList.currentPCB = theProcessList.currentPCB->next;
+                    thePCBList.currentPCB = thePCBList.currentPCB->next;
                 }
 
-                //print("Current process PID: %d", getPid(theProcessList.currentPCB->process));
+                //print("Current process PID: %d", getProcessPid(thePCBList.currentPCB->process));
                 //sleep(2);
 
-                setProcessState(theProcessList.currentPCB->process, STATE_RUNNING);
+                setProcessState(thePCBList.currentPCB->process, STATE_RUNNING);
 
 
                 // Se devuelve el stack pointer del proximo proceso
-                return getStackPointer(theProcessList.currentPCB->process);
+                return getStackPointer(thePCBList.currentPCB->process);
             }
         }
         else {

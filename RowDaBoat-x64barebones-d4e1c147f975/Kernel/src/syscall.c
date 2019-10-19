@@ -4,6 +4,7 @@
 #include <console.h>
 #include <processes.h>
 #include <scheduler.h>
+#include "../include/processes.h"
 
 extern void hang();
 extern void over_clock(int rate);
@@ -66,6 +67,13 @@ uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, u
         break;
         case NEW_PROCESS:
             return handle_sys_new_process(rsi, rdx, 1);
+        case GET_PID:
+            return handle_sys_get_pid();
+        case LIST_PROCESSES:
+            handle_sys_list_processes();
+        break;
+        case KILL_PROCESS:
+            handle_sys_kill_process(rsi);
         break;
 	}
 	return 0;
@@ -131,5 +139,18 @@ int handle_sys_new_process(char * name, void * functionAddress, int priority){
     Process nP = newProcess(name, functionAddress, priority);
     //todo mejorar esto
     newPCB(nP);
-    return getPid(nP);
+    return getProcessPid(nP);
+}
+
+int handle_sys_get_pid(){
+    return getPid();
+}
+
+int handle_sys_list_processes(){
+    listProcesses();
+}
+
+void handle_sys_kill_process(int pid){
+    setProcessStateByPid(pid, STATE_TERMINATED);
+
 }

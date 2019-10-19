@@ -25,6 +25,7 @@ struct ProcessCDT{
     int ppid;
     int priority;
     enum State state;
+    enum Visibility isForeground;
     uint64_t stackBaseAddress;
     uint64_t stackPointer;
     uint64_t functionAddress;
@@ -62,15 +63,21 @@ typedef struct ProcessStack{
 } ProcessStack;
 
 static int pidCounter;
+static Process foregroundProcess;
+static Process theProcessList[MAX_PROCESS_COUNT];
 
 //todo esto esta ok
 void initProcesses(){
     pidCounter = 0;
+    foregroundProcess = NULL;
+    for(int i = 0; i<MAX_PROCESS_COUNT; i++){
+        theProcessList[i] = NULL;
+    }
 
     return;
 }
 
-Process newProcess(char *processName, uint64_t functionAddress, int priority) {
+Process newProcess(char *processName, uint64_t functionAddress, int priority, enum Visibility isForeground) {
 
 
     //Process aux = (Process) mem_alloc(sizeof(struct ProcessCDT));
@@ -78,14 +85,16 @@ Process newProcess(char *processName, uint64_t functionAddress, int priority) {
     strcpy(aux->name, processName);
     //todo tests
 
-    aux->pid = pidCounter++;
+    aux->pid = pidCounter;
     aux->priority = priority;
+    aux->isForeground = isForeground;
     //aux->ppid = (pidCounter!=0) ? getCurrentProcess()->pid : 0;
     aux->functionAddress = functionAddress;
     //aux->stackBaseAddress = (uint64_t) mem_alloc(PROCESS_STACK_SIZE);
     aux->stackBaseAddress = (uint64_t) mAlloc(PROCESS_STACK_SIZE);
     aux->stackPointer = initializeProcessStack(aux->stackBaseAddress, functionAddress, (uint64_t) aux);
     aux->state = STATE_READY;
+    theProcessList[pidCounter++] = aux;
     return aux;
 }
 
@@ -140,6 +149,7 @@ static void entryPoint(uint64_t functionAddress, uint64_t processPtr){
 
 void removeProcess(Process process){
     // se libera el espacio reservado para el stack
+    theProcessList[process->pid] = NULL;
     mFree((void*) process->stackBaseAddress);
     //free_mem((void*)process->stackBaseAddress);
     // se libera el espacio reservado para el ADT de Process
@@ -165,7 +175,11 @@ void setProcessState(Process process, enum State state){
     process->state = state;
 }
 
-int getPid(Process process){
+void setProcessStateByPid(int pid, enum State state){
+    theProcessList[pid]->state = state;
+}
+
+int getProcessPid(Process process){
     return process->pid;
 }
 
@@ -179,4 +193,21 @@ char * getProcessName(Process process){
 
 int getPriority(Process process){
     return process->priority;
+}
+
+void setPriorityByPid(int pid, int priority){
+    theProcessList[pid]->priority = priority;
+}
+
+int getPid(){
+   return getCurrentProcess()->pid;
+}
+
+void listProcesses(){
+    Process aux;
+    for(int i = 0; i<pidCounter; i++){
+        if((aux=theProcessList[i])!=NULL){
+            print("Process %s\n    PID: %d\n    Priority: %d\n    StackPointer: %d\n    Foreground? %s\n", aux->name, aux->pid, aux->stackPointer, (aux->isForeground) ? "Yes" : "No");
+        }
+    }
 }
