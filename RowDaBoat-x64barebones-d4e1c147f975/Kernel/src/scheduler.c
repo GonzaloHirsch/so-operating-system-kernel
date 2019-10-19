@@ -73,6 +73,7 @@ Process getCurrentProcess(){
 
 void deleteCurrentProcessPCB(){
     if(thePCBList.currentPCB != NULL) {
+        if(thePCBList.currentPCB == thePCBList.tail) thePCBList.tail = thePCBList.tail->prev;
         thePCBList.processCount--;
         PCB aux = thePCBList.currentPCB;
         thePCBList.currentPCB = aux->next;
@@ -115,6 +116,7 @@ uint64_t getNextProcess(uint64_t currentProcessStack){
                         // si el proceso actual esta bloqueado, sigo con el proximo
                         case STATE_BLOCKED:
                             print("blocked\n");
+                            thePCBList.currentPCB = thePCBList.currentPCB->next;
                             break;
                             // si el proceso actual esta terminado, hay que eliminarlo y seguir
                         case STATE_TERMINATED:
@@ -124,12 +126,13 @@ uint64_t getNextProcess(uint64_t currentProcessStack){
                         case STATE_RUNNING:
                             //print("Process %s : running\n", getProcessName(thePCBList.currentPCB->process));
                             setProcessState(thePCBList.currentPCB->process, STATE_READY);
+                            thePCBList.currentPCB = thePCBList.currentPCB->next;
                             break;
                         default:
                             break;
                     }
 
-                    thePCBList.currentPCB = thePCBList.currentPCB->next;
+
                 }
 
                 //print("Current process PID: %d", getProcessPid(thePCBList.currentPCB->process));

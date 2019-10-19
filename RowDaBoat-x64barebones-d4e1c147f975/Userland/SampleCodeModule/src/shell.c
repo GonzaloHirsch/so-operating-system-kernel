@@ -26,10 +26,13 @@
 #define TEST_PROCESSES_COMMAND 13
 #define LIST_ALL_PROCESSES 14
 #define GET_PID 15
+#define KILL 16
+#define BLOCK 17
+#define UNBLOCK 18
 
 //Todos los comandos disponibles
-const char * commands[] = {"help", "snake", "shutdown", "invalid", "time", "beep", "sleep", "date", "clear", "div", "credits", "starwars", "mario", "tp", "lp", "getpid"};
-const int commandCount = 16;
+const char * commands[] = {"help", "snake", "shutdown", "invalid", "time", "beep", "sleep", "date", "clear", "div", "credits", "starwars", "mario", "tp", "lp", "getpid", "kill", "block", "unblock"};
+const int commandCount = 19;
 
 int getCommand(char * cmd);
 void generate_invalid_opc(void);
@@ -182,6 +185,19 @@ void handle_command(int cmd){
 	    case GET_PID:
 	        printf("%d\n", sys_get_pid());
 	        break;
+	    case KILL:
+	        scanf("%d\n", &w);
+	        sys_kill(w);
+	        printf("Killed Process %d\n", w);
+	        break;
+	    case BLOCK:
+	        scanf("%d\n", &w);
+	        sys_block(w);
+	        printf("Blocked Process %d\n", w);
+	    case UNBLOCK:
+	        scanf("%d\n", &w);
+	        sys_unblock(w);
+	        printf("Unblocked Process %d\n", w);
 	}
 	print("\n");
 }
