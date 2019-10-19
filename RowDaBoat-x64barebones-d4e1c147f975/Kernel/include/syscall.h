@@ -27,6 +27,9 @@
 #define GET_PID 13
 #define LIST_PROCESSES 14
 #define KILL_PROCESS 15
+#define CHANGE_PRIORITY 16
+#define BLOCK_PROCESS 17
+#define UNBLOCK_PROCESS 18
 
 uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
 

@@ -5,6 +5,8 @@
 #include "interrupts.h"
 #include <stdint.h>
 #include "utils.h"
+#include "../include/processes.h"
+
 
 #define READ 1
 #define WRITE 2
@@ -21,6 +23,9 @@
 #define GET_PID 13
 #define LIST_PROCESSES 14
 #define KILL_PROCESS 15
+#define CHANGE_PRIORITY 16
+#define BLOCK_PROCESS 17
+#define UNBLOCK_PROCESS 18
 
 void sys_write(int fd, const char *buf, int count);
 
@@ -46,11 +51,17 @@ int sys_time(int selector);
 
 void sys_shutdown();
 
-int sys_new_process(char * name, uint64_t functionAddress);
+int sys_new_process(char * name, uint64_t functionAddress, int priority, enum Visibility isForeground);
 
 int sys_get_pid();
 
 void sys_list_processes();
 
 void sys_kill(int pid);
+
+void sys_change_priority(int pid, int priority);
+
+void sys_block(int pid);
+
+void sys_unblock(int pid);
 #endif

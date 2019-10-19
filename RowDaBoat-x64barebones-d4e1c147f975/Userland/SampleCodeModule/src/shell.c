@@ -1,4 +1,6 @@
 #include <shell.h>
+#include "../include/syscallTests.h"
+#include "../include/syscalls.h"
 
 // ----------------------------------------------------------------------------------
 // Este modulo es el modulo principal de Userland
@@ -21,10 +23,13 @@
 #define CREDITS_COMMAND 10
 #define STARWARS_COMMAND 11
 #define MARIO_COMMAND 12
+#define TEST_PROCESSES_COMMAND 13
+#define LIST_ALL_PROCESSES 14
+#define GET_PID 15
 
 //Todos los comandos disponibles
-const char * commands[] = {"help", "snake", "shutdown", "invalid", "time", "beep", "sleep", "date", "clear", "div", "credits", "starwars", "mario"};
-const int commandCount = 13;
+const char * commands[] = {"help", "snake", "shutdown", "invalid", "time", "beep", "sleep", "date", "clear", "div", "credits", "starwars", "mario", "tp", "lp", "getpid"};
+const int commandCount = 16;
 
 int getCommand(char * cmd);
 void generate_invalid_opc(void);
@@ -168,6 +173,15 @@ void handle_command(int cmd){
 		case MARIO_COMMAND:
 			make_mario();
 			break;
+	    case TEST_PROCESSES_COMMAND:
+	        processCreationTest();
+	        break;
+	    case LIST_ALL_PROCESSES:
+	        sys_list_processes();
+	        break;
+	    case GET_PID:
+	        printf("%d\n", sys_get_pid());
+	        break;
 	}
 	print("\n");
 }

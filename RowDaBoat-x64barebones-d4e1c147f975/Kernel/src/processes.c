@@ -211,3 +211,7 @@ void listProcesses(){
         }
     }
 }
+
+void setProcessPriorityByPid(int pid, int priority){
+    theProcessList[pid]->priority = priority;
+}

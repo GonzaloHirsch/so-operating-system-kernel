@@ -18,6 +18,9 @@
 #include <processes.h>
 #include <scheduler.h>
 #include "../include/processes.h"
+#include "../include/scheduler.h"
+#include "../include/console.h"
+#include "../include/time.h"
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -91,44 +94,6 @@ void * initializeKernelBinary()
 	return getStackBase();
 }
 
-void testFunction1(){
-    int i = 0;
-    while((i++)<20) {
-        print("AAAAAAAAAA\n");
-    }
-}
-
-void testFunction2(){
-    int i = 0;
-    while((i++)<10) {
-        print("BBBBBBBBBB\n");
-    }
-    sleep(2000);
-}
-
-void testFunction3(){
-    int i = 0;
-    while(1) {
-        print("CCCCCCCCCC\n");
-    }
-    sleep(2000);
-}
-
-void mainy(){
-    print("Main subprocess");
-    Process p1 = newProcess("function1", (uint64_t) &testFunction1, 3);
-    Process p2 = newProcess("function2", (uint64_t) &testFunction2, 2);
-    Process p3 = newProcess("function3", (uint64_t) &testFunction3, 1);
-    Process p4 = newProcess("shell", (uint64_t) sampleCodeModuleAddress, 2);
-    newPCB(p1);
-    newPCB(p2);
-    newPCB(p3);
-    //newPCB(p4);
-    while(1){
-        print("the one mainy loop\n");
-    }
-   // newPCB(p4);
-}
 
 int main()
 {
@@ -137,8 +102,8 @@ int main()
     print("Starting kernel main\n");
     sleep(2);
 
-    Process mainyProcess = newProcess("mainy", (uint64_t) &mainy, 4);
-    newPCB(mainyProcess);
+    Process shellProcess = newProcess("shell", (uint64_t) sampleCodeModuleAddress, 10, FOREGROUND);
+    newPCB(shellProcess);
 
     //mFree(array);
     //goToUserland();

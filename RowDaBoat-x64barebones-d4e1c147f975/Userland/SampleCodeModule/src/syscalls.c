@@ -1,4 +1,5 @@
 #include <syscalls.h>
+#include "../include/syscalls.h"
 
 // ----------------------------------------------------------------------------------
 // Este modulo es el modulo de Syscalls
@@ -61,18 +62,30 @@ void sys_shutdown(){
 
 //Processes - 7 calls
 
-int sys_new_process(char * name, uint64_t functionAddress){
-    return _int80(NEW_PROCESS, name, functionAddress, 0, 0, 0);
+int sys_new_process(char * name, uint64_t functionAddress, int priority, enum Visibility isForeground){
+    return _int80(NEW_PROCESS, (uint64_t) name, functionAddress, priority, isForeground, 0);
 };
 
 int sys_get_pid(){
     return _int80(GET_PID, 0,0,0,0,0);
 }
 
-int sys_list_processes(){
-    return _int80(LIST_PROCESSES, 0,0,0,0,0);
+void sys_list_processes(){
+    _int80(LIST_PROCESSES, 0,0,0,0,0);
 }
 
 void sys_kill(int pid){
     _int80(KILL_PROCESS, pid, 0, 0, 0, 0);
+}
+
+void sys_change_priority(int pid, int priority){
+    _int80(CHANGE_PRIORITY, pid, priority, 0, 0, 0);
+}
+
+void sys_block(int pid) {
+    _int80(BLOCK_PROCESS, pid, 0, 0, 0, 0);
+}
+
+void sys_unblock(int pid) {
+    _int80(UNBLOCK_PROCESS, pid, 0, 0, 0, 0);
 }

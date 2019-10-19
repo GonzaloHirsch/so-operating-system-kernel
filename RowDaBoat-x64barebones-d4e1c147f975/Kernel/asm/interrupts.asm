@@ -123,7 +123,7 @@ _force_change_process:
 _irq70Handler:
     pushState
     ;mov rdi, rsp
-    call testFunction1
+    ;call testFunction1
     ;call getNextProcess
     ;mov rsp, rax
 

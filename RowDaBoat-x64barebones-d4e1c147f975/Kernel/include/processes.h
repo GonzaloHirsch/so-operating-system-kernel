@@ -53,4 +53,6 @@ int getPid();
 
 void listProcesses();
 
+void setProcessPriorityByPid(int pid, int priority);
+
 #endif //SO_TP2_PROCESS_H
