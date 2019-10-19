@@ -122,35 +122,58 @@ int main()
 
     print("\n\n");
     int cant = 0,m=0;
-    int * array = 1;
-    int * aux2;
+    int * arrayPointer[6] = {1,1,1,1,1,1};
+    size_t sizes[5] = {2,2,1500,1500,1050000};
 
-    while(array!=NULL){
+    for(int i=0;i<5;i++){
+        
+        if(i == 3){
+            buddyFree(arrayPointer[0]);
+            buddyFree(arrayPointer[1]);
+        }
+
+        arrayPointer[i]= (int *) buddyMalloc(sizes[i]);
+        arrayPointer[i][0] = i;
+    }
+
+    for(int i=2;i<5;i++){
+        new_line();
+        print(" dir: "); printInteger(arrayPointer[i]);print(" Number"); printInteger(arrayPointer[i][0]);print(" --");
+    }
+
+
+    print("exiting");
+    
+    while(cant < 400){
+
+        print("entering");
         
         cant++;
-        array= (int *) buddyMalloc(size*3);
+        arrayPointer[6]= (int *) buddyMalloc(sizes[cant%5]);
         
-        if(array!=NULL) {
+        if(arrayPointer[0]!=NULL) {
             for (int i = 0; i < 10; i++) {  
-                array[i] = i;
+                arrayPointer[6][i] = i;
             }
             
             new_line();
-            print(" dir: "); printInteger(array);print(" "); printInteger(cant);print(" --");
+            print(" dir: "); printInteger(arrayPointer[6]);print(" "); printInteger(cant);print(" --");
 
 
             for (int i = 0; i < 10; i++) {
-                print("%d-", array[i]);
+                print("%d-", arrayPointer[6][i]);
+            }
+
+            if((477 + sizes[cant%5] * cant) % 3 == 0 ){
+                buddyFree(arrayPointer[6]);
             }
         }
         else {
             print("got null bish\n");
         }
-
         
-        
-
     }
+    
     
 
     return 0;
