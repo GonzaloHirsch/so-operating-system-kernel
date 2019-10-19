@@ -73,15 +73,16 @@ void initProcesses(){
 Process newProcess(char *processName, uint64_t functionAddress, int priority) {
 
 
+    //Process aux = (Process) mem_alloc(sizeof(struct ProcessCDT));
     Process aux = (Process) mAlloc(sizeof(struct ProcessCDT));
     strcpy(aux->name, processName);
     //todo tests
-    print(aux->name);
 
-    aux->pid = pidCounter;
+    aux->pid = pidCounter++;
     aux->priority = priority;
     //aux->ppid = (pidCounter!=0) ? getCurrentProcess()->pid : 0;
     aux->functionAddress = functionAddress;
+    //aux->stackBaseAddress = (uint64_t) mem_alloc(PROCESS_STACK_SIZE);
     aux->stackBaseAddress = (uint64_t) mAlloc(PROCESS_STACK_SIZE);
     aux->stackPointer = initializeProcessStack(aux->stackBaseAddress, functionAddress, (uint64_t) aux);
     aux->state = STATE_READY;
@@ -140,8 +141,10 @@ static void entryPoint(uint64_t functionAddress, uint64_t processPtr){
 void removeProcess(Process process){
     // se libera el espacio reservado para el stack
     mFree((void*) process->stackBaseAddress);
+    //free_mem((void*)process->stackBaseAddress);
     // se libera el espacio reservado para el ADT de Process
     mFree(process);
+    //free_mem(process);
 }
 
 // getters / setters
@@ -168,4 +171,12 @@ int getPid(Process process){
 
 void setPid(Process process, int pid){
     process->pid = pid;
+}
+
+char * getProcessName(Process process){
+    return process->name;
+}
+
+int getPriority(Process process){
+    return process->priority;
 }

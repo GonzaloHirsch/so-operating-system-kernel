@@ -25,7 +25,7 @@ typedef struct ProcessControlBlockCDT{
 
 typedef struct PCBListCDT{
 
-    PCB currentProcess;
+    PCB currentPCB;
     PCB tail;
     int processCount;
 }PCBList;
@@ -34,12 +34,13 @@ static PCBList theProcessList /*= {NULL, NULL, NULL}*/;
 
 void newPCB(Process process){
 
-    PCB aux = mAlloc(sizeof(PCBCDT));
+    PCB aux = mAlloc(sizeof(PCBCDT)); //TODO VER CON NUESTRO ALLOCATOR
+    //PCB aux = mem_alloc(sizeof(PCBCDT));
     aux->process = process;
     theProcessList.processCount++;
     aux->currentPriority=0;
     if(theProcessList.processCount==1){
-        theProcessList.currentProcess = aux;
+        theProcessList.currentPCB = aux;
         theProcessList.tail = aux;
         aux->next = aux->prev = aux;
         startProcess(aux->process);
@@ -49,6 +50,7 @@ void newPCB(Process process){
         aux->next = theProcessList.tail->next;
         aux->prev = theProcessList.tail;
         theProcessList.tail->next = aux;
+        theProcessList.tail = aux;
     }
 
 
@@ -60,83 +62,87 @@ void startProcess(Process process){
 }
 
 void initializeScheduler(){
-    theProcessList.currentProcess = NULL;
+    theProcessList.currentPCB = NULL;
     theProcessList.tail = NULL;
     theProcessList.processCount = 0;
 }
 
 Process getCurrentProcess(){
-    return theProcessList.currentProcess->process;
+    return theProcessList.currentPCB->process;
 }
 
 void deleteCurrentProcessPCB(){
-    if(theProcessList.currentProcess != NULL) {
+    if(theProcessList.currentPCB != NULL) {
         theProcessList.processCount--;
-        PCB aux = theProcessList.currentProcess;
-        // aca es donde efectivamente se cambia el proceso
-        theProcessList.currentProcess = aux->next;
+        PCB aux = theProcessList.currentPCB;
+        theProcessList.currentPCB = aux->next;
 
-        //elimino el nodo de la lista
         aux->next->prev = aux->prev;
         aux->prev->next = aux->next;
-        // Se libera el espacio que se habia reservado para el PCB del Process
         removeProcess(aux->process);
-        mFree(aux);
-        _popaqIretq(getStackPointer(theProcessList.currentProcess->process));
+        mFree(aux); //todo hacer con nuestro allocator
+        //free_mem(aux);
+        //_popaqIretq(getStackPointer(theProcessList.currentPCB->process));
     }
 }
 
 uint64_t getNextProcess(uint64_t currentProcessStack){
 
-    // Se guarda el stack pointer del proceso que se esta ejecutando ahora,
-    // el estado pasa de STATE_RUNNING a STATE_READY
-    // Si esta funcion se llama con un proceso terminado, no guardar nada: seguir
-    // de largo y tratar este proceso como si fuera otro mas del recorrido hasta
-    // encontrar uno READY
-    for(int i = 0; i<5; i++){
-        print("%d\n", i);
-    }
-    if(getProcessState(theProcessList.currentProcess) != STATE_TERMINATED) {
 
-        print("not terminated\n");
-        setStackPointer(theProcessList.currentProcess->process, currentProcessStack);
+        if (theProcessList.processCount > 1) {
 
-        setProcessState(theProcessList.currentProcess->process, STATE_READY);
-    }else {
-        print("Process terminated\n");
-        sleep(2000);
-    }
-    // Se settea el nuevo current process...
-    enum State state;
-    for(state = getProcessState(theProcessList.currentProcess->process); state != STATE_READY; state = getProcessState(theProcessList.currentProcess->process)){
+            if (theProcessList.currentPCB->currentPriority < getPriority(theProcessList.currentPCB->process)) {
+                theProcessList.currentPCB->currentPriority++;
+                return currentProcessStack;
+            } else {
+                theProcessList.currentPCB->currentPriority=0; //resetteo la cantidad de cuantos a 0
+                if (getProcessState(theProcessList.currentPCB->process) != STATE_TERMINATED) {
+
+                    setStackPointer(theProcessList.currentPCB->process, currentProcessStack);
+
+                } else {
+
+                }
+                // Se settea el nuevo current process...
+                enum State state;
+
+                for (state = getProcessState(theProcessList.currentPCB->process);
+                     state != STATE_READY; state = getProcessState(theProcessList.currentPCB->process)) {
 
 
-        switch(state){
+                    switch (state) {
 
-            // si el proceso actual esta bloqueado, sigo con el proximo
-            case STATE_BLOCKED:
-                print("blocked\n");
-                theProcessList.currentProcess = theProcessList.currentProcess->next;
-                break;
-            // si el proceso actual esta terminado, hay que eliminarlo y seguir
-            case STATE_TERMINATED:
-                print("terminated\n");
-                deleteCurrentProcessPCB();
-                sleep(2000);
-                break;
-            default:
-                print("other state\n");
-                break;
+                        // si el proceso actual esta bloqueado, sigo con el proximo
+                        case STATE_BLOCKED:
+                            print("blocked\n");
+                            break;
+                            // si el proceso actual esta terminado, hay que eliminarlo y seguir
+                        case STATE_TERMINATED:
+                            //print("Process %s : terminated\n", getProcessName(theProcessList.currentPCB->process));
+                            deleteCurrentProcessPCB();
+                            break;
+                        case STATE_RUNNING:
+                            //print("Process %s : running\n", getProcessName(theProcessList.currentPCB->process));
+                            setProcessState(theProcessList.currentPCB->process, STATE_READY);
+                            break;
+                        default:
+                            break;
+                    }
+
+                    theProcessList.currentPCB = theProcessList.currentPCB->next;
+                }
+
+                //print("Current process PID: %d", getPid(theProcessList.currentPCB->process));
+                //sleep(2);
+
+                setProcessState(theProcessList.currentPCB->process, STATE_RUNNING);
+
+
+                // Se devuelve el stack pointer del proximo proceso
+                return getStackPointer(theProcessList.currentPCB->process);
+            }
         }
-
+        else {
+            return currentProcessStack;
+        }
     }
-
-    print("Current process PID: %d", getPid(theProcessList.currentProcess->process));
-    sleep(2000);
-
-    setProcessState(theProcessList.currentProcess->process, STATE_RUNNING);
-
-
-    // Se devuelve el stack pointer del proximo proceso
-    return getStackPointer(theProcessList.currentProcess->process);
-}

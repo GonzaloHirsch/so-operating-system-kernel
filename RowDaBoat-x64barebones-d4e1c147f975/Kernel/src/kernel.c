@@ -75,7 +75,9 @@ void * initializeKernelBinary()
     print("Initializing Console\n");
     init_console();
     print("Initializing Memmanager list\n");
+    //todo nuestro memmanager
     initializeMemManagerList(memoryStartAddress, 80*1048576); //80MB de memoria dinamica
+    //initialize_list(memoryStartAddress, 80*1048576);
     print("Initializing Processes\n");
     initProcesses();
     print("Loading idt\n");
@@ -91,43 +93,53 @@ void * initializeKernelBinary()
 
 void testFunction1(){
     int i = 0;
-    while((i++)<10) {
-        print("Hello World!\n");
+    while((i++)<20) {
+        print("AAAAAAAAAA\n");
     }
 }
 
 void testFunction2(){
     int i = 0;
     while((i++)<10) {
-        print("Trello world!\n");
+        print("BBBBBBBBBB\n");
     }
     sleep(2000);
 }
 
 void testFunction3(){
     int i = 0;
-    while((i++)<10) {
-        print("Return world!\n");
+    while(1) {
+        print("CCCCCCCCCC\n");
     }
     sleep(2000);
+}
+
+void mainy(){
+    print("Main subprocess");
+    Process p1 = newProcess("function1", (uint64_t) &testFunction1, 3);
+    Process p2 = newProcess("function2", (uint64_t) &testFunction2, 2);
+    Process p3 = newProcess("function3", (uint64_t) &testFunction3, 1);
+    Process p4 = newProcess("shell", (uint64_t) sampleCodeModuleAddress, 2);
+    newPCB(p1);
+    newPCB(p2);
+    newPCB(p3);
+    //newPCB(p4);
+    while(1){
+        print("the one mainy loop\n");
+    }
+   // newPCB(p4);
 }
 
 int main()
 {
 
-    while(1){
 
-    }
     print("Starting kernel main\n");
     sleep(2);
-    Process p1 = newProcess("function1", (uint64_t) &testFunction1, 0);
-    Process p2 = newProcess("function2", (uint64_t) &testFunction2, 0);
-    Process p3 = newProcess("function3", (uint64_t) &testFunction3, 0);
-    Process p4 = newProcess("shell", (uint64_t) sampleCodeModuleAddress, 0);
-    newPCB(p1);
-    newPCB(p2);
-    newPCB(p3);
-    newPCB(p4);
+
+    Process mainyProcess = newProcess("mainy", (uint64_t) &mainy, 4);
+    newPCB(mainyProcess);
+
     //mFree(array);
     //goToUserland();
     for(int i = 0; i<10; i++)

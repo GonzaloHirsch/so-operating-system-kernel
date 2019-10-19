@@ -90,14 +90,16 @@ EXTERN testFunction1 ;todo eliminar esto
 %endmacro
 
 _irq00Handler:
+    pushState
     call timer_handler
+    popState
     pushState
     mov rdi, rsp
     call getNextProcess
     mov rsp, rax
+    popState
     mov al, 20h
     out 20h, al
-    popState
     iretq
 
 _irq01Handler:
