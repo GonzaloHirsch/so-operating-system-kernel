@@ -15,6 +15,7 @@
 #include <pixelMap.h>
 #include <exceptions.h>
 #include <memManager.h>
+#include <buddyManager.h>
 #include <processes.h>
 #include <scheduler.h>
 #include "../include/processes.h"
@@ -75,7 +76,7 @@ void * initializeKernelBinary()
     print("Initializing Console\n");
     init_console();
     print("Initializing Memmanager list\n");
-    initializeMemManagerList(memoryStartAddress, 80*1048576); //80MB de memoria dinamica
+    initializeBuddyMemory(memoryStartAddress, 80*1048576); //80MB de memoria dinamica
     print("Initializing Processes\n");
     initProcesses();
     print("Loading idt\n");
@@ -116,31 +117,28 @@ int main()
 {
     print("\nIn main");
 
+    
     uint64_t size = 1048576; //1mb
 
     print("\n\n");
-    int i = 0,m=0;
+    int cant = 0,m=0;
     int * array = 1;
     int * aux2;
 
-    while(array != NULL){
-        i++;m=i;
-
-        if(i == 5){
-            mFree((void *)aux2);
-        }
-        else if(i == 2){
-            aux2 = array;
-        }
-
-
-        array= (int *) mAlloc(sizeof(int) * (size+m));
-
+    while(array!=NULL){
+        
+        cant++;
+        array= (int *) buddyMalloc(size*3);
         
         if(array!=NULL) {
             for (int i = 0; i < 10; i++) {  
                 array[i] = i;
             }
+            
+            new_line();
+            print(" dir: "); printInteger(array);print(" "); printInteger(cant);print(" --");
+
+
             for (int i = 0; i < 10; i++) {
                 print("%d-", array[i]);
             }
@@ -149,12 +147,11 @@ int main()
             print("got null bish\n");
         }
 
-        print(" megas: "); printInteger(array);
-        new_line();
-
+        
         
 
     }
+    
 
     return 0;
 }
