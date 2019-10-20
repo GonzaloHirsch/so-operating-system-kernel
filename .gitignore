@@ -14,3 +14,9 @@
 RowDaBoat-x64barebones-d4e1c147f975/Kernel/kernel.elf
 
 RowDaBoat-x64barebones-d4e1c147f975/Userland/0000-sampleCodeModule.elf
+
+.bash_history
+
+.config/pulse/3e608929fbd39b959f388bf468c9f0b1-runtime
+
+.config/pulse/cookie

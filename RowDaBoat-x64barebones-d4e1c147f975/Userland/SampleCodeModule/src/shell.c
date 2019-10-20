@@ -8,31 +8,60 @@
 // Se hace todo el manejo de los comandos
 // ----------------------------------------------------------------------------------
 
-//Constantes para los comandos
-#define INVALID_COMMAND -1
-#define HELP_COMMAND 0
-#define SNAKE_COMMAND 1
-#define SHUTDOWN_COMMAND 2
-#define INVALID_OC_COMMAND 3
-#define TIME_COMMAND 4
-#define BEEP_COMMAND 5
-#define SLEEP_COMMAND 6
-#define DATE_COMMAND 7
-#define CLEAR_COMMAND 8
-#define DIV_COMMAND 9
-#define CREDITS_COMMAND 10
-#define STARWARS_COMMAND 11
-#define MARIO_COMMAND 12
-#define TEST_PROCESSES_COMMAND 13
-#define LIST_ALL_PROCESSES 14
-#define GET_PID 15
-#define KILL 16
-#define BLOCK 17
-#define UNBLOCK 18
-
 //Todos los comandos disponibles
-const char * commands[] = {"help", "snake", "shutdown", "invalid", "time", "beep", "sleep", "date", "clear", "div", "credits", "starwars", "mario", "tp", "lp", "getpid", "kill", "block", "unblock"};
-const int commandCount = 19;
+const char * commands[] = {
+  "help",
+  "snake",
+  "shutdown",
+  "invalid",
+  "time",
+  "beep",
+  "sleep",
+  "date",
+  "clear",
+  "div",
+  "credits",
+  "starwars",
+  "mario",
+  "tp",
+  "lp",
+  "getpid",
+  "kill",
+  "block",
+  "unblock",
+  "mem",
+  "ps",
+  "pipe",
+  "sem"
+};
+
+const char * commandsInfo[] = {
+  "help - Displays available commands and their usage\n",
+  "snake - Initiates the snake game\n",
+  "shutdown - Shuts down the system\n",
+  "time - Displays current system time\n",
+  "date - Displays current system date\n",
+  "beep - Makes the system go Beep!\n",
+  "sleep - Makes the system sleep for 5 seconds\n",
+  "div - Performs a division by zero\n",
+  "invalid - Executes an invalid operation\n",
+  "clear - Clears the screen\n",
+  "credits - Displays info about the group\n",
+  "starwars - Makes a cool Star Wars sound!\n",
+  "mario - Makes a cool Mario sound!\n",
+  "tp - \n",
+  "lp - \n",
+  "getpid - \n",
+  "kill - \n",
+  "block - \n",
+  "unblock - \n",
+  "mem - Prints memory status\n",
+  "ps - Prints all active process information\n",
+  "pipe - Prints all active pipes information\n",
+  "sem - Prints all active semaphores information\n",
+};
+
+const int commandCount = 23;
 
 int getCommand(char * cmd);
 void generate_invalid_opc(void);
@@ -139,9 +168,9 @@ void handle_command(int cmd){
 		break;
 		//Retorna y sale del while, y no se puede hacer nada mas
 		case SHUTDOWN_COMMAND:
-		    clearScreen();
-		    display_goodbye_message();
-		    sys_shutdown();
+	    clearScreen();
+	    display_goodbye_message();
+	    sys_shutdown();
 		break;
 		case INVALID_OC_COMMAND:
 			generate_invalid_opc();
@@ -175,29 +204,31 @@ void handle_command(int cmd){
 		break;
 		case MARIO_COMMAND:
 			make_mario();
-			break;
-	    case TEST_PROCESSES_COMMAND:
-	        processCreationTest();
-	        break;
-	    case LIST_ALL_PROCESSES:
-	        sys_list_processes();
-	        break;
-	    case GET_PID:
-	        printf("%d\n", sys_get_pid());
-	        break;
-	    case KILL:
-	        scanf("%d\n", &w);
-	        sys_kill(w);
-	        printf("Killed Process %d\n", w);
-	        break;
-	    case BLOCK:
-	        scanf("%d\n", &w);
-	        sys_block(w);
-	        printf("Blocked Process %d\n", w);
-	    case UNBLOCK:
-	        scanf("%d\n", &w);
-	        sys_unblock(w);
-	        printf("Unblocked Process %d\n", w);
+		break;
+    case TEST_PROCESSES_COMMAND:
+      processCreationTest();
+    break;
+    case LIST_ALL_PROCESSES_COMMAND:
+      sys_list_processes();
+    break;
+    case GET_PID_COMMAND:
+      printf("%d\n", sys_get_pid());
+    break;
+    case KILL_COMMAND:
+      scanf("%d\n", &w);
+      sys_kill(w);
+      printf("Killed Process %d\n", w);
+    break;
+    case BLOCK_COMMAND:
+      scanf("%d\n", &w);
+      sys_block(w);
+      printf("Blocked Process %d\n", w);
+		break;
+    case UNBLOCK_COMMAND:
+      scanf("%d\n", &w);
+      sys_unblock(w);
+      printf("Unblocked Process %d\n", w);
+		break;
 	}
 	print("\n");
 }
@@ -227,6 +258,10 @@ void display_welcome_message(void){
 }
 
 void display_help(void){
+	for (int i = 0; i < commandCount; i++){
+		print(commandsInfo[i]);
+	}
+	/*
 	print("help - Displays available commands and their usage\n");
 	print("snake - Initiates the snake game\n");
 	print("shutdown - Shuts down the system\n");
@@ -240,6 +275,7 @@ void display_help(void){
 	print("credits - Displays info about the group\n");
 	print("starwars - Makes a cool Star Wars sound!\n");
 	print("mario - Makes a cool Mario sound!\n");
+	*/
 }
 
 void display_time(void){
@@ -257,8 +293,10 @@ void display_date(void){
 }
 
 void display_credits(void){
-	print("The authors of this OS are:\n");
+	print("The authors of this OS(Arquitectura de Computadoras Version) are:\n");
   print("Ignacio Ribas - Gonzalo Hirsch - Ignacio Villanueva\n");
+	print("The authors of this OS(Sistemas Operativos Version) are:\n");
+  print("Ignacio Ribas - Gonzalo Hirsch - Augusto Henestrosa\n");
 }
 
 void generate_invalid_opc(){
