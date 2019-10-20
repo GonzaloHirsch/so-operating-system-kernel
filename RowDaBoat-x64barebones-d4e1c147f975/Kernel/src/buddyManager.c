@@ -97,7 +97,7 @@ void * reserveMemory(size_t newSize, buddy_node_t * node){
 
                 //El nodo de la derecha va a estar despues de todos los nodos hijos del nodo de la izquierda).
                 //Si se le ocurre una mejor forma de organizarlos digamela.
-                buddy_node_t * auxR = node + (powerTo(buddyTree->numberOfLevels - node->level , 2) - 1) * sizeof(buddy_node_t);
+                buddy_node_t * auxR = node + (powerTo(buddyTree->numberOfLevels - node->level + 1 , 2) - 1) * sizeof(buddy_node_t);
                 auxR->size = node->size/2;
                 auxR->left = auxR->right = NULL;
                 auxR->memPtr = (void *)((char *) node->memPtr + node->size/2);
