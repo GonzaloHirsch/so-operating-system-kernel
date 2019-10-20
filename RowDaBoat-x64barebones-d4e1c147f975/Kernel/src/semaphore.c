@@ -67,7 +67,7 @@ void semWait(const sem *semaphore) {
         setProcessStateByPid(pid, STATE_BLOCKED);
         forceChangeProcess();
     }
-    print("decreasing semaphore, current process: %s", getProcessName(getCurrentProcess()));
+    //print("decreasing semaphore, current process: %s\n", getProcessName(getCurrentProcess()));
     theSemaphoreList[*semaphore]->value--;
 }
 
@@ -78,7 +78,7 @@ void semPost(const sem *semaphore) {
         int pid = dequeue(aux->waitingProcesses);
         setProcessStateByPid(pid, STATE_READY);
     }
-    print("increasing semaphore, current process: %s", getProcessName(getCurrentProcess()));
+    //print("increasing semaphore, current process: %s\n", getProcessName(getCurrentProcess()));
     aux->value++;
 }
 

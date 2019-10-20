@@ -141,11 +141,11 @@ int main()
     //Process shellProcess = newProcess("shell", (uint64_t) sampleCodeModuleAddress, 10, FOREGROUND);
     //newPCB(shellProcess);
 
-    Process mainProcess = newProcess("mainProcess", (uint64_t) mainFunction, 5, FOREGROUND);
-    newPCB(mainProcess);
+    //Process mainProcess = newProcess("mainProcess", (uint64_t) mainFunction, 5, FOREGROUND);
+    //newPCB(mainProcess);
 
     //mFree(array);
-    //goToUserland();
+    goToUserland();
     for(int i = 0; i<10; i++)
         print("Hey I'm done here\n");
 	print("kernel stop\n");

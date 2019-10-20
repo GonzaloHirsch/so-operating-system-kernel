@@ -7,6 +7,7 @@
 #include "graphicsLibrary.h"
 #include "types.h"
 #include "snakeGame.h"
+#include "philosophers.h"
 
 #define MAX_BUFF_SIZE 750
 
@@ -35,6 +36,7 @@
 #define PROCESS_INFO_COMMAND 20
 #define PIPE_INFO_COMMAND 21
 #define SEM_INFO_COMMAND 22
+#define PHYLO_COMMAND 23
 
 //Address original que devolvia el samplecoremodule
 #define RETURN_ADRESS 0xDEADC0DE

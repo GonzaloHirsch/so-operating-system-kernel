@@ -38,6 +38,12 @@ void handle_sys_block_process(int pid);
 
 void handle_sys_unblock_process(int pid);
 
+sem * handle_sys_create_sem(const char * name);
+
+void handle_sys_wait_sem(const sem * semaphore);
+
+void handle_sys_post_sem(const sem * semaphore);
+
 //Handler de la llamada a la int 80
 uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
     switch(rdi){
@@ -93,8 +99,29 @@ uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, u
         case UNBLOCK_PROCESS:
             handle_sys_unblock_process(rsi);
         break;
+        case CREATE_SEM:
+            handle_sys_create_sem((char *)rsi);
+        break;
+        case WAIT_SEM:
+            handle_sys_wait_sem((sem *)rsi);
+        break;
+        case POST_SEM:
+            handle_sys_post_sem((sem *)rsi);
+        break;
 	}
 	return 0;
+}
+
+void handle_sys_post_sem(const sem * semaphore){
+  semPost(semaphore);
+}
+
+void handle_sys_wait_sem(const sem * semaphore){
+  semWait(semaphore);
+}
+
+sem * handle_sys_create_sem(const char * name){
+  return openSemaphore(name);
 }
 
 //Handler para la system write

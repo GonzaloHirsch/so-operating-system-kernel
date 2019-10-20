@@ -6,7 +6,6 @@
 // ----------------------------------------------------------------------------------
 
 int pow(int base, int exponent);
-int concat(char * to, const char * from);
 
 /*FUNCIONES DE LA LIBRERIA ESTANDAR DE C*/
 

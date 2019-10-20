@@ -32,7 +32,8 @@ const char * commands[] = {
   "mem",
   "ps",
   "pipe",
-  "sem"
+  "sem",
+  "phylo"
 };
 
 const char * commandsInfo[] = {
@@ -59,9 +60,10 @@ const char * commandsInfo[] = {
   "ps - Prints all active process information\n",
   "pipe - Prints all active pipes information\n",
   "sem - Prints all active semaphores information\n",
+  "phylo - Starts the phylosophers problem, exit the problem with \'q\'"
 };
 
-const int commandCount = 23;
+const int commandCount = 24;
 
 int getCommand(char * cmd);
 void generate_invalid_opc(void);
@@ -229,6 +231,9 @@ void handle_command(int cmd){
       sys_unblock(w);
       printf("Unblocked Process %d\n", w);
 		break;
+    case PHYLO_COMMAND:
+      sys_new_process("philosophers_problem", (uint64_t) philosopherProblem, 1, FOREGROUND);
+    break;
 	}
 	print("\n");
 }
