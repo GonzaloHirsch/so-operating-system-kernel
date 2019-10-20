@@ -7,6 +7,9 @@
 #include "../include/intQueue.h"
 #include "../include/scheduler.h"
 #include "../include/console.h"
+#include "../include/lib.h"
+
+extern forceChangeProcess();
 
 typedef struct SemaphoreCDT{
 
@@ -46,7 +49,7 @@ const sem * openSemaphore(char *name) {
     aux->semId = i;
     if(i>highestSemId) highestSemId = i;
     strcpy(aux->name, name);
-    aux->value = 0;
+    aux->value = 1;
     aux->waitingProcesses = newQueue(MAX_WAITING_PROCESSES);
 
     theSemaphoreList[i] = aux;
@@ -57,23 +60,25 @@ int semGetValue(const sem *semaphore) {
     return theSemaphoreList[*semaphore]->value;
 }
 
-void semWait(sem *semaphore) {
+void semWait(const sem *semaphore) {
     if(theSemaphoreList[*semaphore]->value <= 0){
         int pid = getProcessPid(getCurrentProcess());
         enqueue(theSemaphoreList[*semaphore]->waitingProcesses, pid);
         setProcessStateByPid(pid, STATE_BLOCKED);
         forceChangeProcess();
     }
+    print("decreasing semaphore, current process: %s", getProcessName(getCurrentProcess()));
     theSemaphoreList[*semaphore]->value--;
 }
 
-void semPost(sem *semaphore) {
+void semPost(const sem *semaphore) {
 
     Semaphore aux = theSemaphoreList[*semaphore];
     if(aux->value<=0 && !isEmpty(aux->waitingProcesses)){
         int pid = dequeue(aux->waitingProcesses);
         setProcessStateByPid(pid, STATE_READY);
     }
+    print("increasing semaphore, current process: %s", getProcessName(getCurrentProcess()));
     aux->value++;
 }
 

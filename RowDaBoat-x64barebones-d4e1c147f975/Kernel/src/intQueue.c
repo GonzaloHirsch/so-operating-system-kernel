@@ -13,7 +13,7 @@ typedef struct IntQueueCDT{
 
 }IntQueueCDT;
 
-IntQueue newQueue(size_t size) {
+IntQueue newQueue(int size) {
     //Reservo para el tamanio exacto de memoria
     IntQueue aux = mAlloc(sizeof(int)*2 + sizeof(size_t) + (size+1)*sizeof(int));
     aux->size = size +1;

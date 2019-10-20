@@ -21,8 +21,8 @@ const sem * openSemaphore(char * name);
 // lo dejo como un todo.
 void closeSemaphore(char * name);
 void semUnlink(char * name);
-void semWait(sem * semaphore);
-void semPost(sem * semaphore);
+void semWait(const sem * semaphore);
+void semPost(const sem * semaphore);
 int semGetValue(const sem * semaphore);
 void printAllSemaphores();
 

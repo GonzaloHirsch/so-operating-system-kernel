@@ -21,6 +21,7 @@
 #include "../include/scheduler.h"
 #include "../include/console.h"
 #include "../include/time.h"
+#include "../include/semaphore.h"
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -94,6 +95,41 @@ void * initializeKernelBinary()
 	return getStackBase();
 }
 
+void semTest1(){
+
+    const sem * testSem = openSemaphore("test");
+    while(1){
+
+
+        semWait(testSem);
+        print("AAAAAAAAA");
+        sleep(2000);
+        semPost(testSem);
+    }
+}
+
+void semTest2(){
+
+    const sem * testSem = openSemaphore("test");
+    while(1){
+
+
+        semWait(testSem);
+        print("BBBBBBBBB");
+        sleep(2000);
+        semPost(testSem);
+    }
+}
+
+void mainFunction(){
+
+    Process p1 = newProcess("semTest1", (uint64_t) semTest1, 2, FOREGROUND);
+    Process p2 = newProcess("semTest2", (uint64_t) semTest2, 2, FOREGROUND);
+
+    newPCB(p1);
+    newPCB(p2);
+}
+
 
 int main()
 {
@@ -102,8 +138,11 @@ int main()
     print("Starting kernel main\n");
     sleep(2);
 
-    Process shellProcess = newProcess("shell", (uint64_t) sampleCodeModuleAddress, 10, FOREGROUND);
-    newPCB(shellProcess);
+    //Process shellProcess = newProcess("shell", (uint64_t) sampleCodeModuleAddress, 10, FOREGROUND);
+    //newPCB(shellProcess);
+
+    Process mainProcess = newProcess("mainProcess", (uint64_t) mainFunction, 5, FOREGROUND);
+    newPCB(mainProcess);
 
     //mFree(array);
     //goToUserland();

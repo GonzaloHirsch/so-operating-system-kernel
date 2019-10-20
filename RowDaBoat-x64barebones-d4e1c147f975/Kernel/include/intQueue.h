@@ -9,7 +9,7 @@
 
 typedef struct IntQueueCDT * IntQueue;
 
-IntQueue newQueue(size_t size);
+IntQueue newQueue(int size);
 void enqueue(IntQueue q, int value);
 int dequeue(IntQueue q);
 int isEmpty(IntQueue q);
