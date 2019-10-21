@@ -87,6 +87,10 @@ void deleteCurrentProcessPCB(){
     }
 }
 
+int getProcessCount() {
+    return thePCBList.processCount;
+}
+
 uint64_t getNextProcess(uint64_t currentProcessStack){
 
 

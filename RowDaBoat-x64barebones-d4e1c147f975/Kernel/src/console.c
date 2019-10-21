@@ -3,6 +3,7 @@
 //
 
 #include <console.h>
+#include "../include/scheduler.h"
 
 #define MAX_BUFFER 100
 
@@ -17,6 +18,10 @@ Color okForeground = {0, 255, 0};
 
 static Vector2 ZeroVector = {0,0};
 static Vector2 cursor = {0,0};
+
+static int isCurrentProcessForeground(){
+    return getProcessCount() == 0 || (getProcessVisibility(getCurrentProcess()) == FOREGROUND);
+}
 
 int get_max_line();
 
@@ -33,8 +38,10 @@ void init_console(){
     cursor.y = get_max_line()-1;
 }
 
+
 // Borrado de un caracter
 void backspace(){
+    if(!isCurrentProcessForeground()) return;
   if(cursor.y == 0 && cursor.x == 0){
     return;
   } else if(cursor.x == 0){
@@ -54,6 +61,7 @@ void new_line(){
 
 // Imprime un string finalizado con 0 con Color especifico.
 void printWithColors(Color chosenForeground, Color chosenBackground, char * str, va_list list){
+    if(!isCurrentProcessForeground()) return;
 
     int i = 0;
     while(str[i] != 0){
@@ -101,6 +109,7 @@ void printWithColors(Color chosenForeground, Color chosenBackground, char * str,
 
 // Imprimir un solo caracter
 void print_char(char c){
+    if(!isCurrentProcessForeground()) return;
     switch(c) {
         case '\n':
             new_line();
@@ -135,13 +144,14 @@ void print_char(char c){
 
 // Imprimir un string de N caracteres
 void print_N(const char * str, int length){
+    if(!isCurrentProcessForeground()) return;
     for(int i = 0; i < length; i++){
         print_char(str[i]);
     }
 }
 
 void print(char * str, ...){
-
+    if(!isCurrentProcessForeground()) return;
     va_list list;
     va_start(list, str);
     printWithColors(foreground, background, str, list);
@@ -162,6 +172,7 @@ void printError(char * str, ...){
 
 //Obsolete: Mover una linea para arriba
 void move_line_up(unsigned int line){
+    if(!isCurrentProcessForeground()) return;
     Color c = {0,0,0};
     Vector2 posGet = {0,line*CHAR_HEIGHT};
     Vector2 posDraw = {0,(line-1)*CHAR_HEIGHT};
@@ -181,12 +192,14 @@ void move_line_up(unsigned int line){
 }
 
 void move_all_up(){
+    if(!isCurrentProcessForeground()) return;
   move_all_lines_up();
     clear_line(get_max_line()-1);
 }
 
 // Borrar linea
 void clear_line(unsigned int line){
+    if(!isCurrentProcessForeground()) return;
     Vector2 posDraw = {0,line*CHAR_HEIGHT};
     for(int j = 0; j < CHAR_HEIGHT; j++){
         for (int i = 0; i < getResX(); ++i)
@@ -201,6 +214,7 @@ void clear_line(unsigned int line){
 
 // Limpiar pantalla
 void clear_console(){
+    if(!isCurrentProcessForeground()) return;
     Vector2 size = {getResX(), getResY()};
     draw_rect(ZeroVector, size, background);
     cursor.x = 0;

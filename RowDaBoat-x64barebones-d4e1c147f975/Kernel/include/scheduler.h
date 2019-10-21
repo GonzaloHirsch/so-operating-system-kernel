@@ -19,6 +19,7 @@ void deleteCurrentProcessPCB();
 // Switchea el proceso (segun el algoritmo del scheduler) y devuelve
 // el stack pointer del nuevo proceso [ver interrupts.asm]
 uint64_t getNextProcess();
+int getProcessCount();
 
 
 

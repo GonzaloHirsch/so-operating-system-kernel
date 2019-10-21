@@ -55,4 +55,8 @@ void listProcesses();
 
 void setProcessPriorityByPid(int pid, int priority);
 
+enum Visibility getProcessVisibility(Process process);
+
+enum Visibility getProcessVisibilityById(int pid);
+
 #endif //SO_TP2_PROCESS_H

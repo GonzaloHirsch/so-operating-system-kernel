@@ -208,3 +208,12 @@ void listProcesses(){
 void setProcessPriorityByPid(int pid, int priority){
     theProcessList[pid]->priority = priority;
 }
+
+enum Visibility getProcessVisibility(Process process) {
+    return process->isForeground;
+}
+
+enum Visibility getProcessVisibilityById(int pid) {
+    return theProcessList[pid]->isForeground;
+}
+

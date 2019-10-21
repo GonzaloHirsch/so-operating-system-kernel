@@ -163,18 +163,18 @@ void semTest4() {
 void mainFunction(){
 
     Process p1 = newProcess("semTest1", (uint64_t) semTest1, 2, FOREGROUND);
-    Process p2 = newProcess("semTest2", (uint64_t) semTest2, 2, FOREGROUND);
-    Process p3 = newProcess("semTest3", (uint64_t) semTest3, 2, FOREGROUND);
-    Process p4 = newProcess("semTest4", (uint64_t) semTest4, 2, FOREGROUND);
-    Process p5 = newProcess("semTest1", (uint64_t) semTest1, 2, FOREGROUND);
-    Process p6 = newProcess("semTest2", (uint64_t) semTest2, 2, FOREGROUND);
-    Process p7 = newProcess("semTest3", (uint64_t) semTest4, 2, FOREGROUND);
-    Process p8 = newProcess("semTest4", (uint64_t) semTest3, 2, FOREGROUND);
-    Process p9 = newProcess("semTest4", (uint64_t) semTest4, 2, FOREGROUND);
-    Process p10 = newProcess("semTest1", (uint64_t) semTest1, 2, FOREGROUND);
-    Process p11 = newProcess("semTest2", (uint64_t) semTest2, 2, FOREGROUND);
-    Process p12 = newProcess("semTest3", (uint64_t) semTest3, 2, FOREGROUND);
-    Process p13 = newProcess("semTest4", (uint64_t) semTest4, 2, FOREGROUND);
+    Process p2 = newProcess("semTest2", (uint64_t) semTest2, 2, BACKGROUND);
+    Process p3 = newProcess("semTest3", (uint64_t) semTest3, 2, BACKGROUND);
+    Process p4 = newProcess("semTest4", (uint64_t) semTest4, 2, BACKGROUND);
+    Process p5 = newProcess("semTest1", (uint64_t) semTest1, 2, BACKGROUND);
+    Process p6 = newProcess("semTest2", (uint64_t) semTest2, 2, BACKGROUND);
+    Process p7 = newProcess("semTest3", (uint64_t) semTest4, 2, BACKGROUND);
+    Process p8 = newProcess("semTest4", (uint64_t) semTest3, 2, BACKGROUND);
+    Process p9 = newProcess("semTest4", (uint64_t) semTest4, 2, BACKGROUND);
+    Process p10 = newProcess("semTest1", (uint64_t) semTest1, 2, BACKGROUND);
+    Process p11 = newProcess("semTest2", (uint64_t) semTest2, 2, BACKGROUND);
+    Process p12 = newProcess("semTest3", (uint64_t) semTest3, 2, BACKGROUND);
+    Process p13 = newProcess("semTest4", (uint64_t) semTest4, 2, BACKGROUND);
 
 
     newPCB(p1);
@@ -212,11 +212,11 @@ int main()
     print("Starting kernel main\n");
     sleep(2);
 
-    Process shellProcess = newProcess("shell", (uint64_t) sampleCodeModuleAddress, 10, FOREGROUND);
-    newPCB(shellProcess);
+    //Process shellProcess = newProcess("shell", (uint64_t) sampleCodeModuleAddress, 10, FOREGROUND);
+    //newPCB(shellProcess);
 
-    //Process mainProcess = newProcess("mainProcess", (uint64_t) mainFunction, 5, FOREGROUND);
-    //newPCB(mainProcess);
+    Process mainProcess = newProcess("mainProcess", (uint64_t) mainFunction, 5, FOREGROUND);
+    newPCB(mainProcess);
 
     //mFree(array);
     //goToUserland();
