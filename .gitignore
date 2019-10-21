@@ -14,3 +14,9 @@
 RowDaBoat-x64barebones-d4e1c147f975/Kernel/kernel.elf
 
 RowDaBoat-x64barebones-d4e1c147f975/Userland/0000-sampleCodeModule.elf
+
+
+RowDaBoat-x64barebones-d4e1c147f975/Kernel/.gdb_history
+RowDaBoat-x64barebones-d4e1c147f975/Kernel/.gdbinit
+RowDaBoat-x64barebones-d4e1c147f975/Kernel/breaks
+RowDaBoat-x64barebones-d4e1c147f975/Kernel/exceptionBreaks
