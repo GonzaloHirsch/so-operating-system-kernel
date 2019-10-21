@@ -109,15 +109,11 @@ uint64_t getNextProcess(uint64_t currentProcessStack){
                 for (state = getProcessState(thePCBList.currentPCB->process);
                      state != STATE_READY; state = getProcessState(thePCBList.currentPCB->process)) {
 
-
                     switch (state) {
-
-                        // si el proceso actual esta bloqueado, sigo con el proximo
                         case STATE_BLOCKED:
                             //print("blocked\n");
                             thePCBList.currentPCB = thePCBList.currentPCB->next;
                             break;
-                            // si el proceso actual esta terminado, hay que eliminarlo y seguir
                         case STATE_TERMINATED:
                             //print("Process %s : terminated\n", getProcessName(thePCBList.currentPCB->process));
                             deleteCurrentProcessPCB();
