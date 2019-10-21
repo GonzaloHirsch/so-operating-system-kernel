@@ -33,7 +33,8 @@ const char * commands[] = {
   "ps",
   "pipe",
   "sem",
-  "phylo"
+  "phylo",
+  "nice"
 };
 
 const char * commandsInfo[] = {
@@ -63,7 +64,7 @@ const char * commandsInfo[] = {
   "phylo - Starts the phylosophers problem, exit the problem with \'q\'"
 };
 
-const int commandCount = 24;
+const int commandCount = 25;
 
 int getCommand(char * cmd, int * index);
 void generate_invalid_opc(void);
@@ -173,7 +174,7 @@ int getCommand(char * cmd, int * index){
 //Switch para el comando elegido
 //Recibe el comando como un parametro
 void handle_command(int cmd, char * params){
-	int w;
+	int w, x;
 	switch(cmd){
 		case HELP_COMMAND:
 			display_help();
@@ -248,6 +249,10 @@ void handle_command(int cmd, char * params){
     case PHYLO_COMMAND:
       sys_new_process("philosophers_problem", (uint64_t) philosopherProblem, 1, FOREGROUND);
     break;
+	    case NICE_COMMAND:
+	        sscanf(params, "%d %d\n", &w, &x);
+	        sys_change_priority(w, x);
+	        break;
 	}
 	print("\n");
 }
