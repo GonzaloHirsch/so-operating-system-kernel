@@ -61,7 +61,8 @@ const char * commandsInfo[] = {
   "ps - Prints all active process information\n",
   "pipe - Prints all active pipes information\n",
   "sem - Prints all active semaphores information\n",
-  "phylo - Starts the phylosophers problem, exit the problem with \'q\'"
+  "phylo - Starts the phylosophers problem, exit the problem with \'q\'",
+  "nice - Changes the priority of a process\n"
 };
 
 const int commandCount = 25;
