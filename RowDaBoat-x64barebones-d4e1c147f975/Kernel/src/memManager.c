@@ -159,7 +159,7 @@ int freeMemory(Node actual, Node previous, void * ptr){
     }
     // Caso de ANTERIOR --> OCUPADO o NULL y SIGUIENTE --> LIBRE
     //else if ((previous == NULL || (previous != NULL && actual->next != NULL)) && previous->state == NOT_FREE && actual->next->state == FREE){
-    else if ((previous == NULL || (previous != NULL && previous->state == NOT_FREE)) && actual->next!= NULL && actual->next->state == FREE){
+    else if ((previous == NULL || (previous->state == NOT_FREE)) && actual->next!= NULL && actual->next->state == FREE){
       actual->size = actual->size + actual->next->size + sizeof(struct t_node);
       actual->next = actual->next->next;
       actual->state = FREE;
