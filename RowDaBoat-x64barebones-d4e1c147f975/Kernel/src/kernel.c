@@ -22,6 +22,7 @@
 #include "../include/console.h"
 #include "../include/time.h"
 #include "../include/semaphore.h"
+#include "../include/intQueue.h"
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -102,8 +103,10 @@ void semTest1(){
 
 
         semWait(testSem);
-        print("AAAAAAAAA");
-        sleep(2000);
+        for(int i = 0; i<20; i++){
+            print("Test1: %d\n", i);
+        }
+        print("\n");
         semPost(testSem);
     }
 }
@@ -115,8 +118,10 @@ void semTest2(){
 
 
         semWait(testSem);
-        print("BBBBBBBBB");
-        sleep(2000);
+        for(int i = 0; i<10; i++){
+            print("Test2: %d\n", i);
+        }
+        print("\n");
         semPost(testSem);
     }
 }
@@ -130,10 +135,22 @@ void mainFunction(){
     newPCB(p2);
 }
 
+void testIntQueue(){
+    IntQueue q = newQueue(35);
+    for(int i = 0; i<37; i++){
+        enqueue(q, i);
+    }
+    for(int i = 0; i<37; i++){
+        print("%d - ", dequeue(q));
+    }
+    print("\n");
+}
 
 int main()
 {
 
+
+    testIntQueue();
 
     print("Starting kernel main\n");
     sleep(2);

@@ -116,6 +116,7 @@ _irq80Handler:
     iretq
 
 forceChangeProcess:
+    ;sti
     int 0x20 ;todo corregir esto
     ret
 

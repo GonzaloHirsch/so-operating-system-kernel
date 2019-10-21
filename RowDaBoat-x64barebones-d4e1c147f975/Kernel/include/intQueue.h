@@ -12,6 +12,7 @@ typedef struct IntQueueCDT * IntQueue;
 IntQueue newQueue(int size);
 void enqueue(IntQueue q, int value);
 int dequeue(IntQueue q);
+int peep(IntQueue q);
 int isEmpty(IntQueue q);
 void freeQueue(IntQueue q);
 
