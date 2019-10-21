@@ -74,6 +74,7 @@ void eat(int i){
 
 void check(int i){
   //print("CHECK\n");
+  printf("%d %d", i, actualPhilosopherCount);
   if (state[i] == HUNGRY && state[LEFT(i, actualPhilosopherCount)] != EATING && state[RIGHT(i, actualPhilosopherCount)] != EATING){
     //print("CHECK OK\n");
     state[i] = EATING;
@@ -90,9 +91,11 @@ void philosopherProblem(){
 
   for (int i = 0; i < BASE_PHILOSOPHER_COUNT; i++){
     goToSleep(30);
+    printf("About to create %d", i);
     addPhilosopher();
   }
 
+  print("CREATED");
   int res;
 
   while(problemRunning){
@@ -126,12 +129,12 @@ int addPhilosopher(){
     return -1;
   }
   sys_wait_sem(mutex);
+  printf("creating %d", actualPhilosopherCount);
   char num[3];
   itoa(actualPhilosopherCount, num, 10);
   char name[6 + 3 + 1] = {0};
   concat(name, "philo_");
   concat(name + 6, num);
-
   actualPhilosopherCount++;
   state[actualPhilosopherCount - 1] = THINKING;
   sems[actualPhilosopherCount - 1] = sys_create_sem(name);
