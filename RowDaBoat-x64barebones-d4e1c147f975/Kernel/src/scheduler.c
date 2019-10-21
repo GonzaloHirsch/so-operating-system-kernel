@@ -93,14 +93,10 @@ uint64_t getNextProcess(uint64_t currentProcessStack){
 
         if (thePCBList.processCount > 1) {
 
-            //if (thePCBList.currentPCB->currentPriority < getPriority(thePCBList.currentPCB->process)) {
-            if(0){
-                thePCBList.currentPCB->currentPriority++;
-                return currentProcessStack;
-            }
-            else{
 
-                thePCBList.currentPCB->currentPriority=0; //resetteo la cantidad de cuantos a 0
+            {
+
+
 
                 if (getProcessState(thePCBList.currentPCB->process) != STATE_TERMINATED) {
                     setStackPointer(thePCBList.currentPCB->process, currentProcessStack);
@@ -128,10 +124,16 @@ uint64_t getNextProcess(uint64_t currentProcessStack){
                             break;
                         case STATE_RUNNING:
                             //print("Process %s : running\n", getProcessName(thePCBList.currentPCB->process));
-
+                            if (thePCBList.currentPCB->currentPriority < getPriority(thePCBList.currentPCB->process)) {
+                                //if(0){
+                                thePCBList.currentPCB->currentPriority++;
+                                return currentProcessStack;
+                            }
+                            else{
+                                thePCBList.currentPCB->currentPriority=0; //resetteo la cantidad de cuantos a 0
                                 setProcessState(thePCBList.currentPCB->process, STATE_READY);
                                 thePCBList.currentPCB = thePCBList.currentPCB->next;
-
+                                }
                             break;
                         default:
                             break;
