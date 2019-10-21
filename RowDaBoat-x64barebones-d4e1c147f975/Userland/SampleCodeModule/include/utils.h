@@ -25,6 +25,8 @@ int scanf(const char * fmt, ...);
 
 char* itoa(int value, char* buffer, int base);
 
+int concat(char * to, const char * from);
+
 int atoi(const char* buffer, int len);
 
 int isNumeric(char c);

@@ -74,6 +74,18 @@ void sys_list_processes(){
     _int80(LIST_PROCESSES, 0,0,0,0,0);
 }
 
+sem * sys_create_sem(const char * name){
+		return (sem *)_int80(CREATE_SEM, (uint64_t) name,0,0,0,0);
+}
+
+void sys_post_sem(const sem * semaphore){
+		_int80(POST_SEM, (uint64_t) semaphore,0,0,0,0);
+}
+
+void sys_wait_sem(const sem * semaphore){
+		_int80(WAIT_SEM, (uint64_t) semaphore,0,0,0,0);
+}
+
 void sys_kill(int pid){
     _int80(KILL_PROCESS, pid, 0, 0, 0, 0);
 }

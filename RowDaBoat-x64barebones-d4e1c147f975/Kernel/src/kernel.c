@@ -212,11 +212,11 @@ int main()
     print("Starting kernel main\n");
     sleep(2);
 
-    //Process shellProcess = newProcess("shell", (uint64_t) sampleCodeModuleAddress, 10, FOREGROUND);
-    //newPCB(shellProcess);
+    Process shellProcess = newProcess("shell", (uint64_t) sampleCodeModuleAddress, 10, FOREGROUND);
+    newPCB(shellProcess);
 
-    Process mainProcess = newProcess("mainProcess", (uint64_t) mainFunction, 5, FOREGROUND);
-    newPCB(mainProcess);
+    //Process mainProcess = newProcess("mainProcess", (uint64_t) mainFunction, 5, FOREGROUND);
+    //newPCB(mainProcess);
 
     //mFree(array);
     //goToUserland();
