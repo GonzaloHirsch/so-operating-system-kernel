@@ -20,6 +20,106 @@ void putChar(char c){
 	sys_write(0, &c, 1);
 }
 
+int sscanf(const char * src, const char * fmt, ...){
+
+    va_list list;
+    va_start(list, fmt);
+
+
+    char str[MAX_BUFFER];       //donde se almacena lo que el usuario escribe
+    int len = 0;                //la longitud del str
+    char key = 0;               //current key
+
+    //Le habilita al usuario a escribir hasta el enter, solo caracteres mayores a ascii 10
+
+    while((key = *(src++)) != '\n'){
+        if (key == '\b'){
+            str[len - 1] = 0;
+            len--;
+        } else {
+            if (key >= 10 && len < MAX_BUFFER){
+                str[len++] = key;
+                putChar(key);
+            }
+        }
+    }
+
+    str[len]=0;
+    int i = 0;          //el cursor para el string de fmt
+    int pos = 0;        //el cursor para el string str recien obtenido
+    int matches = 0;    //cant de params que matchean
+    int j = 0;          //cursor para string auxiliar
+
+    int aux;
+
+    //Lee el formato
+    while(fmt[i] != 0 && str[pos]!=0){
+        if(fmt[i] == '%'){
+            switch (fmt[i+1]) {
+
+                case 'd':
+                    matches++;
+                    int * ptrD = va_arg(list, int*);
+                    char num[15] = {0};
+                    j = 0;
+                    //Itera el string que fue input
+                    while(str[pos] != ' ' && str[pos] != '\n' && str[pos] != 0 && str[pos] != '\t'){
+                        if (isNumeric(str[pos])){
+                            num[j++] = str[pos++];
+                        } else {
+                            printf("%s\n", str);
+                            aux = atoi(num, j);
+                            *ptrD = aux;
+                            return -1;
+                        }
+                    }
+                    aux = atoi(num, j);
+                    *ptrD = aux;
+                    i += 2;
+                    break;
+
+                case 's':
+                    matches++;
+                    char * ptrS = va_arg(list, char*);
+                    j = 0;
+                    char buffer[MAX_BUFFER] = {0};
+
+                    while(str[pos] != ' ' && str[pos] != '\n' && str[pos] != 0 && str[pos] != '\t'){
+                        buffer[j++] = str[pos++];
+                    }
+                    buffer[j]=0; //me aseguro de que termino el str
+                    strcpy(ptrS, buffer);
+                    i += 2;
+                    break;
+
+                case 'c':
+                    matches++;
+                    char * ptrC = va_arg(list, char*);
+                    j = 0;
+
+                    if(str[pos] != ' ' && str[pos] != '\n' && str[pos] != 0 && str[pos] != '\t'){
+                        *ptrC = *(str + pos);
+                        pos++;
+                    }
+
+                    i += 2;
+                    break;
+
+                default:
+
+                    break;
+
+            }
+        }
+        else {
+            if(str[pos++]==fmt[i++]);
+            else return matches;
+        }
+    }
+
+    return matches;
+}
+
 int scanf(const char * fmt, ...){
     va_list list;
     va_start(list, fmt);

@@ -34,8 +34,8 @@ void testFunction3(){
 
 void processCreationTest(){
     print("*****Process Creation Test*****");
-    int pid1 = sys_new_process("function1", (uint64_t) &testFunction1, 3, FOREGROUND);
-    int pid2 = sys_new_process("function2", (uint64_t) &testFunction2, 2, FOREGROUND);
-    int pid3 = sys_new_process("function3", (uint64_t) &testFunction3, 1, FOREGROUND);
+    int pid1 = sys_new_process("function1", (uint64_t) &testFunction1, 3, BACKGROUND);
+    int pid2 = sys_new_process("function2", (uint64_t) &testFunction2, 2, BACKGROUND);
+    int pid3 = sys_new_process("function3", (uint64_t) &testFunction3, 1, BACKGROUND);
 
 }

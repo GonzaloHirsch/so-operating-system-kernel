@@ -65,7 +65,7 @@ const char * commandsInfo[] = {
 
 const int commandCount = 24;
 
-int getCommand(char * cmd);
+int getCommand(char * cmd, int * index);
 void generate_invalid_opc(void);
 int generate_zero_division(void);
 void display_credits(void);
@@ -85,6 +85,8 @@ uint64_t * init_shell(void){
 	//Tecla que se toca
 	char key;
 
+	int index;
+
 	//while para la shell y su funcionamiento
 	while(command != SHUTDOWN_COMMAND){
 		key = getKey();
@@ -96,7 +98,7 @@ uint64_t * init_shell(void){
 			//Imprime una linea nueva para que se vea bien
 			print("\n");
 			//Llama a la funcion para manejar el comando
-			handle_command(command);
+			handle_command(command, NULL);
 			//Hace un reset del buffer de comando volviendo a la posicion 0
 			commandBuffPos = 0;
 			//Imprime el usuario de nuevo
@@ -110,9 +112,9 @@ uint64_t * init_shell(void){
 			//Agrega terminacion en 0 al buffer de comando
 			commandBuff[commandBuffPos] = 0;
 			//Recupera el comando que fue elegido
-			command = getCommand(commandBuff);
+			command = getCommand(commandBuff, &index);
 			//Llama a la funcion que decide como actuar en frente del comando
-			handle_command(command);
+			handle_command(command, commandBuff + index);
 			//Hace un reset del buffer de comando volviendo a la posicion 0
 			commandBuffPos = 0;
 			//Vuelve a imprimir el usuario para que se vea bien
@@ -144,12 +146,24 @@ uint64_t * init_shell(void){
 	return (uint64_t *) RETURN_ADRESS;
 }
 
-int getCommand(char * cmd){
+int strtokcpy(char * dst, const char * src, char delim){
+
+    int i;
+    for(i = 0; src[i] && src[i] != '\n' && src[i] != delim; i++){
+        dst[i] = src[i];
+    }
+    dst[i] = 0;
+    return i+1;
+}
+
+int getCommand(char * cmd, int * index){
 	//Itero el array de comandos para ver cual es el que se elige
 	int result = INVALID_COMMAND;
+	char nameBuff[MAX_NAME_SIZE];
+	*index = strtokcpy(nameBuff, cmd, ' ');
 	for (int i = 0; i < commandCount && result == INVALID_COMMAND; i++){
 		//En el caso de que sean iguales
-		if (!strcmp(cmd, commands[i])){
+		if (!strcmp(nameBuff, commands[i])){
 			result = i;
 		}
 	}
@@ -158,7 +172,7 @@ int getCommand(char * cmd){
 
 //Switch para el comando elegido
 //Recibe el comando como un parametro
-void handle_command(int cmd){
+void handle_command(int cmd, char * params){
 	int w;
 	switch(cmd){
 		case HELP_COMMAND:
@@ -217,17 +231,17 @@ void handle_command(int cmd){
       printf("%d\n", sys_get_pid());
     break;
     case KILL_COMMAND:
-      scanf("%d\n", &w);
+      sscanf(params, "%d\n", &w);
       sys_kill(w);
       printf("Killed Process %d\n", w);
     break;
     case BLOCK_COMMAND:
-      scanf("%d\n", &w);
+      sscanf(params, "%d\n", &w);
       sys_block(w);
       printf("Blocked Process %d\n", w);
 		break;
     case UNBLOCK_COMMAND:
-      scanf("%d\n", &w);
+      sscanf(params,"%d\n", &w);
       sys_unblock(w);
       printf("Unblocked Process %d\n", w);
 		break;

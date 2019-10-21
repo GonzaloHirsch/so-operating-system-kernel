@@ -16,12 +16,15 @@
 #define YEAR 6
 #define CENTURY 7
 
+#define NULL 0
+
 #define MAX_BUFFER 100
 
 char getChar(void);
 void putChar(char c);
 void printf(char * str, ...);
 int scanf(const char * fmt, ...);
+int sscanf(const char * src, const char * fmt, ...);
 
 char* itoa(int value, char* buffer, int base);
 

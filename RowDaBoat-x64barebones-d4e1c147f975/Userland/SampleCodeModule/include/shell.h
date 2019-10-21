@@ -10,6 +10,7 @@
 #include "philosophers.h"
 
 #define MAX_BUFF_SIZE 750
+#define MAX_NAME_SIZE 30
 
 //Constantes para los comandos
 #define INVALID_COMMAND -1
@@ -43,7 +44,7 @@
 
 uint64_t * init_shell(void);
 
-void handle_command(int cmd);
+void handle_command(int cmd, char * params);
 
 void display_welcome_message(void);
 
