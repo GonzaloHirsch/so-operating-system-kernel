@@ -22,7 +22,7 @@ IntQueue newQueue(int size) {
 }
 
 void enqueue(IntQueue q, int value) {
-    if(q->head == q->tail+1){
+    if(q->head == (q->tail+1)%q->size){
         return;
     }
     else {
@@ -32,10 +32,15 @@ void enqueue(IntQueue q, int value) {
 }
 
 int dequeue(IntQueue q) {
-    if(isEmpty(q)) return 0;
+    if(isEmpty(q)) return -1;
     int aux = q->queue[q->head];
     q->head = (q->head + 1)%(q->size);
     return aux;
+}
+
+int peep(IntQueue q){
+    if(!isEmpty(q)) return q->queue[q->head];
+    return -1;
 }
 
 int isEmpty(IntQueue q) {

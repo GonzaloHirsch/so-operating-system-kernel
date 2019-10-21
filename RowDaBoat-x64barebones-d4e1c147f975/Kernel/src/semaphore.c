@@ -8,6 +8,7 @@
 #include "../include/scheduler.h"
 #include "../include/console.h"
 #include "../include/lib.h"
+#include "../include/interrupts.h"
 
 extern forceChangeProcess();
 
@@ -61,25 +62,37 @@ int semGetValue(const sem *semaphore) {
 }
 
 void semWait(const sem *semaphore) {
-    if(theSemaphoreList[*semaphore]->value <= 0){
+    //_cli();
+    if(theSemaphoreList[*semaphore]->value <= 0 || !isEmpty(theSemaphoreList[*semaphore]->waitingProcesses)){
+
+        setProcessState(getCurrentProcess(), STATE_BLOCKED);
         int pid = getProcessPid(getCurrentProcess());
         enqueue(theSemaphoreList[*semaphore]->waitingProcesses, pid);
-        setProcessStateByPid(pid, STATE_BLOCKED);
         forceChangeProcess();
+        theSemaphoreList[*semaphore]->value--;
+        dequeue(theSemaphoreList[*semaphore]->waitingProcesses);
     }
+
     //print("decreasing semaphore, current process: %s\n", getProcessName(getCurrentProcess()));
-    theSemaphoreList[*semaphore]->value--;
+    else{theSemaphoreList[*semaphore]->value--;}
+    //_sti();
+    //print("current semaphore value: %d\n", theSemaphoreList[*semaphore]->value);
 }
 
 void semPost(const sem *semaphore) {
-
+    //_cli();
     Semaphore aux = theSemaphoreList[*semaphore];
-    if(aux->value<=0 && !isEmpty(aux->waitingProcesses)){
-        int pid = dequeue(aux->waitingProcesses);
+    if(!isEmpty(aux->waitingProcesses)){
+        int pid = peep(aux->waitingProcesses);
         setProcessStateByPid(pid, STATE_READY);
+        aux->value++;
+        //forceChangeProcess();
     }
+
     //print("increasing semaphore, current process: %s\n", getProcessName(getCurrentProcess()));
-    aux->value++;
+    else{aux->value++;}
+    //_sti();
+    //print("current semaphore value: %d\n", theSemaphoreList[*semaphore]->value);
 }
 
 void printAllSemaphores() {
