@@ -11,7 +11,7 @@
 #include <console.h>
 #include <time.h>
 
-extern void _force_change_process();
+extern void forceChangeProcess();
 
 //Settea el stack del proceso (con registros, frame de interrupt)
 //Devuelve el current rsp del proceso
@@ -88,7 +88,7 @@ Process newProcess(char *processName, uint64_t functionAddress, int priority, en
     aux->pid = pidCounter;
     aux->priority = priority;
     aux->isForeground = isForeground;
-    //aux->ppid = (pidCounter!=0) ? getCurrentProcess()->pid : 0;
+    aux->ppid = (pidCounter>0) ? getCurrentProcess()->pid : -1;
     aux->functionAddress = functionAddress;
     //aux->stackBaseAddress = (uint64_t) mem_alloc(PROCESS_STACK_SIZE);
     aux->stackBaseAddress = (uint64_t) mAlloc(PROCESS_STACK_SIZE);
@@ -135,14 +135,7 @@ static void entryPoint(uint64_t functionAddress, uint64_t processPtr){
     // setteo el estado del proceso como terminado una vez finalizada
     // la ejecucion de la funcion
     ((Process)processPtr)->state = STATE_TERMINATED;
-    for(int i =0; i<50; i++){
-        print("fin del programa\n");
-    }
-    //_force_change_process();
-    sleep(2000);
-    deleteCurrentProcessPCB();
-    print("changed Process\n");
-    sleep(2000);
+    forceChangeProcess();
 }
 
 // destructors

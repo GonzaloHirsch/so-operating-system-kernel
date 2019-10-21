@@ -1,4 +1,5 @@
 #include <utils.h>
+#include "../include/syscalls.h"
 
 // ----------------------------------------------------------------------------------
 // Este modulo es el modulo de utilitarios

@@ -123,9 +123,12 @@ void handle_sys_draw_pixel(int x, int y, int r, int g, int b){
 //El fd es el File Descriptor, no lo utilizamos porque no es necesario en nuestro caso
 //Esta para que se pueda implementar en el futuro
 void handle_sys_read(int fd, char * buf, int length){
-	for (int i = 0; i < length; i++){
+    //int pid = getProcessPid(getCurrentProcess());
+    //setProcessStateByPid(pid, STATE_BLOCKED);
+    for (int i = 0; i < length; i++){
 		*(buf + i) = getChar();
 	}
+    //setProcessStateByPid(pid, STATE_READY);
 }
 
 //Handler para la system SLEEP
