@@ -20,3 +20,5 @@ RowDaBoat-x64barebones-d4e1c147f975/Kernel/.gdb_history
 RowDaBoat-x64barebones-d4e1c147f975/Kernel/.gdbinit
 RowDaBoat-x64barebones-d4e1c147f975/Kernel/breaks
 RowDaBoat-x64barebones-d4e1c147f975/Kernel/exceptionBreaks
+*/.gdb_history
+*/.gdbinit
