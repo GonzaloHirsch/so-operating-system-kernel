@@ -1,5 +1,7 @@
 #include <philosophers.h>
 
+// Implementacion adapatada a partir de la de Tanenbaum
+
 #define LEFT(i,c) ((i - 1)%c)
 #define RIGHT(i,c) ((i + 1)%c)
 
@@ -24,7 +26,8 @@ void printTable();
 
 void philosopher(){
   sys_wait_sem(mutex);
-  int i = actualPhilosopherCount;
+  int i = actualPhilosopherCount - 1;
+  //printf("CREATE %d", i);
   sys_post_sem(mutex);
   //print("Post mutex\n");
   while (problemRunning){
@@ -40,6 +43,7 @@ void philosopher(){
 void takeForks(int i){
   sys_wait_sem(mutex);
   state[i] = HUNGRY;
+  //printf("TAKE %d", i);
   //print("TAKE\n");
   printTable();
   //print("CHECK SELF\n");
@@ -98,12 +102,16 @@ void philosopherProblem(){
         res = addPhilosopher();
         if (res == -1){
           print("Can\'t add another philosopher. Maximum 10 philosophers.\n");
+        } else {
+          print("A new philosopher joined!\n");
         }
       break;
       case 'd':
         res = removePhilosopher();
         if (res == -1){
           print("Can\'t remove another philosopher. Minimum 5 philosophers.\n");
+        } else {
+          print("One philosopher has left!\n");
         }
       break;
       case 'q':
@@ -117,17 +125,19 @@ int addPhilosopher(){
   if (actualPhilosopherCount + 1 > MAX_PHILOSOPHER_COUNT){
     return -1;
   }
-  actualPhilosopherCount++;
+  sys_wait_sem(mutex);
   char num[3];
   itoa(actualPhilosopherCount, num, 10);
   char name[6 + 3 + 1] = {0};
   concat(name, "philo_");
   concat(name + 6, num);
 
+  actualPhilosopherCount++;
   state[actualPhilosopherCount - 1] = THINKING;
   sems[actualPhilosopherCount - 1] = sys_create_sem(name);
   int pid = sys_new_process(name, (uint64_t) philosopher, 2, FOREGROUND);
   philosophers[actualPhilosopherCount - 1] = pid;
+  sys_post_sem(mutex);
   return 0;
 }
 
@@ -135,9 +145,11 @@ int removePhilosopher(){
   if (actualPhilosopherCount - 1 < BASE_PHILOSOPHER_COUNT){
     return -1;
   }
+  sys_wait_sem(mutex);
   actualPhilosopherCount--;
   sys_kill(philosophers[actualPhilosopherCount]);
   philosophers[actualPhilosopherCount] = 0;
+  sys_post_sem(mutex);
   return 0;
 }
 
