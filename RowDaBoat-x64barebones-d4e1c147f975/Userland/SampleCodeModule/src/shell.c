@@ -175,7 +175,7 @@ int getCommand(char * cmd, int * index){
 //Switch para el comando elegido
 //Recibe el comando como un parametro
 void handle_command(int cmd, char * params){
-	int w, x;
+	int w, x, shellPID;
 	switch(cmd){
 		case HELP_COMMAND:
 			display_help();
@@ -248,7 +248,9 @@ void handle_command(int cmd, char * params){
       printf("Unblocked Process %d\n", w);
 		break;
     case PHYLO_COMMAND:
+      shellPID = sys_get_pid();
       sys_new_process("philosophers_problem", (uint64_t) philosopherProblem, 1, FOREGROUND);
+      sys_block(shellPID);
     break;
 	    case NICE_COMMAND:
 	        sscanf(params, "%d %d\n", &w, &x);
@@ -278,6 +280,9 @@ void display_welcome_message(void){
 	print("													Trabajo Practico Especial\n");
 	print("												  Arquitectura de Computadoras\n");
 	print("											 		1er Cuatrimestre - 2019\n\n");
+  print("											 		   Trabajo Practico\n");
+  print("											 		  Sistemas Operativos\n");
+  print("											 		2do Cuatrimestre - 2019\n\n");
 	print("													  Welcome to arquiOS\n");
 	print("										Type \"help\" to discover all available commands\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 }
@@ -286,21 +291,6 @@ void display_help(void){
 	for (int i = 0; i < commandCount; i++){
 		print(commandsInfo[i]);
 	}
-	/*
-	print("help - Displays available commands and their usage\n");
-	print("snake - Initiates the snake game\n");
-	print("shutdown - Shuts down the system\n");
-	print("time - Displays current system time\n");
-	print("date - Displays current system date\n");
-	print("beep - Makes the system go Beep!\n");
-	print("sleep - Makes the system sleep for 5 seconds\n");
-  print("div - Performs a division by zero\n");
-  print("invalid - Executes an invalid operation\n");
-  print("clear - Clears the screen\n");
-	print("credits - Displays info about the group\n");
-	print("starwars - Makes a cool Star Wars sound!\n");
-	print("mario - Makes a cool Mario sound!\n");
-	*/
 }
 
 void display_time(void){
