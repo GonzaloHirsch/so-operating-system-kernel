@@ -1,5 +1,6 @@
 #include <memManager.h>
 #include <memManager.h>
+#include "../include/memManager.h"
 
 /*
   Estructura del tipo Nodo
@@ -156,8 +157,9 @@ int freeMemory(Node actual, Node previous, void * ptr){
       previous->next = actual->next->next;
       return 1;
     }
-    // Caso de ANTERIOR --> OCUPADO o NULL y SIGUIENTE --> LIBRE 
-    else if ((previous == NULL || (previous != NULL  && previous->state == NOT_FREE ))&& actual->next != NULL && actual->next->state == FREE){
+    // Caso de ANTERIOR --> OCUPADO o NULL y SIGUIENTE --> LIBRE
+    //else if ((previous == NULL || (previous != NULL && actual->next != NULL)) && previous->state == NOT_FREE && actual->next->state == FREE){
+    else if ((previous == NULL || (previous->state == NOT_FREE)) && actual->next!= NULL && actual->next->state == FREE){
       actual->size = actual->size + actual->next->size + sizeof(struct t_node);
       actual->next = actual->next->next;
       actual->state = FREE;

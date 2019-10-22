@@ -6,12 +6,13 @@
 #include "../include/memManager.h"
 #include "../include/lib.h"
 #include "../include/scheduler.h"
+#include "../include/intQueue.h"
 #include <lib.h>
 #include <stdint.h>
 #include <console.h>
 #include <time.h>
 
-extern void _force_change_process();
+extern void forceChangeProcess();
 
 //Settea el stack del proceso (con registros, frame de interrupt)
 //Devuelve el current rsp del proceso
@@ -25,10 +26,12 @@ struct ProcessCDT{
     int ppid;
     int priority;
     enum State state;
+    enum Visibility isForeground;
     uint64_t stackBaseAddress;
     uint64_t stackPointer;
     uint64_t functionAddress;
     char name[MAX_NAME_LENGTH];
+    IntQueue semaphores;
 };
 
 typedef struct ProcessStack{
@@ -62,29 +65,37 @@ typedef struct ProcessStack{
 } ProcessStack;
 
 static int pidCounter;
+static Process foregroundProcess;
+static Process theProcessList[MAX_PROCESS_COUNT];
 
 //todo esto esta ok
 void initProcesses(){
     pidCounter = 0;
+    foregroundProcess = NULL;
+    for(int i = 0; i<MAX_PROCESS_COUNT; i++){
+        theProcessList[i] = NULL;
+    }
 
     return;
 }
 
-Process newProcess(char *processName, uint64_t functionAddress, int priority) {
+Process newProcess(char *processName, uint64_t functionAddress, int priority, enum Visibility isForeground) {
 
 
     Process aux = (Process) mAlloc(sizeof(struct ProcessCDT));
     strcpy(aux->name, processName);
     //todo tests
-    print(aux->name);
 
     aux->pid = pidCounter;
     aux->priority = priority;
-    //aux->ppid = (pidCounter!=0) ? getCurrentProcess()->pid : 0;
+    aux->isForeground = isForeground;
+    aux->ppid = (pidCounter>0) ? getCurrentProcess()->pid : -1;
     aux->functionAddress = functionAddress;
     aux->stackBaseAddress = (uint64_t) mAlloc(PROCESS_STACK_SIZE);
     aux->stackPointer = initializeProcessStack(aux->stackBaseAddress, functionAddress, (uint64_t) aux);
     aux->state = STATE_READY;
+    theProcessList[pidCounter++] = aux;
+    aux->semaphores = newQueue(MAX_SEMAPHORE_COUNT);
     return aux;
 }
 
@@ -125,20 +136,14 @@ static void entryPoint(uint64_t functionAddress, uint64_t processPtr){
     // setteo el estado del proceso como terminado una vez finalizada
     // la ejecucion de la funcion
     ((Process)processPtr)->state = STATE_TERMINATED;
-    for(int i =0; i<50; i++){
-        print("fin del programa\n");
-    }
-    //_force_change_process();
-    sleep(2000);
-    deleteCurrentProcessPCB();
-    print("changed Process\n");
-    sleep(2000);
+    forceChangeProcess();
 }
 
 // destructors
 
 void removeProcess(Process process){
     // se libera el espacio reservado para el stack
+    theProcessList[process->pid] = NULL;
     mFree((void*) process->stackBaseAddress);
     // se libera el espacio reservado para el ADT de Process
     mFree(process);
@@ -162,10 +167,60 @@ void setProcessState(Process process, enum State state){
     process->state = state;
 }
 
-int getPid(Process process){
+void setProcessStateByPid(int pid, enum State state){
+    theProcessList[pid]->state = state;
+}
+
+int getProcessPid(Process process){
     return process->pid;
 }
 
 void setPid(Process process, int pid){
     process->pid = pid;
 }
+
+char * getProcessName(Process process){
+    return process->name;
+}
+
+int getPriority(Process process){
+    return process->priority;
+}
+
+void setPriorityByPid(int pid, int priority){
+    theProcessList[pid]->priority = priority;
+}
+
+int getPid(){
+   return getCurrentProcess()->pid;
+}
+
+void listProcesses(){
+    Process aux;
+    for(int i = 0; i<pidCounter; i++){
+        if((aux=theProcessList[i])!=NULL){
+            print("Process %s\n    PID: %d\n    Priority: %d\n    StackPointer: %d\n    Foreground? %s\n", aux->name, aux->pid, aux->stackPointer, (aux->isForeground) ? "Yes" : "No");
+        }
+    }
+}
+
+void setProcessPriorityByPid(int pid, int priority){
+    theProcessList[pid]->priority = priority;
+}
+
+enum Visibility getProcessVisibility(Process process) {
+    return process->isForeground;
+}
+
+enum Visibility getProcessVisibilityById(int pid) {
+    return theProcessList[pid]->isForeground;
+}
+
+void addSemaphoreById(int pid, sem semaphore) {
+    enqueue(theProcessList[pid]->semaphores, semaphore);
+}
+
+int removeSemaphoreById(int pid, sem semaphore) {
+    return findAndDequeue(theProcessList[pid]->semaphores, semaphore);
+}
+

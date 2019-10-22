@@ -4,6 +4,8 @@
 #include <console.h>
 #include <processes.h>
 #include <scheduler.h>
+#include "../include/processes.h"
+#include "../include/scheduler.h"
 
 extern void hang();
 extern void over_clock(int rate);
@@ -27,6 +29,14 @@ void handle_sys_clear_console(void);
 void handle_sys_draw_pixel(int x, int y, int r, int g, int b);
 
 int handle_sys_new_process(char * name, void * functionAddress, int priority);
+
+void handle_sys_kill_process(int pid);
+
+void handle_sys_change_priority(int pid, int priority);
+
+void handle_sys_block_process(int pid);
+
+void handle_sys_unblock_process(int pid);
 
 //Handler de la llamada a la int 80
 uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
@@ -66,6 +76,22 @@ uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, u
         break;
         case NEW_PROCESS:
             return handle_sys_new_process(rsi, rdx, 1);
+        case GET_PID:
+            return handle_sys_get_pid();
+        case LIST_PROCESSES:
+            handle_sys_list_processes();
+        break;
+        case KILL_PROCESS:
+            handle_sys_kill_process(rsi);
+        break;
+        case CHANGE_PRIORITY:
+            handle_sys_change_priority(rsi, rdx);
+        break;
+        case BLOCK_PROCESS:
+            handle_sys_block_process(rsi);
+        break;
+        case UNBLOCK_PROCESS:
+            handle_sys_unblock_process(rsi);
         break;
 	}
 	return 0;
@@ -97,9 +123,12 @@ void handle_sys_draw_pixel(int x, int y, int r, int g, int b){
 //El fd es el File Descriptor, no lo utilizamos porque no es necesario en nuestro caso
 //Esta para que se pueda implementar en el futuro
 void handle_sys_read(int fd, char * buf, int length){
-	for (int i = 0; i < length; i++){
+    //int pid = getProcessPid(getCurrentProcess());
+    //setProcessStateByPid(pid, STATE_BLOCKED);
+    for (int i = 0; i < length; i++){
 		*(buf + i) = getChar();
 	}
+    //setProcessStateByPid(pid, STATE_READY);
 }
 
 //Handler para la system SLEEP
@@ -128,8 +157,33 @@ int handle_sys_time(uint64_t selector){
 }
 
 int handle_sys_new_process(char * name, void * functionAddress, int priority){
-    Process nP = newProcess(name, functionAddress, priority);
+    Process nP = newProcess(name, functionAddress, priority, FOREGROUND);
     //todo mejorar esto
     newPCB(nP);
-    return getPid(nP);
+    return getProcessPid(nP);
+}
+
+int handle_sys_get_pid(){
+    return getPid();
+}
+
+int handle_sys_list_processes(){
+    listProcesses();
+}
+
+void handle_sys_kill_process(int pid){
+    setProcessStateByPid(pid, STATE_TERMINATED);
+
+}
+
+void handle_sys_change_priority(int pid, int priority){
+    setProcessPriorityByPid(pid, priority);
+}
+
+void handle_sys_block_process(int pid) {
+    setProcessStateByPid(pid, STATE_BLOCKED);
+}
+
+void handle_sys_unblock_process(int pid){
+    setProcessStateByPid(pid, STATE_READY);
 }

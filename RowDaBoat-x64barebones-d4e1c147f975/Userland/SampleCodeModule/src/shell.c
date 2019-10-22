@@ -1,4 +1,6 @@
 #include <shell.h>
+#include "../include/syscallTests.h"
+#include "../include/syscalls.h"
 
 // ----------------------------------------------------------------------------------
 // Este modulo es el modulo principal de Userland
@@ -6,27 +8,74 @@
 // Se hace todo el manejo de los comandos
 // ----------------------------------------------------------------------------------
 
-//Constantes para los comandos
-#define INVALID_COMMAND -1
-#define HELP_COMMAND 0
-#define SNAKE_COMMAND 1
-#define SHUTDOWN_COMMAND 2
-#define INVALID_OC_COMMAND 3
-#define TIME_COMMAND 4
-#define BEEP_COMMAND 5
-#define SLEEP_COMMAND 6
-#define DATE_COMMAND 7
-#define CLEAR_COMMAND 8
-#define DIV_COMMAND 9
-#define CREDITS_COMMAND 10
-#define STARWARS_COMMAND 11
-#define MARIO_COMMAND 12
-
 //Todos los comandos disponibles
-const char * commands[] = {"help", "snake", "shutdown", "invalid", "time", "beep", "sleep", "date", "clear", "div", "credits", "starwars", "mario"};
-const int commandCount = 13;
+const char * commands[] = {
+  "help",
+  "snake",
+  "shutdown",
+  "invalid",
+  "time",
+  "beep",
+  "sleep",
+  "date",
+  "clear",
+  "div",
+  "credits",
+  "starwars",
+  "mario",
+  "tp",
+  "lp",
+  "getpid",
+  "kill",
+  "block",
+  "unblock",
+  "mem",
+  "ps",
+  "pipe",
+  "sem",
+  "phylo",
+  "nice",
+  "cat",
+  "wc",
+  "filter",
+  "loop"
+};
 
-int getCommand(char * cmd);
+const char * commandsInfo[] = {
+  "help - Displays available commands and their usage\n",
+  "snake - Initiates the snake game\n",
+  "shutdown - Shuts down the system\n",
+  "time - Displays current system time\n",
+  "date - Displays current system date\n",
+  "beep - Makes the system go Beep!\n",
+  "sleep - Makes the system sleep for 5 seconds\n",
+  "div - Performs a division by zero\n",
+  "invalid - Executes an invalid operation\n",
+  "clear - Clears the screen\n",
+  "credits - Displays info about the group\n",
+  "starwars - Makes a cool Star Wars sound!\n",
+  "mario - Makes a cool Mario sound!\n",
+  "tp - \n",
+  "lp - \n",
+  "getpid - \n",
+  "kill - \n",
+  "block - \n",
+  "unblock - \n",
+  "mem - Prints memory status\n",
+  "ps - Prints all active process information\n",
+  "pipe - Prints all active pipes information\n",
+  "sem - Prints all active semaphores information\n",
+  "phylo - Starts the phylosophers problem, exit the problem with \'q\'\n",
+  "nice - Changes the priority of a process\n",
+  "cat - Prints to stdin as it receives data\n",
+  "wc - Counts amount of lines in input\n",
+  "filter - Filters vowels from input\n",
+  "loop - Prints PID with a message every 5 seconds\n",
+};
+
+const int commandCount = 29;
+
+int getCommand(char * cmd, int * index);
 void generate_invalid_opc(void);
 int generate_zero_division(void);
 void display_credits(void);
@@ -46,6 +95,8 @@ uint64_t * init_shell(void){
 	//Tecla que se toca
 	char key;
 
+	int index;
+
 	//while para la shell y su funcionamiento
 	while(command != SHUTDOWN_COMMAND){
 		key = getKey();
@@ -57,7 +108,7 @@ uint64_t * init_shell(void){
 			//Imprime una linea nueva para que se vea bien
 			print("\n");
 			//Llama a la funcion para manejar el comando
-			handle_command(command);
+			handle_command(command, NULL);
 			//Hace un reset del buffer de comando volviendo a la posicion 0
 			commandBuffPos = 0;
 			//Imprime el usuario de nuevo
@@ -71,9 +122,9 @@ uint64_t * init_shell(void){
 			//Agrega terminacion en 0 al buffer de comando
 			commandBuff[commandBuffPos] = 0;
 			//Recupera el comando que fue elegido
-			command = getCommand(commandBuff);
+			command = getCommand(commandBuff, &index);
 			//Llama a la funcion que decide como actuar en frente del comando
-			handle_command(command);
+			handle_command(command, commandBuff + index);
 			//Hace un reset del buffer de comando volviendo a la posicion 0
 			commandBuffPos = 0;
 			//Vuelve a imprimir el usuario para que se vea bien
@@ -105,12 +156,24 @@ uint64_t * init_shell(void){
 	return (uint64_t *) RETURN_ADRESS;
 }
 
-int getCommand(char * cmd){
+int strtokcpy(char * dst, const char * src, char delim){
+
+    int i;
+    for(i = 0; src[i] && src[i] != '\n' && src[i] != delim; i++){
+        dst[i] = src[i];
+    }
+    dst[i] = 0;
+    return i+1;
+}
+
+int getCommand(char * cmd, int * index){
 	//Itero el array de comandos para ver cual es el que se elige
 	int result = INVALID_COMMAND;
+	char nameBuff[MAX_NAME_SIZE];
+	*index = strtokcpy(nameBuff, cmd, ' ');
 	for (int i = 0; i < commandCount && result == INVALID_COMMAND; i++){
 		//En el caso de que sean iguales
-		if (!strcmp(cmd, commands[i])){
+		if (!strcmp(nameBuff, commands[i])){
 			result = i;
 		}
 	}
@@ -119,8 +182,8 @@ int getCommand(char * cmd){
 
 //Switch para el comando elegido
 //Recibe el comando como un parametro
-void handle_command(int cmd){
-	int w;
+void handle_command(int cmd, char * params){
+	int w, x, shellPID;
 	switch(cmd){
 		case HELP_COMMAND:
 			display_help();
@@ -131,9 +194,9 @@ void handle_command(int cmd){
 		break;
 		//Retorna y sale del while, y no se puede hacer nada mas
 		case SHUTDOWN_COMMAND:
-		    clearScreen();
-		    display_goodbye_message();
-		    sys_shutdown();
+	    clearScreen();
+	    display_goodbye_message();
+	    sys_shutdown();
 		break;
 		case INVALID_OC_COMMAND:
 			generate_invalid_opc();
@@ -167,7 +230,46 @@ void handle_command(int cmd){
 		break;
 		case MARIO_COMMAND:
 			make_mario();
-			break;
+		break;
+    case TEST_PROCESSES_COMMAND:
+      processCreationTest();
+    break;
+    case LIST_ALL_PROCESSES_COMMAND:
+      sys_list_processes();
+    break;
+    case GET_PID_COMMAND:
+      printf("%d\n", sys_get_pid());
+    break;
+    case KILL_COMMAND:
+      sscanf(params, "%d\n", &w);
+      sys_kill(w);
+      printf("Killed Process %d\n", w);
+    break;
+    case BLOCK_COMMAND:
+      sscanf(params, "%d\n", &w);
+      sys_block(w);
+      printf("Blocked Process %d\n", w);
+		break;
+    case UNBLOCK_COMMAND:
+      sscanf(params,"%d\n", &w);
+      sys_unblock(w);
+      printf("Unblocked Process %d\n", w);
+		break;
+    case PHYLO_COMMAND:
+      shellPID = sys_get_pid();
+      sys_new_process("philosophers_problem", (uint64_t) philosopherProblem, 1, FOREGROUND);
+      sys_block(shellPID);
+    break;
+    case NICE_COMMAND:
+      sscanf(params, "%d %d\n", &w, &x);
+      sys_change_priority(w, x);
+    break;
+    case LOOP_COMMAND:
+      //TODO: VER COMO SE HACE ESTO, SI ES CON OTRO PROCESO O LOOPEAMOS LA SHELL
+      //loop_process();
+      //sscanf(params, "%d %d\n", &w, &x);
+      //sys_change_priority(w, x);
+    break;
 	}
 	print("\n");
 }
@@ -192,24 +294,17 @@ void display_welcome_message(void){
 	print("													Trabajo Practico Especial\n");
 	print("												  Arquitectura de Computadoras\n");
 	print("											 		1er Cuatrimestre - 2019\n\n");
+  print("											 		   Trabajo Practico\n");
+  print("											 		  Sistemas Operativos\n");
+  print("											 		2do Cuatrimestre - 2019\n\n");
 	print("													  Welcome to arquiOS\n");
 	print("										Type \"help\" to discover all available commands\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 }
 
 void display_help(void){
-	print("help - Displays available commands and their usage\n");
-	print("snake - Initiates the snake game\n");
-	print("shutdown - Shuts down the system\n");
-	print("time - Displays current system time\n");
-	print("date - Displays current system date\n");
-	print("beep - Makes the system go Beep!\n");
-	print("sleep - Makes the system sleep for 5 seconds\n");
-  print("div - Performs a division by zero\n");
-  print("invalid - Executes an invalid operation\n");
-  print("clear - Clears the screen\n");
-	print("credits - Displays info about the group\n");
-	print("starwars - Makes a cool Star Wars sound!\n");
-	print("mario - Makes a cool Mario sound!\n");
+	for (int i = 0; i < commandCount; i++){
+		print(commandsInfo[i]);
+	}
 }
 
 void display_time(void){
@@ -217,6 +312,10 @@ void display_time(void){
 	char time[20];
 	getTime(time);
 	print(time);
+}
+
+void loop_process(){
+
 }
 
 void display_date(void){
@@ -227,8 +326,10 @@ void display_date(void){
 }
 
 void display_credits(void){
-	print("The authors of this OS are:\n");
+	print("The authors of this OS(Arquitectura de Computadoras Version) are:\n");
   print("Ignacio Ribas - Gonzalo Hirsch - Ignacio Villanueva\n");
+	print("The authors of this OS(Sistemas Operativos Version) are:\n");
+  print("Ignacio Ribas - Gonzalo Hirsch - Augusto Henestrosa\n");
 }
 
 void generate_invalid_opc(){

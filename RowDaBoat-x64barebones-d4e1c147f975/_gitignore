@@ -9,3 +9,7 @@
 
 #Object files
 *.o
+
+Kernel/.gdb_history
+Kernel/.gdbinit
+Kernel/breaks

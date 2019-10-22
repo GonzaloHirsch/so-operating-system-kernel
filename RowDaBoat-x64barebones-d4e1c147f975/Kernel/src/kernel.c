@@ -19,6 +19,11 @@
 #include <processes.h>
 #include <scheduler.h>
 #include "../include/processes.h"
+#include "../include/scheduler.h"
+#include "../include/console.h"
+#include "../include/time.h"
+#include "../include/semaphore.h"
+#include "../include/intQueue.h"
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -76,7 +81,9 @@ void * initializeKernelBinary()
     print("Initializing Console\n");
     init_console();
     print("Initializing Memmanager list\n");
-    initializeBuddyMemory(memoryStartAddress, 80*1048576); //80MB de memoria dinamica
+    //todo nuestro memmanager
+    initializeMemManagerList(memoryStartAddress, 80*1048576); //80MB de memoria dinamica
+    //initialize_list(memoryStartAddress, 80*1048576);
     print("Initializing Processes\n");
     initProcesses();
     print("Loading idt\n");
@@ -90,91 +97,140 @@ void * initializeKernelBinary()
 	return getStackBase();
 }
 
-void testFunction1(){
-    int i = 0;
-    while((i++)<10) {
-        print("Hello World!\n");
-    }
+void semTest1(){
+
+    const sem * testSem = openSemaphore("test");
+    do{
+
+
+        semWait(testSem);
+        for(int i = 0; i<20; i++){
+            print("Test1: %d\n", i);
+            if(i==15)sleep(2000);
+        }
+        print("\n");
+        semPost(testSem);
+    }while(0);
+    closeSemaphore(testSem);
 }
 
-void testFunction2(){
-    int i = 0;
-    while((i++)<10) {
-        print("Trello world!\n");
-    }
-    sleep(2000);
+void semTest2(){
+
+    const sem * testSem = openSemaphore("test");
+    do{
+
+
+        semWait(testSem);
+        for(int i = 0; i<10; i++){
+            print("Test2: %d\n", i);
+            if(i==9)sleep(1000);
+        }
+        print("\n");
+        semPost(testSem);
+    }while(0);
+    closeSemaphore(testSem);
 }
 
-void testFunction3(){
-    int i = 0;
-    while((i++)<10) {
-        print("Return world!\n");
+void semTest3() {
+
+    const sem *testSem = openSemaphore("test");
+    do{
+
+        semWait(testSem);
+        for (int i = 0; i < 5; i++) {
+            print("Test3: %d\n", i);
+            if(i==2)sleep(1000);
+        }
+        print("\n");
+        semPost(testSem);
+    }while(0);
+    closeSemaphore(testSem);
+}
+
+void semTest4() {
+
+    const sem *testSem = openSemaphore("test");
+    do{
+
+        semWait(testSem);
+        for (int i = 0; i < 5; i++) {
+            print("Test4: %d\n", i);
+            if(i==2)sleep(1000);
+        }
+        print("\n");
+        semPost(testSem);
+    }while(0);
+    closeSemaphore(testSem);
+}
+
+void mainFunction(){
+
+    Process p1 = newProcess("semTest1", (uint64_t) semTest1, 2, FOREGROUND);
+    Process p2 = newProcess("semTest2", (uint64_t) semTest2, 2, FOREGROUND);
+    Process p3 = newProcess("semTest3", (uint64_t) semTest3, 2, FOREGROUND);
+    Process p4 = newProcess("semTest4", (uint64_t) semTest4, 2, FOREGROUND);
+    Process p5 = newProcess("semTest1", (uint64_t) semTest1, 2, FOREGROUND);
+    Process p6 = newProcess("semTest2", (uint64_t) semTest2, 2, FOREGROUND);
+    Process p7 = newProcess("semTest3", (uint64_t) semTest4, 2, FOREGROUND);
+    /*
+    Process p8 = newProcess("semTest4", (uint64_t) semTest3, 2, BACKGROUND);
+    Process p9 = newProcess("semTest4", (uint64_t) semTest4, 2, BACKGROUND);
+    Process p10 = newProcess("semTest1", (uint64_t) semTest1, 2, BACKGROUND);
+    Process p11 = newProcess("semTest2", (uint64_t) semTest2, 2, BACKGROUND);
+    Process p12 = newProcess("semTest3", (uint64_t) semTest3, 2, BACKGROUND);
+    Process p13 = newProcess("semTest4", (uint64_t) semTest4, 2, BACKGROUND);
+    */
+
+    newPCB(p1);
+    newPCB(p2);
+    newPCB(p3);
+    newPCB(p4);
+    newPCB(p5);
+    newPCB(p6);
+    newPCB(p7);
+    /*
+    newPCB(p8);
+    newPCB(p9);
+    newPCB(p10);
+    newPCB(p11);
+    newPCB(p12);
+    newPCB(p13);
+     */
+    while(1){}
+}
+
+void testIntQueue(){
+    IntQueue q = newQueue(35);
+    for(int i = 0; i<37; i++){
+        enqueue(q, i);
     }
-    sleep(2000);
+    for(int i = 0; i<37; i++){
+        print("%d - ", dequeue(q));
+    }
+    print("\n");
+
 }
 
 int main()
 {
     print("\nIn main");
 
-    
-    uint64_t size = 1048576; //1mb
 
-    print("\n\n");
-    int cant = 0,m=0;
-    int * arrayPointer[6] = {1,1,1,1,1,1};
-    size_t sizes[5] = {2,2,1500,1500,1050000};
+    testIntQueue();
 
-    for(int i=0;i<5;i++){
-        
-        if(i == 3){
-            buddyFree(arrayPointer[0]);
-            buddyFree(arrayPointer[1]);
-        }
+    print("Starting kernel main\n");
+    sleep(2);
 
-        arrayPointer[i]= (int *) buddyMalloc(sizes[i]);
-        arrayPointer[i][0] = i;
-    }
+    //Process shellProcess = newProcess("shell", (uint64_t) sampleCodeModuleAddress, 10, FOREGROUND);
+    //newPCB(shellProcess);
 
-    for(int i=2;i<5;i++){
-        new_line();
-        print(" dir: "); printInteger(arrayPointer[i]);print(" Number"); printInteger(arrayPointer[i][0]);print(" --");
-    }
+    Process mainProcess = newProcess("mainProcess", (uint64_t) mainFunction, 5, FOREGROUND);
+    newPCB(mainProcess);
 
-
-    print("exiting");
-    
-    while(cant < 400){
-
-        print("entering");
-        
-        cant++;
-        arrayPointer[6]= (int *) buddyMalloc(sizes[cant%5]);
-        
-        if(arrayPointer[0]!=NULL) {
-            for (int i = 0; i < 10; i++) {  
-                arrayPointer[6][i] = i;
-            }
-            
-            new_line();
-            print(" dir: "); printInteger(arrayPointer[6]);print(" "); printInteger(cant);print(" --");
-
-
-            for (int i = 0; i < 10; i++) {
-                print("%d-", arrayPointer[6][i]);
-            }
-
-            if((477 + sizes[cant%5] * cant) % 3 == 0 ){
-                buddyFree(arrayPointer[6]);
-            }
-        }
-        else {
-            print("got null bish\n");
-        }
-        
-    }
-    
-    
-
+    //mFree(array);
+    //goToUserland();
+    for(int i = 0; i<10; i++)
+        print("Hey I'm done here\n");
+	print("kernel stop\n");
     return 0;
 }

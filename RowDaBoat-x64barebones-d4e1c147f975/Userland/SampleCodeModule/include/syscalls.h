@@ -5,6 +5,8 @@
 #include "interrupts.h"
 #include <stdint.h>
 #include "utils.h"
+#include "../include/processes.h"
+#include "../include/semaphores.h"
 
 #define READ 1
 #define WRITE 2
@@ -18,8 +20,23 @@
 #define OVER_CLOCK 10
 #define SHUTDOWN 11
 #define NEW_PROCESS 12
+#define GET_PID 13
+#define LIST_PROCESSES 14
+#define KILL_PROCESS 15
+#define CHANGE_PRIORITY 16
+#define BLOCK_PROCESS 17
+#define UNBLOCK_PROCESS 18
+#define CREATE_SEM 19
+#define POST_SEM 20
+#define WAIT_SEM 21
 
 void sys_write(int fd, const char *buf, int count);
+
+sem * sys_create_sem(const char * name);
+
+void sys_post_sem(const sem * semaphore);
+
+void sys_wait_sem(const sem * semaphore);
 
 void sys_write_key(int fd, const char * buf);
 
@@ -43,6 +60,17 @@ int sys_time(int selector);
 
 void sys_shutdown();
 
-int sys_new_process(char * name, uint64_t functionAddress);
+int sys_new_process(char * name, uint64_t functionAddress, int priority, enum Visibility isForeground);
 
+int sys_get_pid();
+
+void sys_list_processes();
+
+void sys_kill(int pid);
+
+void sys_change_priority(int pid, int priority);
+
+void sys_block(int pid);
+
+void sys_unblock(int pid);
 #endif

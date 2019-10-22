@@ -2,6 +2,9 @@
 #include <time.h>
 #include <naiveConsole.h>
 #include <interrupts.h>
+#include "../include/io_read.h"
+#include "../include/interrupts.h"
+
 
 static unsigned long ticks = 0;
 
@@ -43,10 +46,18 @@ void set_time(){
 //osdev
 void turn_on_rtc(){
     _cli();
-    write_port(0x70, 0x0B);
+    write_port(0x70, 0x8B);
     char prev = read_port(0x71);
-    write_port(0x70, 0x0B);
+    write_port(0x70, 0x8B);
     write_port(0x71, prev | 0x40);
+    _sti();
+
+    int rate = 0x0F;
+    _cli();
+    write_port(0x70, 0x8A);
+    prev = read_port(0x71);
+    write_port(0x70, 0x8A);
+    write_port(0x71, (prev & 0xF0) | rate);
     _sti();
 }
 

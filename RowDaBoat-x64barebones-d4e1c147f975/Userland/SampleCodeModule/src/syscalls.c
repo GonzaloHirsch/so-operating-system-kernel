@@ -1,4 +1,5 @@
 #include <syscalls.h>
+#include "../include/syscalls.h"
 
 // ----------------------------------------------------------------------------------
 // Este modulo es el modulo de Syscalls
@@ -59,6 +60,44 @@ void sys_shutdown(){
     _int80(SHUTDOWN, 0, 0, 0, 0, 0);
 }
 
-int sys_new_process(char * name, uint64_t functionAddress){
-    return _int80(NEW_PROCESS, name, functionAddress, 0, 0, 0);
+//Processes - 7 calls
+
+int sys_new_process(char * name, uint64_t functionAddress, int priority, enum Visibility isForeground){
+    return _int80(NEW_PROCESS, (uint64_t) name, functionAddress, priority, isForeground, 0);
 };
+
+int sys_get_pid(){
+    return _int80(GET_PID, 0,0,0,0,0);
+}
+
+void sys_list_processes(){
+    _int80(LIST_PROCESSES, 0,0,0,0,0);
+}
+
+sem * sys_create_sem(const char * name){
+		return (sem *)_int80(CREATE_SEM, (uint64_t) name,0,0,0,0);
+}
+
+void sys_post_sem(const sem * semaphore){
+		_int80(POST_SEM, (uint64_t) semaphore,0,0,0,0);
+}
+
+void sys_wait_sem(const sem * semaphore){
+		_int80(WAIT_SEM, (uint64_t) semaphore,0,0,0,0);
+}
+
+void sys_kill(int pid){
+    _int80(KILL_PROCESS, pid, 0, 0, 0, 0);
+}
+
+void sys_change_priority(int pid, int priority){
+    _int80(CHANGE_PRIORITY, pid, priority, 0, 0, 0);
+}
+
+void sys_block(int pid) {
+    _int80(BLOCK_PROCESS, pid, 0, 0, 0, 0);
+}
+
+void sys_unblock(int pid) {
+    _int80(UNBLOCK_PROCESS, pid, 0, 0, 0, 0);
+}

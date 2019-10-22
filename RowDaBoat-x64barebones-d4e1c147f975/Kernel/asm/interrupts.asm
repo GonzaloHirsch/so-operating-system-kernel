@@ -16,7 +16,7 @@ GLOBAL _exception13Handler
 GLOBAL _exception14Handler
 
 GLOBAL _popaqIretq
-GLOBAL _force_change_process
+GLOBAL forceChangeProcess
 
 EXTERN irqDispatcher
 EXTERN handleSyscall
@@ -90,7 +90,18 @@ EXTERN testFunction1 ;todo eliminar esto
 %endmacro
 
 _irq00Handler:
-    irqHandlerMaster 0
+    pushState
+    call timer_handler
+    popState
+    pushState
+    mov rdi, rsp
+    call getNextProcess
+    mov rsp, rax
+    popState
+    mov al, 20h
+    out 20h, al
+    iretq
+
 _irq01Handler:
     irqHandlerMaster 1
 
@@ -104,17 +115,17 @@ _irq80Handler:
 
     iretq
 
-_force_change_process:
-    int 0x70
+forceChangeProcess:
+    ;sti
+    int 0x20 ;todo corregir esto
     ret
 
 ;rtc handler
 _irq70Handler:
     pushState
-    ;mov rdi, rsp
-    call testFunction1
-    ;call getNextProcess
-    ;mov rsp, rax
+    mov rdi, rsp
+    call getNextProcess
+    mov rsp, rax
 
     popState
     iretq

@@ -10,6 +10,7 @@
 #include "videoDriver.h"
 #include "types.h"
 #include "interrupts.h"
+#include "semaphore.h"
 
 
 #define READ 1
@@ -24,6 +25,15 @@
 #define OVER_CLOCK 10
 #define SHUTDOWN 11
 #define NEW_PROCESS 12
+#define GET_PID 13
+#define LIST_PROCESSES 14
+#define KILL_PROCESS 15
+#define CHANGE_PRIORITY 16
+#define BLOCK_PROCESS 17
+#define UNBLOCK_PROCESS 18
+#define CREATE_SEM 19
+#define POST_SEM 20
+#define WAIT_SEM 21
 
 uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
 
