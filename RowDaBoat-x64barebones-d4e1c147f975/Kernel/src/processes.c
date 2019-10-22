@@ -6,6 +6,7 @@
 #include "../include/memManager.h"
 #include "../include/lib.h"
 #include "../include/scheduler.h"
+#include "../include/intQueue.h"
 #include <lib.h>
 #include <stdint.h>
 #include <console.h>
@@ -30,6 +31,7 @@ struct ProcessCDT{
     uint64_t stackPointer;
     uint64_t functionAddress;
     char name[MAX_NAME_LENGTH];
+    IntQueue semaphores;
 };
 
 typedef struct ProcessStack{
@@ -93,6 +95,7 @@ Process newProcess(char *processName, uint64_t functionAddress, int priority, en
     aux->stackPointer = initializeProcessStack(aux->stackBaseAddress, functionAddress, (uint64_t) aux);
     aux->state = STATE_READY;
     theProcessList[pidCounter++] = aux;
+    aux->semaphores = newQueue(MAX_SEMAPHORE_COUNT);
     return aux;
 }
 
@@ -211,5 +214,13 @@ enum Visibility getProcessVisibility(Process process) {
 
 enum Visibility getProcessVisibilityById(int pid) {
     return theProcessList[pid]->isForeground;
+}
+
+void addSemaphoreById(int pid, sem semaphore) {
+    enqueue(theProcessList[pid]->semaphores, semaphore);
+}
+
+int removeSemaphoreById(int pid, sem semaphore) {
+    return findAndDequeue(theProcessList[pid]->semaphores, semaphore);
 }
 

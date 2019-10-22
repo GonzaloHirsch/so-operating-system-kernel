@@ -64,3 +64,10 @@ int findAndDequeue(IntQueue q, int value) {
 void freeQueue(IntQueue q){
     mFree((void*) q );
 }
+
+int size(IntQueue q) {
+    if(q->head <= q->tail){
+        return q->tail-q->head;
+    }
+    else return q->size-q->head + q->tail;
+}

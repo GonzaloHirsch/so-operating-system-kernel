@@ -19,7 +19,7 @@ const sem * openSemaphore(char * name);
 // y semUnlink lo "desvincula" completamente del nombre: cualquier
 // proceso que use el semaphore pasaria a tener el sem* igual a NULL.
 // lo dejo como un todo.
-void closeSemaphore(char * name);
+void closeSemaphore(const sem *id);
 void semUnlink(char * name);
 void semWait(const sem * semaphore);
 void semPost(const sem * semaphore);
