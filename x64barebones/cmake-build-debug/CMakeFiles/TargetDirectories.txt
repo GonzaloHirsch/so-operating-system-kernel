@@ -1,3 +1,0 @@
-C:/Users/IR/Documents/ITBA/2019Q2/SO/SO-TP2/RowDaBoat-x64barebones-d4e1c147f975/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/IR/Documents/ITBA/2019Q2/SO/SO-TP2/RowDaBoat-x64barebones-d4e1c147f975/cmake-build-debug/CMakeFiles/SO-TP2.dir
-C:/Users/IR/Documents/ITBA/2019Q2/SO/SO-TP2/RowDaBoat-x64barebones-d4e1c147f975/cmake-build-debug/CMakeFiles/rebuild_cache.dir
