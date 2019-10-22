@@ -39,6 +39,10 @@
 #define SEM_INFO_COMMAND 22
 #define PHYLO_COMMAND 23
 #define NICE_COMMAND 24
+#define CAT_COMMAND 25
+#define WC_COMMAND 26
+#define FILTER_COMMAND 27
+#define LOOP_COMMAND 28
 
 //Address original que devolvia el samplecoremodule
 #define RETURN_ADRESS 0xDEADC0DE
