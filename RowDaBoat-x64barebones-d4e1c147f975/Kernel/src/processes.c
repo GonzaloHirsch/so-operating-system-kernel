@@ -80,7 +80,6 @@ void initProcesses(){
 Process newProcess(char *processName, uint64_t functionAddress, int priority, enum Visibility isForeground) {
 
 
-    //Process aux = (Process) mem_alloc(sizeof(struct ProcessCDT));
     Process aux = (Process) mAlloc(sizeof(struct ProcessCDT));
     strcpy(aux->name, processName);
     //todo tests
@@ -90,7 +89,6 @@ Process newProcess(char *processName, uint64_t functionAddress, int priority, en
     aux->isForeground = isForeground;
     aux->ppid = (pidCounter>0) ? getCurrentProcess()->pid : -1;
     aux->functionAddress = functionAddress;
-    //aux->stackBaseAddress = (uint64_t) mem_alloc(PROCESS_STACK_SIZE);
     aux->stackBaseAddress = (uint64_t) mAlloc(PROCESS_STACK_SIZE);
     aux->stackPointer = initializeProcessStack(aux->stackBaseAddress, functionAddress, (uint64_t) aux);
     aux->state = STATE_READY;
@@ -144,10 +142,8 @@ void removeProcess(Process process){
     // se libera el espacio reservado para el stack
     theProcessList[process->pid] = NULL;
     mFree((void*) process->stackBaseAddress);
-    //free_mem((void*)process->stackBaseAddress);
     // se libera el espacio reservado para el ADT de Process
     mFree(process);
-    //free_mem(process);
 }
 
 // getters / setters

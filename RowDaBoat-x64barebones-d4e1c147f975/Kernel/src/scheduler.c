@@ -35,7 +35,6 @@ static PCBList thePCBList /*= {NULL, NULL, NULL}*/;
 void newPCB(Process process){
 
     PCB aux = mAlloc(sizeof(PCBCDT)); //TODO VER CON NUESTRO ALLOCATOR
-    //PCB aux = mem_alloc(sizeof(PCBCDT));
     aux->process = process;
     thePCBList.processCount++;
     aux->currentPriority=0;
@@ -82,7 +81,6 @@ void deleteCurrentProcessPCB(){
         aux->prev->next = aux->next;
         removeProcess(aux->process);
         mFree(aux); //todo hacer con nuestro allocator
-        //free_mem(aux);
         //_popaqIretq(getStackPointer(thePCBList.currentPCB->process));
     }
 }
