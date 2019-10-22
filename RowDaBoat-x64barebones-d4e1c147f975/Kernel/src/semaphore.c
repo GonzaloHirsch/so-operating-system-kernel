@@ -19,6 +19,7 @@ typedef struct SemaphoreCDT{
     int value;
 
     IntQueue waitingProcesses;
+    int attachedProcessCount;
 }SemaphoreCDT;
 
 
@@ -39,6 +40,8 @@ const sem * openSemaphore(char *name) {
     int i;
     for(i = 0; i<MAX_SEMAPHORE_COUNT; i++){
         if(theSemaphoreList[i] != NULL && strcmp(name, theSemaphoreList[i]->name) == 0){
+            theSemaphoreList[i]->attachedProcessCount++;
+            addSemaphoreById(getPid(), i);
             return &theSemaphoreList[i]->semId;
         }
     }
@@ -52,7 +55,8 @@ const sem * openSemaphore(char *name) {
     strcpy(aux->name, name);
     aux->value = 1;
     aux->waitingProcesses = newQueue(MAX_WAITING_PROCESSES);
-
+    aux->attachedProcessCount=1;
+    addSemaphoreById(getPid(), i);
     theSemaphoreList[i] = aux;
     return &aux->semId;
 }
@@ -102,3 +106,20 @@ void printAllSemaphores() {
         print("Semaphore %s\n    Value: %d\n", aux->name, aux->value);
     }
 }
+
+static void removeSemaphore(const sem * id){
+    Semaphore aux = theSemaphoreList[*id];
+    theSemaphoreList[*id] = NULL;
+    freeQueue(aux->waitingProcesses);
+    mFree((void*) id);
+}
+
+void closeSemaphore(const sem *id) {
+
+    removeSemaphoreById(getPid(), *id);
+    theSemaphoreList[*id]->attachedProcessCount--;
+    if(theSemaphoreList[*id]->attachedProcessCount==0){
+        removeSemaphore(id);
+    }
+}
+

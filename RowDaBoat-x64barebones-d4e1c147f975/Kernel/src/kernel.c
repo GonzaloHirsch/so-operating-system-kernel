@@ -99,7 +99,7 @@ void * initializeKernelBinary()
 void semTest1(){
 
     const sem * testSem = openSemaphore("test");
-    while(1){
+    do{
 
 
         semWait(testSem);
@@ -109,13 +109,14 @@ void semTest1(){
         }
         print("\n");
         semPost(testSem);
-    }
+    }while(0);
+    closeSemaphore(testSem);
 }
 
 void semTest2(){
 
     const sem * testSem = openSemaphore("test");
-    while(1){
+    do{
 
 
         semWait(testSem);
@@ -125,14 +126,14 @@ void semTest2(){
         }
         print("\n");
         semPost(testSem);
-    }
+    }while(0);
+    closeSemaphore(testSem);
 }
 
 void semTest3() {
 
     const sem *testSem = openSemaphore("test");
-    while (1) {
-
+    do{
 
         semWait(testSem);
         for (int i = 0; i < 5; i++) {
@@ -141,14 +142,14 @@ void semTest3() {
         }
         print("\n");
         semPost(testSem);
-    }
+    }while(0);
+    closeSemaphore(testSem);
 }
 
 void semTest4() {
 
     const sem *testSem = openSemaphore("test");
-    while (1) {
-
+    do{
 
         semWait(testSem);
         for (int i = 0; i < 5; i++) {
@@ -157,25 +158,27 @@ void semTest4() {
         }
         print("\n");
         semPost(testSem);
-    }
+    }while(0);
+    closeSemaphore(testSem);
 }
 
 void mainFunction(){
 
     Process p1 = newProcess("semTest1", (uint64_t) semTest1, 2, FOREGROUND);
-    Process p2 = newProcess("semTest2", (uint64_t) semTest2, 2, BACKGROUND);
-    Process p3 = newProcess("semTest3", (uint64_t) semTest3, 2, BACKGROUND);
-    Process p4 = newProcess("semTest4", (uint64_t) semTest4, 2, BACKGROUND);
-    Process p5 = newProcess("semTest1", (uint64_t) semTest1, 2, BACKGROUND);
-    Process p6 = newProcess("semTest2", (uint64_t) semTest2, 2, BACKGROUND);
-    Process p7 = newProcess("semTest3", (uint64_t) semTest4, 2, BACKGROUND);
+    Process p2 = newProcess("semTest2", (uint64_t) semTest2, 2, FOREGROUND);
+    Process p3 = newProcess("semTest3", (uint64_t) semTest3, 2, FOREGROUND);
+    Process p4 = newProcess("semTest4", (uint64_t) semTest4, 2, FOREGROUND);
+    Process p5 = newProcess("semTest1", (uint64_t) semTest1, 2, FOREGROUND);
+    Process p6 = newProcess("semTest2", (uint64_t) semTest2, 2, FOREGROUND);
+    Process p7 = newProcess("semTest3", (uint64_t) semTest4, 2, FOREGROUND);
+    /*
     Process p8 = newProcess("semTest4", (uint64_t) semTest3, 2, BACKGROUND);
     Process p9 = newProcess("semTest4", (uint64_t) semTest4, 2, BACKGROUND);
     Process p10 = newProcess("semTest1", (uint64_t) semTest1, 2, BACKGROUND);
     Process p11 = newProcess("semTest2", (uint64_t) semTest2, 2, BACKGROUND);
     Process p12 = newProcess("semTest3", (uint64_t) semTest3, 2, BACKGROUND);
     Process p13 = newProcess("semTest4", (uint64_t) semTest4, 2, BACKGROUND);
-
+    */
 
     newPCB(p1);
     newPCB(p2);
@@ -184,12 +187,15 @@ void mainFunction(){
     newPCB(p5);
     newPCB(p6);
     newPCB(p7);
+    /*
     newPCB(p8);
     newPCB(p9);
     newPCB(p10);
     newPCB(p11);
     newPCB(p12);
     newPCB(p13);
+     */
+    while(1){}
 }
 
 void testIntQueue(){
@@ -201,6 +207,7 @@ void testIntQueue(){
         print("%d - ", dequeue(q));
     }
     print("\n");
+
 }
 
 int main()
@@ -212,11 +219,11 @@ int main()
     print("Starting kernel main\n");
     sleep(2);
 
-    Process shellProcess = newProcess("shell", (uint64_t) sampleCodeModuleAddress, 10, FOREGROUND);
-    newPCB(shellProcess);
+    //Process shellProcess = newProcess("shell", (uint64_t) sampleCodeModuleAddress, 10, FOREGROUND);
+    //newPCB(shellProcess);
 
-    //Process mainProcess = newProcess("mainProcess", (uint64_t) mainFunction, 5, FOREGROUND);
-    //newPCB(mainProcess);
+    Process mainProcess = newProcess("mainProcess", (uint64_t) mainFunction, 5, FOREGROUND);
+    newPCB(mainProcess);
 
     //mFree(array);
     //goToUserland();

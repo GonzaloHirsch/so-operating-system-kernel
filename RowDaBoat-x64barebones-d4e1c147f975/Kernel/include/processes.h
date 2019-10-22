@@ -10,9 +10,12 @@
 #define MAX_NAME_LENGTH 128
 #define PROCESS_STACK_SIZE 8192
 #define MAX_PROCESS_COUNT 256
+#define MAX_SEMAPHORE_COUNT 128
 
 #include <stddef.h>
 #include <stdint.h>
+#include "../include/semaphore.h"
+
 
 
 typedef struct ProcessCDT * Process;
@@ -58,5 +61,9 @@ void setProcessPriorityByPid(int pid, int priority);
 enum Visibility getProcessVisibility(Process process);
 
 enum Visibility getProcessVisibilityById(int pid);
+
+void addSemaphoreById(int pid, sem semaphore);
+
+int removeSemaphoreById(int pid, sem semaphore);
 
 #endif //SO_TP2_PROCESS_H
