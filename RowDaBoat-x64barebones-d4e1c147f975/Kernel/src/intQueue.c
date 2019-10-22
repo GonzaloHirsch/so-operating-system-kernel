@@ -47,6 +47,20 @@ int isEmpty(IntQueue q) {
     return q->head == q->tail;
 }
 
+
+int findAndDequeue(IntQueue q, int value) {
+    for (int i = q->head; i != q->tail; i = (i + 1) % q->size) {
+        if (q->queue[i] == value) {
+            int tmp;
+            tmp = q->queue[q->head];
+            q->queue[q->head] = value;
+            q->queue[i] = tmp;
+            return dequeue(q);
+        }
+    }
+    return -1;
+}
+
 void freeQueue(IntQueue q){
     mFree((void*) q );
 }
