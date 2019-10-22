@@ -15,6 +15,7 @@
 #include <pixelMap.h>
 #include <exceptions.h>
 #include <memManager.h>
+#include <buddyManager.h>
 #include <processes.h>
 #include <scheduler.h>
 #include "../include/processes.h"
@@ -212,6 +213,7 @@ void testIntQueue(){
 
 int main()
 {
+    print("\nIn main");
 
 
     testIntQueue();
@@ -231,5 +233,4 @@ int main()
         print("Hey I'm done here\n");
 	print("kernel stop\n");
     return 0;
-
 }

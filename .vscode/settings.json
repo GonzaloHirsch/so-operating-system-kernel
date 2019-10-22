@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "irqdispatcher.h": "c",
+        "memmanager.h": "c"
+    }
+}
