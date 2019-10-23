@@ -229,7 +229,7 @@ void init(){
 int main()
 {
 
-    Process initProcess = newProcess("init", init, 1, FOREGROUND);
+    Process initProcess = newProcess("init", init, 1, BACKGROUND);
     newPCB(initProcess);
 
 

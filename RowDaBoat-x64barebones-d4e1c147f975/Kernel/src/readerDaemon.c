@@ -13,6 +13,7 @@ extern forceChangeProcess();
 static int currentLength;
 static char * currentBuffer;
 static Process daemon;
+static int ch = 0;
 
 static void daemonMain();
 
@@ -44,16 +45,18 @@ static void daemonMain(){
     semWait(sem1);
 
 
-
     while(1){
 
         setProcessStateByPid(getPid(), STATE_BLOCKED);
         forceChangeProcess();
 
         for (int i = 0; i < currentLength;){
-            char ch = getChar();
-            *(currentBuffer + i) = getChar();
-            if(ch!=NULL && ch!=EOF) i++;
+            ch = getChar();
+            if(ch!=NULL && ch!=EOF && ch!=' ') {
+                *(currentBuffer + i) = ch;
+                i++;
+            }
+            ch = 0;
         }
 
         semPost(sem1);
