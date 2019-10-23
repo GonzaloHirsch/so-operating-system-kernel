@@ -73,12 +73,16 @@ void semWait(const sem *semaphore) {
         int pid = getProcessPid(getCurrentProcess());
         enqueue(theSemaphoreList[*semaphore]->waitingProcesses, pid);
         forceChangeProcess();
+        notifyUnpostedSemaphore(getPid(), *semaphore);
         theSemaphoreList[*semaphore]->value--;
         dequeue(theSemaphoreList[*semaphore]->waitingProcesses);
     }
 
     //print("decreasing semaphore, current process: %s\n", getProcessName(getCurrentProcess()));
-    else{theSemaphoreList[*semaphore]->value--;}
+    else{
+        theSemaphoreList[*semaphore]->value--;
+        notifyUnpostedSemaphore(getPid(), *semaphore);
+    }
     //_sti();
     //print("current semaphore value: %d\n", theSemaphoreList[*semaphore]->value);
 }
@@ -88,13 +92,18 @@ void semPost(const sem *semaphore) {
     Semaphore aux = theSemaphoreList[*semaphore];
     if(!isEmpty(aux->waitingProcesses)){
         int pid = peep(aux->waitingProcesses);
-        setProcessStateByPid(pid, STATE_READY);
+        if(getProcessStateByPid(pid)==STATE_BLOCKED) setProcessStateByPid(pid, STATE_READY);
         aux->value++;
+        notifyPostedSemaphore(getPid(), *semaphore);
+
         //forceChangeProcess();
     }
 
     //print("increasing semaphore, current process: %s\n", getProcessName(getCurrentProcess()));
-    else{aux->value++;}
+    else{
+        aux->value++;
+        notifyPostedSemaphore(getPid(), *semaphore);
+    }
     //_sti();
     //print("current semaphore value: %d\n", theSemaphoreList[*semaphore]->value);
 }
@@ -121,5 +130,9 @@ void closeSemaphore(const sem *id) {
     if(theSemaphoreList[*id]->attachedProcessCount==0){
         removeSemaphore(id);
     }
+}
+
+void semPostById(int semId) {
+    semPost(&theSemaphoreList[semId]->semId);
 }
 

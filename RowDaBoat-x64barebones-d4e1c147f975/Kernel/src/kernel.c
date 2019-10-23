@@ -23,6 +23,7 @@
 #include "../include/time.h"
 #include "../include/semaphore.h"
 #include "../include/intQueue.h"
+#include "../include/intPairQueue.h"
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -30,6 +31,7 @@ extern uint8_t data;
 extern uint8_t bss;
 extern uint8_t endOfKernelBinary;
 extern uint8_t endOfKernel;
+extern void forceChangeProcess();
 
 static const uint64_t PageSize = 0x1000;
 
@@ -159,6 +161,8 @@ void semTest4() {
         print("\n");
         semPost(testSem);
     }while(0);
+    setProcessState(getCurrentProcess(), STATE_TERMINATED);
+    forceChangeProcess();
     closeSemaphore(testSem);
 }
 
@@ -210,11 +214,36 @@ void testIntQueue(){
 
 }
 
+void testIntPairQueue(){
+
+    IntPairQueue q = newIntPairQueue(35);
+    for(int i = 0; i<37; i++){
+        enqueuePair(q, i, i*5);
+    }
+    struct intPair it;
+    for(int i = 0; i<37; i++){
+        it = dequeuePair(q);
+        print("Pair: (%d, %d)\n",it.first, it.second);
+    }
+    for(int i = 0; i<37; i++){
+        enqueuePair(q, i, i*5);
+    }
+    for(int i = 0; i<37; i++){
+        setValue(q, i, getValue(q, i)/5*4);
+    }
+    for(int i = 0; i<37; i++){
+        it = dequeuePair(q);
+        print("Pair: (%d, %d)\n",it.first, it.second);
+    }
+    print("\n");
+}
+
 int main()
 {
 
 
     testIntQueue();
+    testIntPairQueue();
 
     print("Starting kernel main\n");
     sleep(2);

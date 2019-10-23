@@ -7,6 +7,7 @@
 #include "../include/lib.h"
 #include "../include/scheduler.h"
 #include "../include/intQueue.h"
+#include "../include/intPairQueue.h"
 #include <lib.h>
 #include <stdint.h>
 #include <console.h>
@@ -31,7 +32,7 @@ struct ProcessCDT{
     uint64_t stackPointer;
     uint64_t functionAddress;
     char name[MAX_NAME_LENGTH];
-    IntQueue semaphores;
+    IntPairQueue semaphores;
 };
 
 typedef struct ProcessStack{
@@ -95,7 +96,7 @@ Process newProcess(char *processName, uint64_t functionAddress, int priority, en
     aux->stackPointer = initializeProcessStack(aux->stackBaseAddress, functionAddress, (uint64_t) aux);
     aux->state = STATE_READY;
     theProcessList[pidCounter++] = aux;
-    aux->semaphores = newQueue(MAX_SEMAPHORE_COUNT);
+    aux->semaphores = newIntPairQueue(MAX_SEMAPHORE_COUNT);
     return aux;
 }
 
@@ -145,6 +146,14 @@ void removeProcess(Process process){
     // se libera el espacio reservado para el stack
     theProcessList[process->pid] = NULL;
     mFree((void*) process->stackBaseAddress);
+    int i;
+    while(!isIntPairQueueEmpty(process->semaphores)){
+        struct intPair it = dequeuePair(process->semaphores);
+        for(i=0; i<it.second;i++){
+            semPostById(it.first);
+        }
+    }
+    freeIntPairQueue(process->semaphores);
     // se libera el espacio reservado para el ADT de Process
     mFree(process);
 }
@@ -217,10 +226,25 @@ enum Visibility getProcessVisibilityById(int pid) {
 }
 
 void addSemaphoreById(int pid, sem semaphore) {
-    enqueue(theProcessList[pid]->semaphores, semaphore);
+    enqueuePair(theProcessList[pid]->semaphores, semaphore, 0);
 }
 
-int removeSemaphoreById(int pid, sem semaphore) {
-    return findAndDequeue(theProcessList[pid]->semaphores, semaphore);
+void removeSemaphoreById(int pid, sem semaphore) {
+    findAndDequeuePair(theProcessList[pid]->semaphores, semaphore);
 }
 
+enum State getProcessStateByPid(int pid) {
+    return theProcessList[pid]->state;
+}
+
+
+//estas son para tener la cantidad de waits no posteados en cada semaforo. Tod o esto es para
+// hacer que funcione la feature de que cuando se termina un proceso, se hagan todos los posts que
+// quedaron sin hacer (y se liberen los semaforos...)
+void notifyUnpostedSemaphore(int pid, int semId){
+    setValue(theProcessList[pid]->semaphores, semId, getValue(theProcessList[pid]->semaphores, semId)+1);
+}
+
+void notifyPostedSemaphore(int pid, int semId){
+    setValue(theProcessList[pid]->semaphores, semId, getValue(theProcessList[pid]->semaphores, semId)-1);
+}

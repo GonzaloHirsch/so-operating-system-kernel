@@ -5,6 +5,7 @@
 #include "../include/scheduler.h"
 #include "../include/processes.h"
 #include "../include/memManager.h"
+#include "../include/intPairQueue.h"
 #include <lib.h>
 #include <console.h>
 
@@ -76,6 +77,7 @@ void deleteCurrentProcessPCB(){
         thePCBList.processCount--;
         PCB aux = thePCBList.currentPCB;
         thePCBList.currentPCB = aux->next;
+
 
         aux->next->prev = aux->prev;
         aux->prev->next = aux->next;

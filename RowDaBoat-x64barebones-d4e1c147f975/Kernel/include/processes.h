@@ -39,6 +39,7 @@ uint64_t getStackPointer(Process process);
 void setStackPointer(Process process, uint64_t stackPtr);
 
 enum State getProcessState(Process process);
+enum State getProcessStateByPid(int pid);
 void setProcessState(Process process, enum State state);
 
 void setProcessStateByPid(int pid, enum State state);
@@ -64,6 +65,9 @@ enum Visibility getProcessVisibilityById(int pid);
 
 void addSemaphoreById(int pid, sem semaphore);
 
-int removeSemaphoreById(int pid, sem semaphore);
+void removeSemaphoreById(int pid, sem semaphore);
+void notifyUnpostedSemaphore(int pid, int semId);
+void notifyPostedSemaphore(int pid, int semId);
+
 
 #endif //SO_TP2_PROCESS_H
