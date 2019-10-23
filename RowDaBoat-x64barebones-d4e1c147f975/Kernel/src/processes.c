@@ -75,8 +75,6 @@ void initProcesses(){
     for(int i = 0; i<MAX_PROCESS_COUNT; i++){
         theProcessList[i] = NULL;
     }
-
-    return;
 }
 
 Process newProcess(char *processName, uint64_t functionAddress, int priority, enum Visibility isForeground) {
@@ -129,6 +127,11 @@ static uint64_t initializeProcessStack(uint64_t stackBaseAddress, uint64_t funct
 
 
 static void entryPoint(uint64_t functionAddress, uint64_t processPtr){
+
+    //if(((Process)processPtr)->isForeground){
+    openSemaphore("sysReadDataMutex");
+    openSemaphore("sysReadMutex");
+    //}
 
     // ejecuto  la funcion en functionAddress
     ((void*(*)()) functionAddress)();

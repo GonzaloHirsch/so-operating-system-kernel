@@ -25,5 +25,6 @@ void semWait(const sem * semaphore);
 void semPost(const sem * semaphore);
 int semGetValue(const sem * semaphore);
 void printAllSemaphores();
+sem * getSemaphoreById(int id);
 
 #endif //SO_TP2_SEMAPHORE_H

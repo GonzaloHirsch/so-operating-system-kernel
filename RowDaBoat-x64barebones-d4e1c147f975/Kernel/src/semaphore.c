@@ -28,10 +28,12 @@ static int highestSemId;
 
 
 void initializeSemaphores() {
-    for(int i = 0; i<MAX_SEMAPHORE_COUNT; i++){
+    for(int i = 1; i<MAX_SEMAPHORE_COUNT; i++){
         theSemaphoreList[i] = NULL;
     }
     highestSemId = 0;
+
+    //todo mover a otra funcion
 };
 
 const sem * openSemaphore(char *name) {
@@ -121,5 +123,9 @@ void closeSemaphore(const sem *id) {
     if(theSemaphoreList[*id]->attachedProcessCount==0){
         removeSemaphore(id);
     }
+}
+
+sem *getSemaphoreById(int id) {
+    return &theSemaphoreList[id]->semId;
 }
 
