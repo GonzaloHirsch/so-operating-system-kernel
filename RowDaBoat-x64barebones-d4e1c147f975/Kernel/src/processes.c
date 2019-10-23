@@ -32,6 +32,7 @@ struct ProcessCDT{
     uint64_t functionAddress;
     char name[MAX_NAME_LENGTH];
     IntQueue semaphores;
+    
 };
 
 typedef struct ProcessStack{
