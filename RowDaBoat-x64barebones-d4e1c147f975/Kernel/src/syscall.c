@@ -41,58 +41,58 @@ void handle_sys_unblock_process(int pid);
 //Handler de la llamada a la int 80
 uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
     switch(rdi){
-		case WRITE:
-			handle_sys_write(rsi, (char *)rdx, rcx);
-		break;
-		case READ:
-			handle_sys_read(rsi, (char *)rdx, rcx);
-		break;
-		case TIME:
-			return handle_sys_time(rsi);
-		break;
-		case BEEP:
-			handle_sys_beep(rsi, rdx);
-		break;
-		case SLEEP:
-			handle_sys_sleep(rcx);
-		break;
-		case OVER_CLOCK:
-			handle_sys_over_clock(rsi);
-		break;
-		case CLEAR:
-			handle_sys_clear_console();
-		break;
-		case DRAW_PIXEL:
-			handle_sys_draw_pixel(rsi, rdx, rcx, r8, r9);
-		break;
-		case TICKS:
-			handle_sys_get_ticks((int *)rdx);
-		break;
-    case SHUTDOWN:
-        //Metodo facil: Halteo la PC, como seria en la version original
-        //del kernel. Se podria buscar una forma de apagar la PC
-        //realmente, es decir, apagar el hardware.
-        hang();
-    break;
-    case NEW_PROCESS:
-        return handle_sys_new_process(rsi, rdx, 1);
-    case GET_PID:
-        return handle_sys_get_pid();
-    case LIST_PROCESSES:
-        handle_sys_list_processes();
-    break;
-    case KILL_PROCESS:
-        handle_sys_kill_process(rsi);
-    break;
-    case CHANGE_PRIORITY:
-        handle_sys_change_priority(rsi, rdx);
-    break;
-    case BLOCK_PROCESS:
-        handle_sys_block_process(rsi);
-    break;
-    case UNBLOCK_PROCESS:
-        handle_sys_unblock_process(rsi);
-    break;
+  		case WRITE:
+  			handle_sys_write(rsi, (char *)rdx, rcx);
+  		break;
+  		case READ:
+  			handle_sys_read(rsi, (char *)rdx, rcx);
+  		break;
+  		case TIME:
+  			return handle_sys_time(rsi);
+  		break;
+  		case BEEP:
+  			handle_sys_beep(rsi, rdx);
+  		break;
+  		case SLEEP:
+  			handle_sys_sleep(rcx);
+  		break;
+  		case OVER_CLOCK:
+  			handle_sys_over_clock(rsi);
+  		break;
+  		case CLEAR:
+  			handle_sys_clear_console();
+  		break;
+  		case DRAW_PIXEL:
+  			handle_sys_draw_pixel(rsi, rdx, rcx, r8, r9);
+  		break;
+  		case TICKS:
+  			handle_sys_get_ticks((int *)rdx);
+  		break;
+      case SHUTDOWN:
+          //Metodo facil: Halteo la PC, como seria en la version original
+          //del kernel. Se podria buscar una forma de apagar la PC
+          //realmente, es decir, apagar el hardware.
+          hang();
+      break;
+      case NEW_PROCESS:
+          return handle_sys_new_process(rsi, rdx, 1);
+      case GET_PID:
+          return handle_sys_get_pid();
+      case LIST_PROCESSES:
+          handle_sys_list_processes();
+      break;
+      case KILL_PROCESS:
+          handle_sys_kill_process(rsi);
+      break;
+      case CHANGE_PRIORITY:
+          handle_sys_change_priority(rsi, rdx);
+      break;
+      case BLOCK_PROCESS:
+          handle_sys_block_process(rsi);
+      break;
+      case UNBLOCK_PROCESS:
+          handle_sys_unblock_process(rsi);
+      break;
 	}
 	return 0;
 }

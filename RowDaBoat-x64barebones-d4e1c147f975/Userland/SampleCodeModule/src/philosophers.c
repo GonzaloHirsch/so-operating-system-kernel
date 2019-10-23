@@ -10,6 +10,7 @@ static sem * mutex;
 static int problemRunning;
 static int eatingTimes[MAX_PHILOSOPHER_COUNT];
 static int thinkingTimes[MAX_PHILOSOPHER_COUNT];
+static int pidToId[256] = {-1};
 
 static int maxIters = 500;
 static int actualIters = 0;
