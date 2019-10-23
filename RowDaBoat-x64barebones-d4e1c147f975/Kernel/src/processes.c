@@ -152,6 +152,7 @@ void removeProcess(Process process){
         for(i=0; i<it.second;i++){
             semPostById(it.first);
         }
+        closeSemaphore(&it.first);
     }
     freeIntPairQueue(process->semaphores);
     // se libera el espacio reservado para el ADT de Process
