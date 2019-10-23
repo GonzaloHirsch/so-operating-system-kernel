@@ -184,6 +184,7 @@ int getCommand(char * cmd, int * index){
 //Recibe el comando como un parametro
 void handle_command(int cmd, char * params){
 	int w, x, shellPID;
+  char buff[256] = {0};
 	switch(cmd){
 		case HELP_COMMAND:
 			display_help();
@@ -241,17 +242,20 @@ void handle_command(int cmd, char * params){
       printf("%d\n", sys_get_pid());
     break;
     case KILL_COMMAND:
-      sscanf(params, "%d\n", &w);
+      //sscanf(params, "%d\n", &w);
+      scanf("%d\n", &w);
       sys_kill(w);
       printf("Killed Process %d\n", w);
     break;
     case BLOCK_COMMAND:
-      sscanf(params, "%d\n", &w);
+      //sscanf(params, "%d\n", &w);
+      scanf("%d\n", &w);
       sys_block(w);
       printf("Blocked Process %d\n", w);
 		break;
     case UNBLOCK_COMMAND:
-      sscanf(params,"%d\n", &w);
+      //sscanf(params,"%d\n", &w);
+      scanf("%d\n", &w);
       sys_unblock(w);
       printf("Unblocked Process %d\n", w);
 		break;
@@ -261,7 +265,8 @@ void handle_command(int cmd, char * params){
       sys_block(shellPID);
     break;
     case NICE_COMMAND:
-      sscanf(params, "%d %d\n", &w, &x);
+      //sscanf(params, "%d %d\n", &w, &x);
+      scanf("%d %d\n", &w, &x);
       sys_change_priority(w, x);
     break;
     case LOOP_COMMAND:
@@ -269,6 +274,15 @@ void handle_command(int cmd, char * params){
       //loop_process();
       //sscanf(params, "%d %d\n", &w, &x);
       //sys_change_priority(w, x);
+    break;
+    case WC_COMMAND:
+      //print(params);
+      scanf("%S\n", buff);
+      print(buff);
+    break;
+    case CAT_COMMAND:
+      scanf("%S\n", buff);
+      print(buff);
     break;
 	}
 	print("\n");
