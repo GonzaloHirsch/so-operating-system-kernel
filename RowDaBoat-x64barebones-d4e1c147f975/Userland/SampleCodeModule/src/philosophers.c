@@ -2,6 +2,9 @@
 
 // Implementacion adapatada a partir de la de Tanenbaum
 
+#define LEFT(i,c) ((i - 1)%c)
+#define RIGHT(i,c) ((i + 1)%c)
+
 static int state[MAX_PHILOSOPHER_COUNT];
 static int philosophers[MAX_PHILOSOPHER_COUNT];
 static int actualPhilosopherCount;
@@ -10,9 +13,6 @@ static sem * mutex;
 static int problemRunning;
 static int eatingTimes[MAX_PHILOSOPHER_COUNT];
 static int thinkingTimes[MAX_PHILOSOPHER_COUNT];
-
-static int maxIters = 500;
-static int actualIters = 0;
 
 void philosopher();
 void takeForks(int i);
@@ -23,28 +23,30 @@ void check(int i);
 int addPhilosopher();
 int removePhilosopher();
 void printTable();
-int left(int i, int mod);
-int right(int i, int mod);
 
 void philosopher(){
-  //sys_wait_sem(mutex);
+  sys_wait_sem(mutex);
   int i = actualPhilosopherCount - 1;
-  //sys_post_sem(mutex);
+  //printf("CREATE %d", i);
+  sys_post_sem(mutex);
+  //print("Post mutex\n");
   while (problemRunning){
     think(i);
-    // Trata de tomar los tenedores, si no puede se bloquea por el semaforo
+    //print("Thinking\n");
     takeForks(i);
     eat(i);
-    // Trata de dejar los tenedores, si no puede se bloquea por el semaforo
+    //print("Eating\n");
     placeForks(i);
   }
 }
 
 void takeForks(int i){
   sys_wait_sem(mutex);
-  // Lo deja en HUNGRY para el checkeo de poder tomar el tenedor
   state[i] = HUNGRY;
-  // Hace el check de los vecinos para ver si puede tomar el tenedor
+  //printf("TAKE %d", i);
+  //print("TAKE\n");
+  printTable();
+  //print("CHECK SELF\n");
   check(i);
   sys_post_sem(mutex);
   sys_wait_sem(sems[i]);
@@ -52,12 +54,13 @@ void takeForks(int i){
 
 void placeForks(int i){
   sys_wait_sem(mutex);
-  // Lo devuelve al estado de THINKING
   state[i] = THINKING;
-  // Verifica si el philo a la izquierda puede comer
-  check(left(i, actualPhilosopherCount));
-  // Verifica si el philo a la derecha puede comer
-  check(right(i, actualPhilosopherCount));
+  //print("PLACE\n");
+  printTable();
+  //print("CHECK LEFT\n");
+  check(LEFT(i, actualPhilosopherCount));
+  //print("CHECK RIGHT\n");
+  check(RIGHT(i, actualPhilosopherCount));
   sys_post_sem(mutex);
 }
 
@@ -70,11 +73,12 @@ void eat(int i){
 }
 
 void check(int i){
-  //printf("CHECK %d\n", i);
-  if (state[i] == HUNGRY && state[left(i, actualPhilosopherCount)] != EATING && state[right(i, actualPhilosopherCount)] != EATING){
-    //printf("CHECK EAT %d\n", i);
+  //print("CHECK\n");
+  printf("%d %d", i, actualPhilosopherCount);
+  if (state[i] == HUNGRY && state[LEFT(i, actualPhilosopherCount)] != EATING && state[RIGHT(i, actualPhilosopherCount)] != EATING){
+    //print("CHECK OK\n");
     state[i] = EATING;
-    //printTable();
+    printTable();
     sys_post_sem(sems[i]);
   }
 }
@@ -86,12 +90,13 @@ void philosopherProblem(){
   mutex = sys_create_sem("philo_mutex");
 
   for (int i = 0; i < BASE_PHILOSOPHER_COUNT; i++){
-    addPhilosopher();
     goToSleep(30);
+    printf("About to create %d", i);
+    addPhilosopher();
   }
 
+  print("CREATED");
   int res;
-  actualIters = 0;
 
   while(problemRunning){
     char key = getKey();
@@ -113,15 +118,8 @@ void philosopherProblem(){
         }
       break;
       case 'q':
-        print("Program Finished!\n");
         problemRunning = 0;
       break;
-    }
-    if (actualIters >= maxIters){
-      printTable();
-      actualIters = 0;
-    } else {
-      actualIters++;
     }
   }
 }
@@ -131,12 +129,12 @@ int addPhilosopher(){
     return -1;
   }
   sys_wait_sem(mutex);
+  printf("creating %d", actualPhilosopherCount);
   char num[3];
   itoa(actualPhilosopherCount, num, 10);
   char name[6 + 3 + 1] = {0};
   concat(name, "philo_");
   concat(name + 6, num);
-
   actualPhilosopherCount++;
   state[actualPhilosopherCount - 1] = THINKING;
   sems[actualPhilosopherCount - 1] = sys_create_sem(name);
@@ -195,18 +193,4 @@ void printTable(){
   table[totalCharCount - 2] = '\n';
   table[totalCharCount - 1] = 0;
   print(table);
-}
-
-int left(int i, int mod){
-  int res = (i - 1) % mod;
-  if (res < 0){
-    return mod + res;
-  } else {
-    return res;
-  }
-}
-
-int right(int i, int mod){
-  int res = (i + 1) % mod;
-  return res;
 }
