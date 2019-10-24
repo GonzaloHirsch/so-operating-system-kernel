@@ -23,6 +23,7 @@
 #include "../include/time.h"
 #include "../include/semaphore.h"
 #include "../include/intQueue.h"
+#include "../include/readerDaemon.h"
 #include "../include/intPairQueue.h"
 
 extern uint8_t text;
@@ -238,21 +239,28 @@ void testIntPairQueue(){
     print("\n");
 }
 
-int main()
-{
-
-
-    testIntQueue();
-    testIntPairQueue();
+void init(){
+    //testIntQueue();
 
     print("Starting kernel main\n");
     sleep(2);
 
-    //Process shellProcess = newProcess("shell", (uint64_t) sampleCodeModuleAddress, 10, FOREGROUND);
-    //newPCB(shellProcess);
+    initializeReaderDaemon();
 
-    Process mainProcess = newProcess("mainProcess", (uint64_t) mainFunction, 5, FOREGROUND);
-    newPCB(mainProcess);
+    Process shellProcess = newProcess("shell", (uint64_t) sampleCodeModuleAddress, 10, FOREGROUND);
+    newPCB(shellProcess);
+
+    //Process mainProcess = newProcess("mainProcess", (uint64_t) mainFunction, 5, FOREGROUND);
+    //newPCB(mainProcess);
+}
+
+int main()
+{
+
+    Process initProcess = newProcess("init", init, 1, BACKGROUND);
+    newPCB(initProcess);
+
+
 
     //mFree(array);
     //goToUserland();

@@ -6,6 +6,7 @@
 #include <scheduler.h>
 #include "../include/processes.h"
 #include "../include/scheduler.h"
+#include "../include/readerDaemon.h"
 
 extern void hang();
 extern void over_clock(int rate);
@@ -125,9 +126,16 @@ void handle_sys_draw_pixel(int x, int y, int r, int g, int b){
 void handle_sys_read(int fd, char * buf, int length){
     //int pid = getProcessPid(getCurrentProcess());
     //setProcessStateByPid(pid, STATE_BLOCKED);
-    for (int i = 0; i < length; i++){
-		*(buf + i) = getChar();
-	}
+
+    //primer semaforo: para evitar concurrencia al settear length y buffer
+    semWait(getSemaphoreById(0));
+    setCurrentLength(length);
+    setCurrentBuffer(buf);
+    //segundo semaforo: bloquea el proceso actual,
+    wakeUpDaemon();
+    semWait(getSemaphoreById(1));
+
+
     //setProcessStateByPid(pid, STATE_READY);
 }
 
