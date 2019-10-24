@@ -212,7 +212,7 @@ void testIntQueue(){
         print("%d - ", dequeue(q));
     }
     print("\n");
-
+    freeQueue(q);
 }
 
 void testIntPairQueue(){
@@ -237,6 +237,7 @@ void testIntPairQueue(){
         print("Pair: (%d, %d)\n",it.first, it.second);
     }
     print("\n");
+    freeIntPairQueue(q);
 }
 
 void init(){

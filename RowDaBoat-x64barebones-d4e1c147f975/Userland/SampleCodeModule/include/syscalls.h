@@ -29,6 +29,7 @@
 #define CREATE_SEM 19
 #define POST_SEM 20
 #define WAIT_SEM 21
+#define READ_NON_BLOCKING 26
 
 void sys_write(int fd, const char *buf, int count);
 
@@ -45,6 +46,8 @@ void sys_get_key(int fd, char *buf);
 void sys_over_clock(int rate);
 
 void sys_read(int fd, char *buf, int count);
+
+void sys_read_non_blocking(int fd, char *buf, int count);
 
 void sys_sleep(int ticks);
 

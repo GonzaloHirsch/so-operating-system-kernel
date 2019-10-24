@@ -18,7 +18,7 @@ void sys_read(int fd, char *buf, int count){
 }
 
 void sys_get_key(int fd, char * buf){
-	_int80((uint64_t)READ, (uint64_t)fd, (uint64_t)buf, (uint64_t)1, 0, 0);
+	_int80((uint64_t)READ_NON_BLOCKING, (uint64_t)fd, (uint64_t)buf, (uint64_t)1, 0, 0);
 }
 
 void sys_write_key(int fd, const char * buf){
@@ -100,4 +100,8 @@ void sys_block(int pid) {
 
 void sys_unblock(int pid) {
     _int80(UNBLOCK_PROCESS, pid, 0, 0, 0, 0);
+}
+
+void sys_read_non_blocking(int fd, char *buf, int count) {
+    _int80(READ_NON_BLOCKING, fd, buf, count, 0, 0);
 }

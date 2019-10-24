@@ -39,6 +39,8 @@ void handle_sys_block_process(int pid);
 
 void handle_sys_unblock_process(int pid);
 
+void handle_sys_read_non_blocking(int fd, char * buf, int length);
+
 //Handler de la llamada a la int 80
 uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
     switch(rdi){
@@ -94,6 +96,8 @@ uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, u
         case UNBLOCK_PROCESS:
             handle_sys_unblock_process(rsi);
         break;
+        case READ_NON_BLOCKING:
+            handle_sys_read_non_blocking(rsi, rdx, rcx);
 	}
 	return 0;
 }
@@ -137,6 +141,13 @@ void handle_sys_read(int fd, char * buf, int length){
 
 
     //setProcessStateByPid(pid, STATE_READY);
+}
+
+void handle_sys_read_non_blocking(int fd, char * buf, int length) {
+    for (int i = 0; i < length; i++){
+        *(buf + i) = getChar();
+    }
+
 }
 
 //Handler para la system SLEEP
