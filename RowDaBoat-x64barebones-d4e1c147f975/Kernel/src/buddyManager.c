@@ -19,10 +19,9 @@
     |MEM
     |....mas MEM
 */
-
-#include <stdio.h>
-#include <stdlib.h>
 #include <buddyManager.h>
+#include <stdint.h>
+#include <stddef.h>
 
 //Tipo nodo.
 typedef struct nodeType{
