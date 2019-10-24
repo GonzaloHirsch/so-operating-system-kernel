@@ -36,6 +36,8 @@ int isNumeric(char c);
 
 char getKey(void);
 
+char getKeyNonBlocking(void);
+
 void writeKey(char * key);
 
 int strcmp(const char * stra, const char * strb);

@@ -21,6 +21,7 @@ static void daemonMain();
 void initializeReaderDaemon(){
 
     daemon = newProcess("readerDaemon", (uint64_t) daemonMain, 2, BACKGROUND);
+
     newPCB(daemon);
 }
 
@@ -38,11 +39,9 @@ void setCurrentBuffer(char * buffer){
 
 static void daemonMain(){
 
-    sem * sem0 = openSemaphore("sysReadDataMutex");
-    sem * sem1 = openSemaphore("sysReadMutex");
 
     //setteo el valor inicial de sysReadMutex a 0
-    semWait(sem1);
+    semWaitById(1);
 
 
     while(1){
@@ -59,8 +58,8 @@ static void daemonMain(){
             ch = 0;
         }
 
-        semPost(sem1);
-        semPost(sem0);
+        semPostById(1);
+        semPostById(0);
 
     }
 

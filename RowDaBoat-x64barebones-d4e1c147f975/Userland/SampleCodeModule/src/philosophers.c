@@ -1,4 +1,5 @@
 #include <philosophers.h>
+#include "../include/utils.h"
 
 // Implementacion adapatada a partir de la de Tanenbaum
 
@@ -99,7 +100,7 @@ void philosopherProblem(){
   int res;
 
   while(problemRunning){
-    char key = getKey();
+    char key = getKeyNonBlocking();
     switch (key) {
       case 'a':
         res = addPhilosopher();

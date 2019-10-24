@@ -132,12 +132,12 @@ void handle_sys_read(int fd, char * buf, int length){
     //setProcessStateByPid(pid, STATE_BLOCKED);
 
     //primer semaforo: para evitar concurrencia al settear length y buffer
-    semWait(getSemaphoreById(0));
+    semWaitById(0);
     setCurrentLength(length);
     setCurrentBuffer(buf);
     //segundo semaforo: bloquea el proceso actual,
     wakeUpDaemon();
-    semWait(getSemaphoreById(1));
+    semWaitById(1);
 
 
     //setProcessStateByPid(pid, STATE_READY);

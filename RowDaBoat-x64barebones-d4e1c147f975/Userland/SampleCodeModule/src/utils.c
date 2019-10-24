@@ -351,6 +351,12 @@ char getKey(void){
 	return buff;
 }
 
+char getKeyNonBlocking(void){
+    char buff;
+    sys_get_key_non_blocking(0, &buff);
+    return buff;
+}
+
 void getTime(char * buff){
 	int seconds = sys_time(SECONDS);
 	int minutes = sys_time(MINUTES);

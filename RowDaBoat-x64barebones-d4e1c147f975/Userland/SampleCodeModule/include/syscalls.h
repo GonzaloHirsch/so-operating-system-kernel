@@ -43,6 +43,9 @@ void sys_write_key(int fd, const char * buf);
 
 void sys_get_key(int fd, char *buf);
 
+void sys_get_key_non_blocking(int fd, char * buf);
+
+
 void sys_over_clock(int rate);
 
 void sys_read(int fd, char *buf, int count);

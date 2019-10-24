@@ -247,7 +247,6 @@ void init(){
     sleep(2);
 
     initializeReaderDaemon();
-
     Process shellProcess = newProcess("shell", (uint64_t) sampleCodeModuleAddress, 10, FOREGROUND);
     newPCB(shellProcess);
 
