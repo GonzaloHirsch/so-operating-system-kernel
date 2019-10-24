@@ -24,40 +24,38 @@ QueueBuffer createQueueBuffer(){
 }
 
 
-int putString(QueueBuffer qB, char * string){
-    int size = qB->size, tail = qB->tail, i = 0;
-    char * buff = qB->buff;
-    while(size < MAX_BUFFER_SIZE){
-        buff[tail%MAX_BUFFER_SIZE] = string[i++];
-        tail = (tail + 1) % MAX_BUFFER_SIZE;
-        size++;
+int putString(QueueBuffer qB, char * string, int count){
+    int i = 0;
+
+    while(qB->size < MAX_BUFFER_SIZE-1 && i < count && string[i] != 0){
+        qB->buff[qB->tail%MAX_BUFFER_SIZE] = string[i++];
+        qB->tail = (qB->tail + 1) % MAX_BUFFER_SIZE;
+        qB->size++;
     }
 
-    qB->size = size;
-    qB->tail = tail;
+    qB->buff[qB->tail] = 0;
+    qB->tail = (qB->tail+1)%MAX_BUFFER_SIZE;
+
     return 0;
     
-}
+}  
 
-int getString(QueueBuffer qB, char * dst){
-
-    if(!hasNext(qB)) return NULL;
+int getString(QueueBuffer qB, char * dst, int count){
     
-    int size = qB->size, head = qB->head, i = 0;
-    char * buff = qB->buff;
+    int i = 0;;
 
-    while(size > 0){
-        dst[i] = buff[head];
-        head = (head + 1) % MAX_BUFFER_SIZE;
-        i++;size--;
+    //Iteraremos hasta encontrar el 0 o llegar a la cantidad de count
+    while((qB->buff[qB->head] != 0 || i==0) && i < count-1){
+        //Si no hay nada para leer, esperaremos.
+        if(qB->size > 0){
+            dst[i] = qB->buff[qB->head];
+            qB->head = (qB->head + 1) % MAX_BUFFER_SIZE;
+            i++;qB->size--;
+        }
     }
 
-    qB->head = head;
-    qB->size = size;
-
+    qB->head = (qB->head + 1)%MAX_BUFFER_SIZE;
+    dst[i] = 0;
     return 0;
 }
 
-int hasNext(QueueBuffer qB){
-    return qB->size > 0;
-}

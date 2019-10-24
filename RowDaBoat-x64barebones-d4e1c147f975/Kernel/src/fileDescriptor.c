@@ -2,6 +2,7 @@
 #include <memManager.h>
 #include <pipes.h>
 #include <console.h>
+#include <keyboard.h>
 
 typedef struct fileDescriptorCDT{
     int number;
@@ -36,7 +37,7 @@ int createFds(int type, int pipe, void (*altRead)(char *, int),void (*altWrite)(
     return i;
 }
 
-int read(int fd, char * dest, int length){
+int read(int fd, char * dest, int count){
     if(fd > MAX_FILE_DESCRIPTORS || fileList[fd] == NULL)
         return -1;
 
@@ -44,15 +45,15 @@ int read(int fd, char * dest, int length){
 
     if(fileDesc->type == STD_FD){
         //Uso el que estaba antes en la syscalls..
-        for (int i = 0; i < length; i++){
+        for (int i = 0; i < count; i++){
 		    *(dest + i) = getChar();
 	    }
     }
     else if(fileDesc->type == PIPE_FD){
-        return readPipe(fileDesc->pipe, dest, length);
+        return readPipe(fileDesc->pipe, dest, count);
     }
     else if(fileDesc->type == ALT_FD){
-        (*fileDesc->altRead)(dest,length);
+        (*fileDesc->altRead)(dest,count);
     }
     else{
         return -1;
@@ -63,7 +64,7 @@ int read(int fd, char * dest, int length){
    
 }
 
-int write(int fd, char * src, int length){
+int write(int fd, char * src, int count){
     if(fd > MAX_FILE_DESCRIPTORS || fileList[fd] == NULL)
         return -1;
 
@@ -71,13 +72,13 @@ int write(int fd, char * src, int length){
 
     if(fileDesc->type == STD_FD){
         //Uso el que estaba en syscalls
-        print_N(src, length);
+        print_N(src, count);
     }
     else if(fileDesc->type == PIPE_FD){
-        return writePipe(fileDesc->pipe, src, length);
+        return writePipe(fileDesc->pipe, src, count);
     }
     else if(fileDesc->type == ALT_FD){
-        (*fileDesc->altWrite)(src,length);
+        (*fileDesc->altWrite)(src,count);
     }
     else{
         return -1;

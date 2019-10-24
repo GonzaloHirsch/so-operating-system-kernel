@@ -37,7 +37,8 @@ int pipeFifo(char * name){
     //Creamos el queuebuffer donde escribe y lee datos
     aux->qb = createQueueBuffer();
     //Creamos el file descriptor que lo envuelve
-    aux->fd = createFds(PIPE_FD,aux->qb,NULL,NULL); 
+    //Le pasamos que es de tipo pipe y el numero de pipe
+    aux->fd = createFds(PIPE_FD,firstNull,NULL,NULL); 
     //Asignamos el nombre
     strcpy(aux->name,name);
     //Asignamos el espacio del pipe en el pipelist
@@ -47,22 +48,23 @@ int pipeFifo(char * name){
 
 }
 
-int writePipe(int pipeNumber, char * src, int length){
+int writePipe(int pipeNumber, char * src, int count){
     if(pipeNumber > MAX_PIPES || pipeList[pipeNumber] == NULL)
         return -1;
     
     Pipe pipe = pipeList[pipeNumber];
 
-    return putString(pipe->qb, src);
+    return putString(pipe->qb, src, count);
 }
 
-int readPipe(int pipeNumber, char * dest, int length){
+int readPipe(int pipeNumber, char * dest, int count){
+
     if(pipeNumber > MAX_PIPES || pipeList[pipeNumber] == NULL)
         return -1;
     
     Pipe pipe = pipeList[pipeNumber];
 
-    return readString(pipe->qb, dest);
+    return getString(pipe->qb, dest, count);
 }
 
 

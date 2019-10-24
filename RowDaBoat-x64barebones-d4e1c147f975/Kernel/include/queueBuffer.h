@@ -1,16 +1,15 @@
 #ifndef QUEUE_QUEUEBUFFER_H
 #define QUEUE_QUEUEBUFFER_H
 
-#define MAX_BUFFER_SIZE 500
+#define MAX_BUFFER_SIZE 200
 
 typedef struct QueueBufferCDT * QueueBuffer;
 
 QueueBuffer createQueueBuffer();
 
-int putString(QueueBuffer qB, char * string);
+int putString(QueueBuffer qB, char * string, int count);
 
-int getString(QueueBuffer qB, char * dst);
+int getString(QueueBuffer qB, char * dst, int count);
 
-int hasNext(QueueBuffer qB);
 
 #endif //QUEUE_QUEUEBUFFER_H

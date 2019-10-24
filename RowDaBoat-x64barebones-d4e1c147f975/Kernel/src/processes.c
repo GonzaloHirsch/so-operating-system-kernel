@@ -11,6 +11,8 @@
 #include <stdint.h>
 #include <console.h>
 #include <time.h>
+#include <fileDescriptor.h>
+
 
 extern void forceChangeProcess();
 
@@ -32,6 +34,7 @@ struct ProcessCDT{
     uint64_t functionAddress;
     char name[MAX_NAME_LENGTH];
     IntQueue semaphores;
+    int filesDescriptors[2]; //0 STDIN, 1 STDOUT.
     
 };
 

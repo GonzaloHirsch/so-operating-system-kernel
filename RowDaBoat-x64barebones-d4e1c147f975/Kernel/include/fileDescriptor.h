@@ -10,8 +10,8 @@
 
 typedef struct fileDescriptorCDT * fds;
 int createFds(int type, int pipe, void (*altRead)(char *, int),void (*altWrite)(char *, int));
-int read(int fd, char * dest, int length);
-int write(int fd, char * src, int length);
+int read(int fd, char * dest, int count);
+int write(int fd, char * src, int count);
 
 
 
