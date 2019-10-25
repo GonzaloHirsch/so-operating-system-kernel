@@ -1,6 +1,45 @@
 #include <memManager.h>
 #include <memManager.h>
 #include "../include/memManager.h"
+#include <buddyManager.h>
+
+/*
+  Meotodos genericos para decidir que tipo de mem manager utilizaremos.
+*/
+
+static int memManagerUsed = BUDDY_MANAGER;
+
+void * mAlloc(size_t size){
+  if(memManagerUsed == FIRST_FIT_MANAGER){
+    return memMalloc(size);
+  }
+  else{
+    return buddyMalloc(size);
+  }
+
+}
+
+
+int mFree(void * ptr){
+  if(memManagerUsed == FIRST_FIT_MANAGER){
+    return memFree(ptr);
+  }
+  else{
+    return buddyFree(ptr);
+  }
+}
+
+void initializeMemManager(void * startDir, size_t totalSize){
+     if(memManagerUsed == FIRST_FIT_MANAGER){
+      initializeMemManagerList(startDir,totalSize);
+  }
+  else{
+     initializeBuddyMemory(startDir,totalSize);
+  }
+}
+
+
+//Todo de first fit
 
 /*
   Estructura del tipo Nodo
@@ -98,7 +137,7 @@ Node firstFit(Node node, size_t size){
   Devuelve:
     void * --> Puntero a la direccion de memoria para empezar a alocar
 */
-void * mAlloc(size_t size){
+void * memMalloc(size_t size){
   Node node = firstFit(memBlocks->head, size);
   if (node == NULL){
     return NULL;
@@ -179,7 +218,7 @@ int freeMemory(Node actual, Node previous, void * ptr){
   Devuelve:
     int --> 1 si fue exitoso, 0 si no lo fue
 */
-int mFree(void * ptr){
+int memFree(void * ptr){
   int result = freeMemory(memBlocks->head, NULL, ptr);
   return result;
 }

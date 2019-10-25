@@ -82,9 +82,9 @@ void * initializeKernelBinary()
     initVideoDriver();
     print("Initializing Console\n");
     init_console();
-    print("Initializing Memmanager list\n");
+    print("Initializing Memmanager\n");
     //todo nuestro memmanager
-    initializeMemManagerList(memoryStartAddress, 80*1048576); //80MB de memoria dinamica
+    initializeMemManager(memoryStartAddress, 80*1048576); //80MB de memoria dinamica
     //initialize_list(memoryStartAddress, 80*1048576);
     print("Initializing Processes\n");
     initProcesses();
