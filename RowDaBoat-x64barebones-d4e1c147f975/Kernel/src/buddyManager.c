@@ -19,9 +19,6 @@
     |MEM
     |....mas MEM
 */
-
-#include <stdio.h>
-#include <stdlib.h>
 #include <buddyManager.h>
 
 //Tipo nodo.

@@ -15,6 +15,7 @@
 #include <pixelMap.h>
 #include <exceptions.h>
 #include <memManager.h>
+#include <buddyManager.h>
 #include <processes.h>
 #include <scheduler.h>
 #include "../include/processes.h"
@@ -23,6 +24,8 @@
 #include "../include/time.h"
 #include "../include/semaphore.h"
 #include "../include/intQueue.h"
+#include <pipes.h>
+#include <fileDescriptor.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -85,6 +88,8 @@ void * initializeKernelBinary()
     //initialize_list(memoryStartAddress, 80*1048576);
     print("Initializing Processes\n");
     initProcesses();
+    print("Creating default fds\n"); //sacar despues
+    createDefaultFds();
     print("Loading idt\n");
  	load_idt();
  	print("Loading exceptions\n");
@@ -96,140 +101,62 @@ void * initializeKernelBinary()
 	return getStackBase();
 }
 
-void semTest1(){
+void pipeTest1(){
+    char * name = "pipe1";
+    char * ejemplo = "aaaaabbbbbbbbccccccccccccddddddddeeeeee";
+    print("Started writing\n");
+    int fd = pipeFifo(name);
+    write(fd, ejemplo, strlen(ejemplo));
+    print("Finished writing\n");
 
-    const sem * testSem = openSemaphore("test");
-    do{
+    char * ejemplo2 = "prueba 2";
+    print("Started writing 2\n");
+    write(fd, ejemplo2, strlen(ejemplo2));
+    print("Finished writing 2\n");
 
-
-        semWait(testSem);
-        for(int i = 0; i<20; i++){
-            print("Test1: %d\n", i);
-            if(i==15)sleep(2000);
-        }
-        print("\n");
-        semPost(testSem);
-    }while(0);
-    closeSemaphore(testSem);
 }
 
-void semTest2(){
+void pipeTest2(){
+    char * name = "pipe1";
+    char resultado[100];
+    print("Started reading\n");
+    int fd = pipeFifo(name);
+    read(fd, resultado,100);
+    print(resultado);print("\n");
+    print("Finished reading\n");
 
-    const sem * testSem = openSemaphore("test");
-    do{
+    char resultado2[100];
+    print("Started reading 2\n");
+    read(fd, resultado2,100);
+    print(resultado2);print("\n");
+    print("Finished reading 2\n");
 
 
-        semWait(testSem);
-        for(int i = 0; i<10; i++){
-            print("Test2: %d\n", i);
-            if(i==9)sleep(1000);
-        }
-        print("\n");
-        semPost(testSem);
-    }while(0);
-    closeSemaphore(testSem);
 }
-
-void semTest3() {
-
-    const sem *testSem = openSemaphore("test");
-    do{
-
-        semWait(testSem);
-        for (int i = 0; i < 5; i++) {
-            print("Test3: %d\n", i);
-            if(i==2)sleep(1000);
-        }
-        print("\n");
-        semPost(testSem);
-    }while(0);
-    closeSemaphore(testSem);
-}
-
-void semTest4() {
-
-    const sem *testSem = openSemaphore("test");
-    do{
-
-        semWait(testSem);
-        for (int i = 0; i < 5; i++) {
-            print("Test4: %d\n", i);
-            if(i==2)sleep(1000);
-        }
-        print("\n");
-        semPost(testSem);
-    }while(0);
-    closeSemaphore(testSem);
-}
-
 void mainFunction(){
 
-    Process p1 = newProcess("semTest1", (uint64_t) semTest1, 2, FOREGROUND);
-    Process p2 = newProcess("semTest2", (uint64_t) semTest2, 2, FOREGROUND);
-    Process p3 = newProcess("semTest3", (uint64_t) semTest3, 2, FOREGROUND);
-    Process p4 = newProcess("semTest4", (uint64_t) semTest4, 2, FOREGROUND);
-    Process p5 = newProcess("semTest1", (uint64_t) semTest1, 2, FOREGROUND);
-    Process p6 = newProcess("semTest2", (uint64_t) semTest2, 2, FOREGROUND);
-    Process p7 = newProcess("semTest3", (uint64_t) semTest4, 2, FOREGROUND);
-    /*
-    Process p8 = newProcess("semTest4", (uint64_t) semTest3, 2, BACKGROUND);
-    Process p9 = newProcess("semTest4", (uint64_t) semTest4, 2, BACKGROUND);
-    Process p10 = newProcess("semTest1", (uint64_t) semTest1, 2, BACKGROUND);
-    Process p11 = newProcess("semTest2", (uint64_t) semTest2, 2, BACKGROUND);
-    Process p12 = newProcess("semTest3", (uint64_t) semTest3, 2, BACKGROUND);
-    Process p13 = newProcess("semTest4", (uint64_t) semTest4, 2, BACKGROUND);
-    */
+    Process p1 = newProcess("pipeTest1", (uint64_t) pipeTest1, 2, FOREGROUND);
+    Process p2 = newProcess("pipeTest2", (uint64_t) pipeTest2, 2, FOREGROUND);
+    
 
-    newPCB(p1);
     newPCB(p2);
-    newPCB(p3);
-    newPCB(p4);
-    newPCB(p5);
-    newPCB(p6);
-    newPCB(p7);
-    /*
-    newPCB(p8);
-    newPCB(p9);
-    newPCB(p10);
-    newPCB(p11);
-    newPCB(p12);
-    newPCB(p13);
-     */
+    newPCB(p1);
+   
     while(1){}
 }
 
-void testIntQueue(){
-    IntQueue q = newQueue(35);
-    for(int i = 0; i<37; i++){
-        enqueue(q, i);
-    }
-    for(int i = 0; i<37; i++){
-        print("%d - ", dequeue(q));
-    }
-    print("\n");
-
-}
 
 int main()
 {
 
-
-    testIntQueue();
-
     print("Starting kernel main\n");
     sleep(2);
-
-    //Process shellProcess = newProcess("shell", (uint64_t) sampleCodeModuleAddress, 10, FOREGROUND);
-    //newPCB(shellProcess);
 
     Process mainProcess = newProcess("mainProcess", (uint64_t) mainFunction, 5, FOREGROUND);
     newPCB(mainProcess);
 
-    //mFree(array);
-    //goToUserland();
-    for(int i = 0; i<10; i++)
-        print("Hey I'm done here\n");
+
+
 	print("kernel stop\n");
     return 0;
-
 }

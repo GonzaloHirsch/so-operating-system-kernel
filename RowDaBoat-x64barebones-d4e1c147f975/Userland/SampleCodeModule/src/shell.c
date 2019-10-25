@@ -34,7 +34,11 @@ const char * commands[] = {
   "pipe",
   "sem",
   "phylo",
-  "nice"
+  "nice",
+  "cat",
+  "wc",
+  "filter",
+  "loop"
 };
 
 const char * commandsInfo[] = {
@@ -61,11 +65,15 @@ const char * commandsInfo[] = {
   "ps - Prints all active process information\n",
   "pipe - Prints all active pipes information\n",
   "sem - Prints all active semaphores information\n",
-  "phylo - Starts the phylosophers problem, exit the problem with \'q\'",
-  "nice - Changes the priority of a process\n"
+  "phylo - Starts the phylosophers problem, exit the problem with \'q\'\n",
+  "nice - Changes the priority of a process\n",
+  "cat - Prints to stdin as it receives data\n",
+  "wc - Counts amount of lines in input\n",
+  "filter - Filters vowels from input\n",
+  "loop - Prints PID with a message every 5 seconds\n",
 };
 
-const int commandCount = 25;
+const int commandCount = 29;
 
 int getCommand(char * cmd, int * index);
 void generate_invalid_opc(void);
@@ -252,10 +260,16 @@ void handle_command(int cmd, char * params){
       sys_new_process("philosophers_problem", (uint64_t) philosopherProblem, 1, FOREGROUND);
       sys_block(shellPID);
     break;
-	    case NICE_COMMAND:
-	        sscanf(params, "%d %d\n", &w, &x);
-	        sys_change_priority(w, x);
-	        break;
+    case NICE_COMMAND:
+      sscanf(params, "%d %d\n", &w, &x);
+      sys_change_priority(w, x);
+    break;
+    case LOOP_COMMAND:
+      //TODO: VER COMO SE HACE ESTO, SI ES CON OTRO PROCESO O LOOPEAMOS LA SHELL
+      //loop_process();
+      //sscanf(params, "%d %d\n", &w, &x);
+      //sys_change_priority(w, x);
+    break;
 	}
 	print("\n");
 }
@@ -298,6 +312,10 @@ void display_time(void){
 	char time[20];
 	getTime(time);
 	print(time);
+}
+
+void loop_process(){
+
 }
 
 void display_date(void){

@@ -1,9 +1,11 @@
 #ifndef BUDDY_MANAGER_H
 #define BUDDY_MANAGER_H
 
-#include <stddef.h>
-
 #define SMALLEST_SIZE 1024 //1mb
+
+#include <stddef.h>
+#include <stdint.h>
+
 enum BUDDY_STATE {B_FREE = 1, B_NOT_FREE = 0, B_PARENT = 2};
 
 void * buddyMalloc(size_t newSize);
