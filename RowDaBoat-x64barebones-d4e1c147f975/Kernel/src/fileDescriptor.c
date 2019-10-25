@@ -15,6 +15,8 @@ typedef struct fileDescriptorCDT{
 static fds fileList[MAX_FILE_DESCRIPTORS] = {NULL};
 static int highestFileId;
 
+
+
 int createFds(int type, int pipe, void (*altRead)(char *, int),void (*altWrite)(char *, int)){
     int i;
 
@@ -37,28 +39,34 @@ int createFds(int type, int pipe, void (*altRead)(char *, int),void (*altWrite)(
     return i;
 }
 
+int createDefaultFds(){
+     createFds(STDIN_FD,0,NULL,NULL);
+     createFds(STDOUT_FD,0,NULL,NULL);
+}
+
 int read(int fd, char * dest, int count){
     if(fd > MAX_FILE_DESCRIPTORS || fileList[fd] == NULL)
         return -1;
 
     fds fileDesc = fileList[fd];
 
-    if(fileDesc->type == STD_FD){
+    switch (fileDesc->type)
+    {
+    case STDIN_FD:
         //Uso el que estaba antes en la syscalls..
         for (int i = 0; i < count; i++){
 		    *(dest + i) = getChar();
 	    }
-    }
-    else if(fileDesc->type == PIPE_FD){
+        break;
+    case PIPE_FD:
         return readPipe(fileDesc->pipe, dest, count);
-    }
-    else if(fileDesc->type == ALT_FD){
+        break;
+    case ALT_FD:
         (*fileDesc->altRead)(dest,count);
-    }
-    else{
+        break;
+    default:
         return -1;
     }
-
     return 0;
 
    
@@ -70,17 +78,18 @@ int write(int fd, char * src, int count){
 
     fds fileDesc = fileList[fd];
 
-    if(fileDesc->type == STD_FD){
-        //Uso el que estaba en syscalls
+    switch (fileDesc->type)
+    {
+    case STDOUT_FD:
         print_N(src, count);
-    }
-    else if(fileDesc->type == PIPE_FD){
+        break;
+    case PIPE_FD:
         return writePipe(fileDesc->pipe, src, count);
-    }
-    else if(fileDesc->type == ALT_FD){
+        break;
+    case ALT_FD:
         (*fileDesc->altWrite)(src,count);
-    }
-    else{
+        break;
+    default:
         return -1;
     }
 

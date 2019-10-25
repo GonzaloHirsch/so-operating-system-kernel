@@ -88,6 +88,8 @@ void * initializeKernelBinary()
     //initialize_list(memoryStartAddress, 80*1048576);
     print("Initializing Processes\n");
     initProcesses();
+    print("Creating default fds\n"); //sacar despues
+    createDefaultFds();
     print("Loading idt\n");
  	load_idt();
  	print("Loading exceptions\n");

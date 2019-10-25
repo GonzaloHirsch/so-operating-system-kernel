@@ -46,11 +46,17 @@ int getString(QueueBuffer qB, char * dst, int count){
 
     //Iteraremos hasta encontrar el 0 o llegar a la cantidad de count
     while((qB->buff[qB->head] != 0 || i==0) && i < count-1){
+        
         //Si no hay nada para leer, esperaremos.
-        if(qB->size > 0){
+        if(qB->size > 0 && qB->buff[qB->head] != 0){
             dst[i] = qB->buff[qB->head];
             qB->head = (qB->head + 1) % MAX_BUFFER_SIZE;
             i++;qB->size--;
+        }
+        //Esto es para abarcar el caso en que manda un 0 solamente.
+        else if(qB->size > 0 && qB->buff[qB->head] == 0){
+            qB->size--;
+            break;
         }
     }
 

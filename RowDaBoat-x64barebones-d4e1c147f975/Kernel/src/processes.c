@@ -100,6 +100,8 @@ Process newProcess(char *processName, uint64_t functionAddress, int priority, en
     aux->state = STATE_READY;
     theProcessList[pidCounter++] = aux;
     aux->semaphores = newQueue(MAX_SEMAPHORE_COUNT);
+    //Files descriptors default.
+    aux->filesDescriptors[0] = 0;aux->filesDescriptors[1] = 1;
     return aux;
 }
 
