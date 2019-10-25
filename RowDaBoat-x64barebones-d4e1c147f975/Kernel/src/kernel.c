@@ -109,7 +109,7 @@ void pipeTest1(){
     write(fd, ejemplo, strlen(ejemplo));
     print("Finished writing\n");
 
-    char * ejemplo2 = "prueba 2";
+    char * ejemplo2 = "pruebaasdfds         ssssssssss 2";
     print("Started writing 2\n");
     write(fd, ejemplo2, strlen(ejemplo2));
     print("Finished writing 2\n");
@@ -119,7 +119,8 @@ void pipeTest1(){
 void pipeTest2(){
     char * name = "pipe1";
     char resultado[100];
-    print("Started reading\n");
+    char * welcomeMessage = "Started reading\n";
+    write(1,welcomeMessage,strlen(welcomeMessage));
     int fd = pipeFifo(name);
     read(fd, resultado,100);
     print(resultado);print("\n");
@@ -137,6 +138,8 @@ void mainFunction(){
 
     Process p1 = newProcess("pipeTest1", (uint64_t) pipeTest1, 2, FOREGROUND);
     Process p2 = newProcess("pipeTest2", (uint64_t) pipeTest2, 2, FOREGROUND);
+
+
     
 
     newPCB(p2);
@@ -154,8 +157,6 @@ int main()
 
     Process mainProcess = newProcess("mainProcess", (uint64_t) mainFunction, 5, FOREGROUND);
     newPCB(mainProcess);
-
-
 
 	print("kernel stop\n");
     return 0;

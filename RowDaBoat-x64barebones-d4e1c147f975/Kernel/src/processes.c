@@ -230,3 +230,15 @@ int removeSemaphoreById(int pid, sem semaphore) {
     return findAndDequeue(theProcessList[pid]->semaphores, semaphore);
 }
 
+int setProcessFd(int pid, int fdPosition, int fd){
+    if(fdPosition >= FD_COUNT || fdPosition < 0)
+        return -1;
+    
+    Process aux = theProcessList[pid];
+    if(aux == NULL)
+        return -1;
+    
+    aux->filesDescriptors[fdPosition] = fd;
+    return 0;
+}
+
