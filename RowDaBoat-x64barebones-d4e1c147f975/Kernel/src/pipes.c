@@ -117,10 +117,11 @@ void printPipes() {
     for(int i = 0; i<MAX_PIPES; i++){
         if(pipeList[i]!=NULL) {
             Pipe aux = pipeList[i];
-            print("Pipe %d/n    Name: %s\n    Being Accessed: %d\n    Waiting Process:%d\n", aux->fd, aux->name, aux->beingAccessed, aux->waitingProcess);
+            print("Pipe %d\n    Name: %s\n    Being Accessed: %d\n    Waiting Process:%d\n", aux->fd, aux->name, aux->beingAccessed, aux->waitingProcess);
         }
-        print("\n");
+
     }
+    print("\n");
 }
 
 
