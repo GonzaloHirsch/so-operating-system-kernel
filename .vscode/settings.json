@@ -1,6 +1,10 @@
 {
     "files.associations": {
         "irqdispatcher.h": "c",
-        "memmanager.h": "c"
+        "memmanager.h": "c",
+        "scheduler.h": "c",
+        "strings.h": "c",
+        "stddef.h": "c",
+        "queuebuffer.h": "c"
     }
 }

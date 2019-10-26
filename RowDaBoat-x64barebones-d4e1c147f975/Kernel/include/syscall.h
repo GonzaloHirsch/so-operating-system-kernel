@@ -34,6 +34,15 @@
 #define CREATE_SEM 19
 #define POST_SEM 20
 #define WAIT_SEM 21
+#define CREATE_PIPE 22
+#define SET_PROCESS_FD 23
+#define PRINT_PIPE_INFO 24
+#define PRINT_SEM_INFO 25
+#define CLOSE_SEM 26
+#define SET_SEM_VALUE 27
+#define PRINT_MEM_STATE 28
+#define MALLOC 29
+#define MFREE 30
 
 uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
 

@@ -1,4 +1,5 @@
 #include <philosophers.h>
+#include "../include/syscalls.h"
 
 // Implementacion adapatada a partir de la de Tanenbaum
 

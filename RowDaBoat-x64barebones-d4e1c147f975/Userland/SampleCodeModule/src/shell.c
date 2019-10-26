@@ -1,6 +1,7 @@
 #include <shell.h>
 #include "../include/syscallTests.h"
 #include "../include/syscalls.h"
+#include "../include/shell.h"
 
 // ----------------------------------------------------------------------------------
 // Este modulo es el modulo principal de Userland
@@ -284,6 +285,12 @@ void handle_command(int cmd, char * params){
       scanf("%S\n", buff);
       print(buff);
     break;
+    case PIPE_INFO_COMMAND:
+        sys_print_pipe_info();
+        break;
+    case SEM_INFO_COMMAND:
+        sys_print_sem_info();
+        break;
 	}
 	print("\n");
 }

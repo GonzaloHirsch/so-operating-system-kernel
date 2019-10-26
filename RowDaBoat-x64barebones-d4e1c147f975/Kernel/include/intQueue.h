@@ -17,6 +17,7 @@ int isEmpty(IntQueue q);
 int size(IntQueue q);
 int findAndDequeue(IntQueue q, int value);
 void freeQueue(IntQueue q);
+void printQueue(IntQueue q);
 
 #endif //SO_TP2_INTQUEUE_H
 

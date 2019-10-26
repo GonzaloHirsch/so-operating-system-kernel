@@ -108,6 +108,7 @@ uint64_t getNextProcess(uint64_t currentProcessStack){
                 // Se settea el nuevo current process...
                 enum State state;
 
+
                 for (state = getProcessState(thePCBList.currentPCB->process);
                      state != STATE_READY; state = getProcessState(thePCBList.currentPCB->process)) {
 
@@ -122,6 +123,7 @@ uint64_t getNextProcess(uint64_t currentProcessStack){
                             break;
                         case STATE_RUNNING:
                             //print("Process %s : running\n", getProcessName(thePCBList.currentPCB->process));
+                            //if(getPid() == 1){return currentProcessStack;}
                             if (thePCBList.currentPCB->currentPriority < getPriority(thePCBList.currentPCB->process)) {
                                 //if(0){
                                 thePCBList.currentPCB->currentPriority++;
