@@ -2,6 +2,7 @@
 #define LIB_H
 
 #include <stdint.h>
+#include <stddef.h>
 
 
 void  strcpy(char * dst, char * src);

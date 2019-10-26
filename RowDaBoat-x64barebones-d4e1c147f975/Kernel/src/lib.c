@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <lib.h>
 
 void strcpy(char * dst, char * src){
     while((*dst++ = *src++));
