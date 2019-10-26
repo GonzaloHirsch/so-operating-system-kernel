@@ -140,3 +140,7 @@ void closeSemaphoreById(int semId) {
     closeSemaphore(theSemaphoreList[semId]);
 }
 
+void setSemValue(const sem * semaphore, int newVal){
+    ((Semaphore)semaphore)->value = newVal;
+}
+

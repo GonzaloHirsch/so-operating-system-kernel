@@ -29,5 +29,6 @@ void printAllSemaphores();
 void semPostById(int semId);
 void semWaitById(int semId);
 sem * getSemaphoreById(int id);
+void setSemValue(const sem * semaphore, int newVal);
 
 #endif //SO_TP2_SEMAPHORE_H

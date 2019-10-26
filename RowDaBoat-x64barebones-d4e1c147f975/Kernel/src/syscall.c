@@ -55,6 +55,9 @@ void handle_sys_print_sem_info();
 
 void handle_sys_print_pipe_info();
 
+void handle_sys_close_sem(sem * semaphore);
+
+void handle_sys_set_sem_value(sem * semaphore, int newVal);
 
 //Handler de la llamada a la int 80
 uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
@@ -125,11 +128,17 @@ uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, u
             return handle_sys_set_process_fd(rsi, rdx, rcx);
         case PRINT_PIPE_INFO:
             handle_sys_print_pipe_info();
-            break;
+        break;
         case PRINT_SEM_INFO:
             handle_sys_print_sem_info();
-            break;
-	}
+        break;
+        case CLOSE_SEM:
+            handle_sys_close_sem(rsi);
+        break;
+        case SET_SEM_VALUE:
+            handle_sys_set_sem_value(rsi, rdx);
+        break;
+    }
 	return 0;
 }
 
@@ -247,4 +256,13 @@ void handle_sys_print_sem_info() {
 
 void handle_sys_print_pipe_info() {
        printPipes();
+}
+
+void handle_sys_close_sem(sem *semaphore) {
+    closeSemaphore(semaphore);
+    removeSemaphoreById(getPid(), *semaphore);
+}
+
+void handle_sys_set_sem_value(sem * semaphore, int newVal){
+    setSemValue(semaphore, newVal);
 }

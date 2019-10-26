@@ -33,6 +33,8 @@
 #define SET_PROCESS_FD 23
 #define PRINT_PIPE_INFO 24
 #define PRINT_SEM_INFO 25
+#define CLOSE_SEM 26
+#define SET_SEM_VALUE 27
 
 void sys_write(int fd, const char *buf, int count);
 
@@ -43,6 +45,8 @@ void sys_post_sem(const sem * semaphore);
 void sys_wait_sem(const sem * semaphore);
 
 void sys_print_sem_info();
+
+void sys_close_sem(const sem* semaphore);
 
 void sys_write_key(int fd, const char * buf);
 
@@ -85,5 +89,7 @@ int sys_create_pipe(char * name);
 int sys_set_process_fd(int pid, int fdPosition, int fd);
 
 void sys_print_pipe_info();
+
+void sys_set_sem_value(sem * semaphore, int newVal);
 
 #endif

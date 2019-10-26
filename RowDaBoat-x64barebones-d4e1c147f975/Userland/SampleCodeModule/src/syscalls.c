@@ -117,3 +117,11 @@ void sys_print_pipe_info() {
 void sys_print_sem_info() {
     _int80(PRINT_SEM_INFO, 0, 0, 0, 0, 0);
 }
+
+void sys_close_sem(const sem *semaphore) {
+    _int80(CLOSE_SEM, semaphore, 0, 0, 0, 0);
+}
+
+void sys_set_sem_value(sem *semaphore, int newVal) {
+    _int80(SET_SEM_VALUE, semaphore, newVal, 0, 0, 0);
+}
