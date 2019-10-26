@@ -11,6 +11,8 @@
 #include <stdint.h>
 #include <console.h>
 #include <time.h>
+#include <fileDescriptor.h>
+
 
 extern void forceChangeProcess();
 
@@ -32,6 +34,8 @@ struct ProcessCDT{
     uint64_t functionAddress;
     char name[MAX_NAME_LENGTH];
     IntQueue semaphores;
+    int filesDescriptors[2]; //0 STDIN, 1 STDOUT.
+    
 };
 
 typedef struct ProcessStack{
@@ -96,6 +100,8 @@ Process newProcess(char *processName, uint64_t functionAddress, int priority, en
     aux->state = STATE_READY;
     theProcessList[pidCounter++] = aux;
     aux->semaphores = newQueue(MAX_SEMAPHORE_COUNT);
+    //Files descriptors default.
+    aux->filesDescriptors[0] = 0;aux->filesDescriptors[1] = 1;
     return aux;
 }
 
@@ -145,6 +151,9 @@ void removeProcess(Process process){
     // se libera el espacio reservado para el stack
     theProcessList[process->pid] = NULL;
     mFree((void*) process->stackBaseAddress);
+    while(!isEmpty(process->semaphores)){
+        closeSemaphoreById(dequeue(process->semaphores));
+    }
     // se libera el espacio reservado para el ADT de Process
     mFree(process);
 }
@@ -197,9 +206,13 @@ int getPid(){
 
 void listProcesses(){
     Process aux;
+    char * resp;
     for(int i = 0; i<pidCounter; i++){
         if((aux=theProcessList[i])!=NULL){
-            print("Process %s\n    PID: %d\n    Priority: %d\n    StackPointer: %d\n    Foreground? %s\n", aux->name, aux->pid, aux->stackPointer, (aux->isForeground) ? "Yes" : "No");
+            print("Process %s\n    PID: %d\n    Priority: %d\n    StackPointer: %d\n    Foreground? ", aux->name, aux->pid, aux->stackPointer);
+            resp = (aux->isForeground) ? "Yes" : "No";
+            print(resp);
+            print("\n");
         }
     }
 }
@@ -224,3 +237,14 @@ int removeSemaphoreById(int pid, sem semaphore) {
     return findAndDequeue(theProcessList[pid]->semaphores, semaphore);
 }
 
+int setProcessFd(int pid, int fdPosition, int fd){
+    if(fdPosition >= FD_COUNT || fdPosition < 0)
+        return -1;
+
+    Process aux = theProcessList[pid];
+    if(aux == NULL)
+        return -1;
+
+    aux->filesDescriptors[fdPosition] = fd;
+    return 0;
+}

@@ -20,10 +20,15 @@ const sem * openSemaphore(char * name);
 // proceso que use el semaphore pasaria a tener el sem* igual a NULL.
 // lo dejo como un todo.
 void closeSemaphore(const sem *id);
+void closeSemaphoreById(int semId);
 void semUnlink(char * name);
 void semWait(const sem * semaphore);
 void semPost(const sem * semaphore);
 int semGetValue(const sem * semaphore);
 void printAllSemaphores();
+void semPostById(int semId);
+void semWaitById(int semId);
+sem * getSemaphoreById(int id);
+void setSemValue(const sem * semaphore, int newVal);
 
 #endif //SO_TP2_SEMAPHORE_H

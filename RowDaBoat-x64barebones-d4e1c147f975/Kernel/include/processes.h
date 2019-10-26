@@ -11,6 +11,7 @@
 #define PROCESS_STACK_SIZE 8192
 #define MAX_PROCESS_COUNT 256
 #define MAX_SEMAPHORE_COUNT 128
+#define FD_COUNT 2
 
 #include <stddef.h>
 #include <stdint.h>
@@ -65,5 +66,7 @@ enum Visibility getProcessVisibilityById(int pid);
 void addSemaphoreById(int pid, sem semaphore);
 
 int removeSemaphoreById(int pid, sem semaphore);
+
+int setProcessFd(int pid, int fdPosition, int fd);
 
 #endif //SO_TP2_PROCESS_H

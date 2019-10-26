@@ -43,6 +43,7 @@
 #define WC_COMMAND 26
 #define FILTER_COMMAND 27
 #define LOOP_COMMAND 28
+#define SH_COMMAND 29
 
 //Address original que devolvia el samplecoremodule
 #define RETURN_ADRESS 0xDEADC0DE

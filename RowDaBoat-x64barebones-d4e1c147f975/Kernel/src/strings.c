@@ -3,6 +3,7 @@
 //
 
 #include <strings.h>
+#include <stdint.h>
 
 int strlen(char * str){
     int ret = 0;

@@ -1,4 +1,5 @@
-#include <memManager.h>
+#if (MEM_MANAGER == 0)
+
 #include <memManager.h>
 #include "../include/memManager.h"
 
@@ -204,3 +205,4 @@ void initializeMemManagerList(void * startDir, size_t totalSize){
   memBlocks->head->size = totalSize - sizeof(struct t_list) - sizeof(struct t_node);
   memBlocks->head->state = FREE;
 }
+#endif

@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <lib.h>
 
 void strcpy(char * dst, char * src){
     while((*dst++ = *src++));
@@ -116,3 +117,28 @@ char* itoa(int value, char* buffer, int base)
 	// invertir el string y devolverlo
 	return reverse(buffer, 0, i - 1);
 }
+
+size_t powerTo(size_t value,size_t pow){
+    if(pow == 0){
+        return 1;
+    }
+
+    int result = 1;
+    while(pow > 0){
+        result *= value;
+        pow--;
+
+    }
+
+    return result;
+}
+
+//Devuelve la potencia tomando el techo del resultado
+size_t logBase2Ceil(size_t value){
+    int i = 0;
+    while((int) powerTo(2,i) < value){
+        i++;
+    }
+    return i;
+}
+

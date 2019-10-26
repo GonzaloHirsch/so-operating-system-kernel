@@ -1,4 +1,6 @@
-doit: 
+export MEM_MANAGER
+
+doit:
 	cd Toolchain; make all; cd ../; make all
 all:  bootloader kernel userland image
 

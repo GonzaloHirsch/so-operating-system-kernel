@@ -71,3 +71,10 @@ int size(IntQueue q) {
     }
     else return q->size-q->head + q->tail;
 }
+
+void printQueue(IntQueue q) {
+    for(int i = q->head; i!=q->tail; i = (i+1)%q->size){
+        print("%d ", q->queue[i]);
+    }
+    print("\n");
+}

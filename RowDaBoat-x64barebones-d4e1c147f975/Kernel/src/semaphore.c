@@ -103,7 +103,8 @@ void printAllSemaphores() {
     Semaphore aux;
     for(int i = 0; i<highestSemId; i++){
         aux = theSemaphoreList[i];
-        print("Semaphore %s\n    Value: %d\n", aux->name, aux->value);
+        print("Semaphore %s\n    Value: %d\nWaiting Processes: ", aux->name, aux->value);
+        printQueue(aux->waitingProcesses);
     }
 }
 
@@ -121,5 +122,25 @@ void closeSemaphore(const sem *id) {
     if(theSemaphoreList[*id]->attachedProcessCount==0){
         removeSemaphore(id);
     }
+}
+
+void semPostById(int semId) {
+    semPost(&theSemaphoreList[semId]->semId);
+}
+
+sem *getSemaphoreById(int id) {
+    return &theSemaphoreList[id]->semId;
+}
+
+void semWaitById(int semId) {
+    semWait(&theSemaphoreList[semId]->semId);
+}
+
+void closeSemaphoreById(int semId) {
+    closeSemaphore(theSemaphoreList[semId]);
+}
+
+void setSemValue(const sem * semaphore, int newVal){
+    ((Semaphore)semaphore)->value = newVal;
 }
 

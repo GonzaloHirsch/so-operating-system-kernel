@@ -15,7 +15,6 @@
 #include <pixelMap.h>
 #include <exceptions.h>
 #include <memManager.h>
-#include <buddyManager.h>
 #include <processes.h>
 #include <scheduler.h>
 #include "../include/processes.h"
@@ -24,6 +23,11 @@
 #include "../include/time.h"
 #include "../include/semaphore.h"
 #include "../include/intQueue.h"
+#include "../include/pipes.h"
+#include "../include/fileDescriptor.h"
+#include "../include/readerDaemon.h"
+#include <pipes.h>
+#include <fileDescriptor.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -86,6 +90,8 @@ void * initializeKernelBinary()
     //initialize_list(memoryStartAddress, 80*1048576);
     print("Initializing Processes\n");
     initProcesses();
+    print("Creating default fds\n"); //sacar despues
+    createDefaultFds();
     print("Loading idt\n");
  	load_idt();
  	print("Loading exceptions\n");
@@ -163,8 +169,46 @@ void semTest4() {
     closeSemaphore(testSem);
 }
 
-void mainFunction(){
+void pipeTest2(){
+    char * name = "pipe1";
+    char * ejemplo = "aaaaabbbbbbbbccccccccccccddddddddeeeeee";
+    sleep(3000);
+    print("Started writing\n");
+    int fd = pipeFifo(name);
+    write(fd, ejemplo, strlen(ejemplo));
+    print("Finished writing\n");
 
+    char * ejemplo2 = "pruebaasdfds         ssssssssss 2";
+    print("Started writing 2\n");
+    write(fd, ejemplo2, strlen(ejemplo2));
+    print("Finished writing 2\n");
+
+}
+
+void pipeTest1(){
+    char * name = "pipe1";
+    char resultado[100];
+    char * welcomeMessage = "Started reading\n";
+    write(1,welcomeMessage,strlen(welcomeMessage));
+    int fd = pipeFifo(name);
+    read(fd, resultado,100);
+    print(resultado);print("\n");
+    print("Finished reading\n");
+
+    char resultado2[100];
+    print("Started reading 2\n");
+    read(fd, resultado2,100);
+    print(resultado2);print("\n");
+    print("Finished reading 2\n");
+
+
+}
+
+
+
+
+void mainFunction(){
+    /*
     Process p1 = newProcess("semTest1", (uint64_t) semTest1, 2, FOREGROUND);
     Process p2 = newProcess("semTest2", (uint64_t) semTest2, 2, FOREGROUND);
     Process p3 = newProcess("semTest3", (uint64_t) semTest3, 2, FOREGROUND);
@@ -172,30 +216,22 @@ void mainFunction(){
     Process p5 = newProcess("semTest1", (uint64_t) semTest1, 2, FOREGROUND);
     Process p6 = newProcess("semTest2", (uint64_t) semTest2, 2, FOREGROUND);
     Process p7 = newProcess("semTest3", (uint64_t) semTest4, 2, FOREGROUND);
-    /*
-    Process p8 = newProcess("semTest4", (uint64_t) semTest3, 2, BACKGROUND);
-    Process p9 = newProcess("semTest4", (uint64_t) semTest4, 2, BACKGROUND);
-    Process p10 = newProcess("semTest1", (uint64_t) semTest1, 2, BACKGROUND);
-    Process p11 = newProcess("semTest2", (uint64_t) semTest2, 2, BACKGROUND);
-    Process p12 = newProcess("semTest3", (uint64_t) semTest3, 2, BACKGROUND);
-    Process p13 = newProcess("semTest4", (uint64_t) semTest4, 2, BACKGROUND);
+       newPCB(p1);
+       newPCB(p2);
+       newPCB(p3);
+       newPCB(p4);
+       newPCB(p5);
+       newPCB(p6);
+    newPCB(p7);
+    Process p14 = newProcess("pipeTest1", (uint64_t) pipeTest1, 2, FOREGROUND);
+    Process p15 = newProcess("pipeTest2", (uint64_t) pipeTest2, 2, FOREGROUND);
+    newPCB(p14);
+    newPCB(p15);
     */
 
-    newPCB(p1);
-    newPCB(p2);
-    newPCB(p3);
-    newPCB(p4);
-    newPCB(p5);
-    newPCB(p6);
-    newPCB(p7);
-    /*
-    newPCB(p8);
-    newPCB(p9);
-    newPCB(p10);
-    newPCB(p11);
-    newPCB(p12);
-    newPCB(p13);
-     */
+
+
+
     while(1){}
 }
 
@@ -211,9 +247,57 @@ void testIntQueue(){
 
 }
 
+void dup2Test1(){
+
+    int tunnel = pipeFifo("dup2TestPipe");
+    //lo que sigue es dup2
+    setProcessFd(getPid(), 1, tunnel);
+
+    char * message = "The other process is gonna read this";
+    while(1){
+        write(STDOUT_FD, message, strlen(message));
+        sleep(2000);
+    }
+
+}
+
+void dup2Test2(){
+
+    int tunnel = pipeFifo("dup2TestPipe");
+    //lo que sigue es dup2
+    setProcessFd(getPid(), 0, tunnel);
+
+    char result[100];
+
+    while(1) {
+        read(STDIN_FD, result, 100);
+        if(strlen(result)>0) write(STDOUT_FD, result, 100);
+    }
+}
+
+void init(){
+    //testIntQueue();
+
+    print("Starting kernel main\n");
+    sleep(2);
+
+    //initializeReaderDaemon();
+
+    //Process dup21 = newProcess("dup21", dup2Test1, 2, BACKGROUND);
+    //Process dup22 = newProcess("dup22", dup2Test2, 2, BACKGROUND);
+
+    //newPCB(dup22);
+    //newPCB(dup21);
+
+    Process shellProcess = newProcess("shell", (uint64_t) sampleCodeModuleAddress, 10, FOREGROUND);
+    newPCB(shellProcess);
+
+    //Process mainProcess = newProcess("mainProcess", (uint64_t) mainFunction, 5, FOREGROUND);
+    //newPCB(mainProcess);
+}
+
 int main()
 {
-    print("\nIn main");
 
 
     testIntQueue();
@@ -221,8 +305,9 @@ int main()
     print("Starting kernel main\n");
     sleep(2);
 
-    Process shellProcess = newProcess("shell", (uint64_t) sampleCodeModuleAddress, 10, FOREGROUND);
-    newPCB(shellProcess);
+    Process initProcess = newProcess("init", init, 1, BACKGROUND);
+    newPCB(initProcess);
+
 
     //Process mainProcess = newProcess("mainProcess", (uint64_t) mainFunction, 5, FOREGROUND);
     //newPCB(mainProcess);
@@ -233,4 +318,5 @@ int main()
         //print("Hey I'm done here\n");
 	print("kernel stop\n");
     return 0;
+
 }
