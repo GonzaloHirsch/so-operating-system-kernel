@@ -25,7 +25,7 @@ else ifeq ($(MEM_MANAGER), BUDDY)
 	$(GCC) $(GCCFLAGS) -I./include -c $< -o $@ -DMEM_MANAGER=1 -lm
 	echo "BUDDY MANAGER"
 else
-	$(GCC) $(GCCFLAGS) -I./include -c $< -o $@ -DMEM_MANAGER=1 -lm
+	$(GCC) $(GCCFLAGS) -I./include -c $< -o $@ -DMEM_MANAGER=0 -lm
 	echo "DEFAULT MANAGER"
 endif
 
