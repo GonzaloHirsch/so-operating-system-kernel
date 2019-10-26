@@ -9,6 +9,7 @@
 #include "../include/fileDescriptor.h"
 #include "../include/pipes.h"
 #include "../include/syscall.h"
+#include "../include/memManager.h"
 
 extern void hang();
 extern void over_clock(int rate);
@@ -58,6 +59,12 @@ void handle_sys_print_pipe_info();
 void handle_sys_close_sem(sem * semaphore);
 
 void handle_sys_set_sem_value(sem * semaphore, int newVal);
+
+void handle_sys_print_mem_state();
+
+void * handle_sys_malloc(size_t size);
+
+void handle_sys_mfree(void * address);
 
 //Handler de la llamada a la int 80
 uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
@@ -137,6 +144,14 @@ uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, u
         break;
         case SET_SEM_VALUE:
             handle_sys_set_sem_value(rsi, rdx);
+        break;
+        case PRINT_MEM_STATE:
+            handle_sys_print_mem_state();
+        break;
+        case MALLOC:
+            return handle_sys_malloc(rsi);
+        case MFREE:
+            handle_sys_mfree(rsi);
         break;
     }
 	return 0;
@@ -265,4 +280,16 @@ void handle_sys_close_sem(sem *semaphore) {
 
 void handle_sys_set_sem_value(sem * semaphore, int newVal){
     setSemValue(semaphore, newVal);
+}
+
+void handle_sys_print_mem_state(){
+    //TODO hacer la funcion que te liste todo de la memoria
+}
+
+void * handle_sys_malloc(size_t size){
+    return mAlloc(size);
+}
+
+void handle_sys_mfree(void * address){
+    mFree(address);
 }

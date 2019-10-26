@@ -4,6 +4,7 @@
 //Incluye a interrupts para poder hacer la llamada a la int 80
 #include "interrupts.h"
 #include <stdint.h>
+#include <stddef.h>
 #include "utils.h"
 #include "../include/processes.h"
 #include "../include/semaphores.h"
@@ -35,6 +36,9 @@
 #define PRINT_SEM_INFO 25
 #define CLOSE_SEM 26
 #define SET_SEM_VALUE 27
+#define PRINT_MEM_STATE 28
+#define MALLOC 29
+#define MFREE 30
 
 void sys_write(int fd, const char *buf, int count);
 
@@ -91,5 +95,11 @@ int sys_set_process_fd(int pid, int fdPosition, int fd);
 void sys_print_pipe_info();
 
 void sys_set_sem_value(sem * semaphore, int newVal);
+
+void sys_print_mem_state();
+
+void * sys_malloc(size_t size);
+
+void sys_mfree(void * address);
 
 #endif
