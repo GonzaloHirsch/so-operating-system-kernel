@@ -30,6 +30,7 @@
 #define POST_SEM 20
 #define WAIT_SEM 21
 #define CREATE_PIPE 22
+#define SET_PROCESS_FD 23
 
 void sys_write(int fd, const char *buf, int count);
 
@@ -76,4 +77,7 @@ void sys_block(int pid);
 void sys_unblock(int pid);
 
 int sys_create_pipe(char * name);
+
+int sys_set_process_fd(int pid, int fdPosition, int fd);
+
 #endif

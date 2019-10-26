@@ -151,6 +151,9 @@ void removeProcess(Process process){
     // se libera el espacio reservado para el stack
     theProcessList[process->pid] = NULL;
     mFree((void*) process->stackBaseAddress);
+    while(!isEmpty(process->semaphores)){
+        closeSemaphoreById(dequeue(process->semaphores));
+    }
     // se libera el espacio reservado para el ADT de Process
     mFree(process);
 }
@@ -241,4 +244,3 @@ int setProcessFd(int pid, int fdPosition, int fd){
     aux->filesDescriptors[fdPosition] = fd;
     return 0;
 }
-

@@ -31,7 +31,7 @@ void handle_sys_clear_console(void);
 
 void handle_sys_draw_pixel(int x, int y, int r, int g, int b);
 
-int handle_sys_new_process(char * name, void * functionAddress, int priority);
+int handle_sys_new_process(char *name, void *functionAddress, int priority, enum Visibility isForeground);
 
 void handle_sys_kill_process(int pid);
 
@@ -47,8 +47,9 @@ void handle_sys_post_sem(const sem * semaphore);
 
 void handle_sys_wait_sem(const sem * semaphore);
 
-
 int handle_sys_create_pipe(char * name);
+
+int handle_sys_set_process_fd(int pid, int fdPosition, int fd);
 
 //Handler de la llamada a la int 80
 uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
@@ -87,7 +88,7 @@ uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, u
             hang();
         break;
         case NEW_PROCESS:
-            return handle_sys_new_process(rsi, rdx, 1);
+            return handle_sys_new_process(rsi, rdx, rcx, r8);
         case GET_PID:
             return handle_sys_get_pid();
         case LIST_PROCESSES:
@@ -115,6 +116,9 @@ uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, u
         case POST_SEM:
             handle_sys_post_sem((const sem *)rsi);
         break;
+        case SET_PROCESS_FD:
+            return handle_sys_set_process_fd(rsi, rdx, rcx);
+
 	}
 	return 0;
 }
@@ -176,8 +180,8 @@ int handle_sys_time(uint64_t selector){
 	return get_time(selector);
 }
 
-int handle_sys_new_process(char * name, void * functionAddress, int priority){
-    Process nP = newProcess(name, functionAddress, priority, FOREGROUND);
+int handle_sys_new_process(char *name, void *functionAddress, int priority, enum Visibility isForeground) {
+    Process nP = newProcess(name, functionAddress, priority, isForeground);
     //todo mejorar esto
     newPCB(nP);
     return getProcessPid(nP);
@@ -221,4 +225,8 @@ void handle_sys_post_sem(const sem * semaphore){
 
 void handle_sys_wait_sem(const sem * semaphore){
     semWait(semaphore);
+}
+
+int handle_sys_set_process_fd(int pid, int fdPosition, int fd) {
+    setProcessFd(pid, fdPosition, fd);
 }

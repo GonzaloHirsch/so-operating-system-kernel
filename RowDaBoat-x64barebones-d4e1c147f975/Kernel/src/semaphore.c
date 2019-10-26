@@ -135,3 +135,7 @@ void semWaitById(int semId) {
     semWait(&theSemaphoreList[semId]->semId);
 }
 
+void closeSemaphoreById(int semId) {
+    closeSemaphore(theSemaphoreList[semId]);
+}
+

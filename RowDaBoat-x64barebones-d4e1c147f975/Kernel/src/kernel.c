@@ -282,16 +282,16 @@ void init(){
     print("Starting kernel main\n");
     sleep(2);
 
-    initializeReaderDaemon();
+    //initializeReaderDaemon();
 
-    Process dup21 = newProcess("dup21", dup2Test1, 2, FOREGROUND);
-    Process dup22 = newProcess("dup22", dup2Test2, 2, FOREGROUND);
+    //Process dup21 = newProcess("dup21", dup2Test1, 2, FOREGROUND);
+    //Process dup22 = newProcess("dup22", dup2Test2, 2, FOREGROUND);
 
-    newPCB(dup22);
-    newPCB(dup21);
+    //newPCB(dup22);
+    //newPCB(dup21);
 
-    //Process shellProcess = newProcess("shell", (uint64_t) sampleCodeModuleAddress, 10, FOREGROUND);
-    //newPCB(shellProcess);
+    Process shellProcess = newProcess("shell", (uint64_t) sampleCodeModuleAddress, 10, FOREGROUND);
+    newPCB(shellProcess);
 
     //Process mainProcess = newProcess("mainProcess", (uint64_t) mainFunction, 5, FOREGROUND);
     //newPCB(mainProcess);

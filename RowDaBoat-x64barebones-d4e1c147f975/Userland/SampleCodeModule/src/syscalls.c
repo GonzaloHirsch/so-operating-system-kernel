@@ -105,3 +105,7 @@ void sys_unblock(int pid) {
 int sys_create_pipe(char *name) {
     _int80(CREATE_PIPE, name, 0, 0, 0, 0);
 }
+
+int sys_set_process_fd(int pid, int fdPosition, int fd) {
+    return _int80(SET_PROCESS_FD, pid, fdPosition, fd, 0, 0);
+}
