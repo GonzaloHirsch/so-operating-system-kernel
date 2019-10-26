@@ -3,6 +3,8 @@
 #include <stddef.h>
 #include <strings.h>
 #include <memManager.h>
+#include "../include/queueBuffer.h"
+#include "../include/memManager.h"
 
 
 typedef struct QueueBufferCDT{
@@ -65,3 +67,7 @@ int getString(QueueBuffer qB, char * dst, int count){
     return 0;
 }
 
+
+int isQueueBufferEmpty(QueueBuffer qB){
+   return qB->head == qB->tail;
+}

@@ -7,6 +7,9 @@
 #include "../include/processes.h"
 #include "../include/scheduler.h"
 #include "../include/fileDescriptor.h"
+#include "../include/pipes.h"
+#include "../include/syscall.h"
+#include "../include/memManager.h"
 
 extern void hang();
 extern void over_clock(int rate);
@@ -29,7 +32,7 @@ void handle_sys_clear_console(void);
 
 void handle_sys_draw_pixel(int x, int y, int r, int g, int b);
 
-int handle_sys_new_process(char * name, void * functionAddress, int priority);
+int handle_sys_new_process(char *name, void *functionAddress, int priority, enum Visibility isForeground);
 
 void handle_sys_kill_process(int pid);
 
@@ -38,6 +41,30 @@ void handle_sys_change_priority(int pid, int priority);
 void handle_sys_block_process(int pid);
 
 void handle_sys_unblock_process(int pid);
+
+const sem * handle_sys_create_sem(char * name);
+
+void handle_sys_post_sem(const sem * semaphore);
+
+void handle_sys_wait_sem(const sem * semaphore);
+
+int handle_sys_create_pipe(char * name);
+
+int handle_sys_set_process_fd(int pid, int fdPosition, int fd);
+
+void handle_sys_print_sem_info();
+
+void handle_sys_print_pipe_info();
+
+void handle_sys_close_sem(sem * semaphore);
+
+void handle_sys_set_sem_value(sem * semaphore, int newVal);
+
+void handle_sys_print_mem_state();
+
+void * handle_sys_malloc(size_t size);
+
+void handle_sys_mfree(void * address);
 
 //Handler de la llamada a la int 80
 uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
@@ -76,7 +103,7 @@ uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, u
             hang();
         break;
         case NEW_PROCESS:
-            return handle_sys_new_process(rsi, rdx, 1);
+            return handle_sys_new_process(rsi, rdx, rcx, r8);
         case GET_PID:
             return handle_sys_get_pid();
         case LIST_PROCESSES:
@@ -94,7 +121,39 @@ uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, u
         case UNBLOCK_PROCESS:
             handle_sys_unblock_process(rsi);
         break;
-	}
+        case CREATE_PIPE:
+            return handle_sys_create_pipe((char *)rsi);
+        case CREATE_SEM:
+            return handle_sys_create_sem((char *)rsi);
+        case WAIT_SEM:
+            handle_sys_wait_sem((const sem *)rsi);
+        break;
+        case POST_SEM:
+            handle_sys_post_sem((const sem *)rsi);
+        break;
+        case SET_PROCESS_FD:
+            return handle_sys_set_process_fd(rsi, rdx, rcx);
+        case PRINT_PIPE_INFO:
+            handle_sys_print_pipe_info();
+        break;
+        case PRINT_SEM_INFO:
+            handle_sys_print_sem_info();
+        break;
+        case CLOSE_SEM:
+            handle_sys_close_sem(rsi);
+        break;
+        case SET_SEM_VALUE:
+            handle_sys_set_sem_value(rsi, rdx);
+        break;
+        case PRINT_MEM_STATE:
+            handle_sys_print_mem_state();
+        break;
+        case MALLOC:
+            return handle_sys_malloc(rsi);
+        case MFREE:
+            handle_sys_mfree(rsi);
+        break;
+    }
 	return 0;
 }
 
@@ -155,8 +214,8 @@ int handle_sys_time(uint64_t selector){
 	return get_time(selector);
 }
 
-int handle_sys_new_process(char * name, void * functionAddress, int priority){
-    Process nP = newProcess(name, functionAddress, priority, FOREGROUND);
+int handle_sys_new_process(char *name, void *functionAddress, int priority, enum Visibility isForeground) {
+    Process nP = newProcess(name, functionAddress, priority, isForeground);
     //todo mejorar esto
     newPCB(nP);
     return getProcessPid(nP);
@@ -172,7 +231,6 @@ int handle_sys_list_processes(){
 
 void handle_sys_kill_process(int pid){
     setProcessStateByPid(pid, STATE_TERMINATED);
-
 }
 
 void handle_sys_change_priority(int pid, int priority){
@@ -185,4 +243,53 @@ void handle_sys_block_process(int pid) {
 
 void handle_sys_unblock_process(int pid){
     setProcessStateByPid(pid, STATE_READY);
+}
+
+int handle_sys_create_pipe(char * name){
+    return pipeFifo(name);
+}
+
+const sem *handle_sys_create_sem(char *name) {
+    return openSemaphore(name);
+}
+
+void handle_sys_post_sem(const sem * semaphore){
+    semPost(semaphore);
+}
+
+void handle_sys_wait_sem(const sem * semaphore){
+    semWait(semaphore);
+}
+
+int handle_sys_set_process_fd(int pid, int fdPosition, int fd) {
+    return setProcessFd(pid, fdPosition, fd);
+}
+
+void handle_sys_print_sem_info() {
+    printAllSemaphores();
+}
+
+void handle_sys_print_pipe_info() {
+       printPipes();
+}
+
+void handle_sys_close_sem(sem *semaphore) {
+    closeSemaphore(semaphore);
+    removeSemaphoreById(getPid(), *semaphore);
+}
+
+void handle_sys_set_sem_value(sem * semaphore, int newVal){
+    setSemValue(semaphore, newVal);
+}
+
+void handle_sys_print_mem_state(){
+    //TODO hacer la funcion que te liste todo de la memoria
+}
+
+void * handle_sys_malloc(size_t size){
+    return mAlloc(size);
+}
+
+void handle_sys_mfree(void * address){
+    mFree(address);
 }

@@ -3,6 +3,15 @@
 #include <pipes.h>
 #include <console.h>
 #include <keyboard.h>
+#include <stddef.h>
+#include "../include/fileDescriptor.h"
+#include "../include/keyboard.h"
+#include "../include/pipes.h"
+#include "../include/console.h"
+#include "../include/memManager.h"
+#include "../include/semaphore.h"
+#include "../include/readerDaemon.h"
+
 
 typedef struct fileDescriptorCDT{
     int number;
@@ -17,7 +26,7 @@ static int highestFileId;
 
 
 
-int createFds(int type, int pipe, void (*altRead)(char *, int),void (*altWrite)(char *, int)){
+int createFds(enum FdType type, int pipe, void (*altRead)(char *, int),void (*altWrite)(char *, int)){
     int i;
 
     //Buscamos hasta el que halla alguno null
@@ -57,7 +66,17 @@ int read(int fd, char * dest, int count){
         for (int i = 0; i < count; i++){
 		    *(dest + i) = getChar();
 	    }
-        break;
+
+        /*
+        //primer semaforo: para evitar concurrencia al settear length y buffer
+        semWait(getSemaphoreById(0));   //los semId s 0 y 1 son reservados para el readerDaemon
+            setCurrentLength(count);
+            setCurrentBuffer(dest);
+            //segundo semaforo: bloquea el proceso actual,
+            wakeUpDaemon();
+            semWait(getSemaphoreById(1));
+        */
+         break;
     case PIPE_FD:
         return readPipe(fileDesc->pipe, dest, count);
         break;

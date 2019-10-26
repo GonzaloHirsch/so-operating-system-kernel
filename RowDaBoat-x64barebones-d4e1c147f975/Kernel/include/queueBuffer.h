@@ -11,5 +11,6 @@ int putString(QueueBuffer qB, char * string, int count);
 
 int getString(QueueBuffer qB, char * dst, int count);
 
+int isQueueBufferEmpty(QueueBuffer qB);
 
 #endif //QUEUE_QUEUEBUFFER_H

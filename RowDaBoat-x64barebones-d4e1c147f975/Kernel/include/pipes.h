@@ -10,6 +10,8 @@ int pipeFifo(char * name);
 int writePipe(int pipeNumber, char * src, int count);
 int readPipe(int pipeNumber, char * dest, int count);
 
+void printPipes();
+
 #define MAX_PIPES 100
 #define MAX_NAME_PIPE 100
 

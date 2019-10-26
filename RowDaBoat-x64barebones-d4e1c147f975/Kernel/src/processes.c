@@ -151,6 +151,9 @@ void removeProcess(Process process){
     // se libera el espacio reservado para el stack
     theProcessList[process->pid] = NULL;
     mFree((void*) process->stackBaseAddress);
+    while(!isEmpty(process->semaphores)){
+        closeSemaphoreById(dequeue(process->semaphores));
+    }
     // se libera el espacio reservado para el ADT de Process
     mFree(process);
 }
@@ -203,9 +206,13 @@ int getPid(){
 
 void listProcesses(){
     Process aux;
+    char * resp;
     for(int i = 0; i<pidCounter; i++){
         if((aux=theProcessList[i])!=NULL){
-            print("Process %s\n    PID: %d\n    Priority: %d\n    StackPointer: %d\n    Foreground? %s\n", aux->name, aux->pid, aux->stackPointer, (aux->isForeground) ? "Yes" : "No");
+            print("Process %s\n    PID: %d\n    Priority: %d\n    StackPointer: %d\n    Foreground? ", aux->name, aux->pid, aux->stackPointer);
+            resp = (aux->isForeground) ? "Yes" : "No";
+            print(resp);
+            print("\n");
         }
     }
 }
@@ -233,12 +240,11 @@ int removeSemaphoreById(int pid, sem semaphore) {
 int setProcessFd(int pid, int fdPosition, int fd){
     if(fdPosition >= FD_COUNT || fdPosition < 0)
         return -1;
-    
+
     Process aux = theProcessList[pid];
     if(aux == NULL)
         return -1;
-    
+
     aux->filesDescriptors[fdPosition] = fd;
     return 0;
 }
-

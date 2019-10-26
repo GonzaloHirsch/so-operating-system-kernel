@@ -155,59 +155,62 @@ int scanf(const char * fmt, ...){
     while(fmt[i] != 0 && str[pos]!=0){
     	if(fmt[i] == '%'){
         switch (fmt[i+1]) {
-
             case 'd':
-						matches++;
-						int * ptrD = va_arg(list, int*);
-						char num[15] = {0};
-						j = 0;
-						//Itera el string que fue input
-						while(str[pos] != ' ' && str[pos] != '\n' && str[pos] != 0 && str[pos] != '\t'){
-						    if (isNumeric(str[pos])){
-								num[j++] = str[pos++];
-							} else {
-                                printf("%s\n", str);
-                                aux = atoi(num, j);
-                                *ptrD = aux;
-                                return -1;
+							matches++;
+							int * ptrD = va_arg(list, int*);
+							char num[15] = {0};
+							j = 0;
+							//Itera el string que fue input
+							while(str[pos] != ' ' && str[pos] != '\n' && str[pos] != 0 && str[pos] != '\t'){
+							    if (isNumeric(str[pos])){
+									num[j++] = str[pos++];
+								} else {
+	                printf("%s\n", str);
+	                aux = atoi(num, j);
+	                *ptrD = aux;
+	                return -1;
+								}
 							}
-						}
-						aux = atoi(num, j);
-						*ptrD = aux;
-						i += 2;
-                    break;
-
+							aux = atoi(num, j);
+							*ptrD = aux;
+							i += 2;
+            break;
             case 's':
-                        matches++;
-						char * ptrS = va_arg(list, char*);
-						j = 0;
-						char buffer[MAX_BUFFER] = {0};
-
-						while(str[pos] != ' ' && str[pos] != '\n' && str[pos] != 0 && str[pos] != '\t'){
-							buffer[j++] = str[pos++];
-						}
-                        buffer[j]=0; //me aseguro de que termino el str
-						strcpy(ptrS, buffer);
-                    i += 2;
-                    break;
-
+	            matches++;
+							char * ptrS = va_arg(list, char*);
+							j = 0;
+							char buffer[MAX_BUFFER] = {0};
+							while(str[pos] != ' ' && str[pos] != '\n' && str[pos] != 0 && str[pos] != '\t'){
+								buffer[j++] = str[pos++];
+							}
+              buffer[j]=0; //me aseguro de que termino el str
+							strcpy(ptrS, buffer);
+              i += 2;
+            break;
+						case 'S':
+	            matches++;
+							char * ptrSM = va_arg(list, char*);
+							j = 0;
+							char bufferS[MAX_BUFFER] = {0};
+							while(str[pos] != '\n' && str[pos] != 0 && str[pos] != '\t'){
+								bufferS[j++] = str[pos++];
+							}
+              bufferS[j]=0; //me aseguro de que termino el str
+							strcpy(ptrSM, bufferS);
+              i += 2;
+            break;
             case 'c':
-					matches++;
-					char * ptrC = va_arg(list, char*);
-					j = 0;
-
-					if(str[pos] != ' ' && str[pos] != '\n' && str[pos] != 0 && str[pos] != '\t'){
-						*ptrC = *(str + pos);
-						pos++;
-					}
-
-					i += 2;
-					break;
-
+							matches++;
+							char * ptrC = va_arg(list, char*);
+							j = 0;
+							if(str[pos] != ' ' && str[pos] != '\n' && str[pos] != 0 && str[pos] != '\t'){
+								*ptrC = *(str + pos);
+								pos++;
+							}
+							i += 2;
+						break;
             default:
-
-                    break;
-
+						break;
           }
         }
     	else {
