@@ -229,6 +229,11 @@ void mainFunction(){
     newPCB(p15);
     */
 
+    Process p1 = newProcess("pipeTest1", (uint64_t) pipeTest1, 2, FOREGROUND);
+    Process p2 = newProcess("pipeTest2", (uint64_t) pipeTest2, 2, FOREGROUND);
+
+
+    
 
 
 
@@ -300,22 +305,22 @@ int main()
 {
 
 
-    testIntQueue();
+    //testIntQueue();
 
     print("Starting kernel main\n");
     sleep(2);
 
+    int fd1 = pipeFifo("hola");
+    int fd2 = pipeFifo("hola");
+    printInteger(fd1);
+    printPipes();
+    freeFd(fd1);
+    printPipes();
+    while(1){}
+
     Process initProcess = newProcess("init", init, 1, BACKGROUND);
     newPCB(initProcess);
 
-
-    //Process mainProcess = newProcess("mainProcess", (uint64_t) mainFunction, 5, FOREGROUND);
-    //newPCB(mainProcess);
-
-    //mFree(array);
-    //goToUserland();
-    //for(int i = 0; i<10; i++)
-        //print("Hey I'm done here\n");
 	print("kernel stop\n");
     return 0;
 
