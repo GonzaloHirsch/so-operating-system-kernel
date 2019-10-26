@@ -206,6 +206,8 @@ void pipeTest1(){
 }
 
 
+
+
 void mainFunction(){
     /*
     Process p1 = newProcess("semTest1", (uint64_t) semTest1, 2, FOREGROUND);
@@ -246,6 +248,34 @@ void testIntQueue(){
 
 }
 
+void dup2Test1(){
+
+    int tunnel = pipeFifo("dup2TestPipe");
+    //lo que sigue es dup2
+    setProcessFd(getPid(), 1, tunnel);
+
+    char * message = "The other process is gonna read this";
+    while(1){
+        write(STDOUT_FD, message, strlen(message));
+        sleep(2000);
+    }
+
+}
+
+void dup2Test2(){
+
+    int tunnel = pipeFifo("dup2TestPipe");
+    //lo que sigue es dup2
+    setProcessFd(getPid(), 0, tunnel);
+
+    char result[100];
+
+    while(1) {
+        read(STDIN_FD, result, 100);
+        if(strlen(result)>0) write(STDOUT_FD, result, 100);
+    }
+}
+
 void init(){
     //testIntQueue();
 
@@ -254,8 +284,14 @@ void init(){
 
     initializeReaderDaemon();
 
-    Process shellProcess = newProcess("shell", (uint64_t) sampleCodeModuleAddress, 10, FOREGROUND);
-    newPCB(shellProcess);
+    Process dup21 = newProcess("dup21", dup2Test1, 2, FOREGROUND);
+    Process dup22 = newProcess("dup22", dup2Test2, 2, FOREGROUND);
+
+    newPCB(dup22);
+    newPCB(dup21);
+
+    //Process shellProcess = newProcess("shell", (uint64_t) sampleCodeModuleAddress, 10, FOREGROUND);
+    //newPCB(shellProcess);
 
     //Process mainProcess = newProcess("mainProcess", (uint64_t) mainFunction, 5, FOREGROUND);
     //newPCB(mainProcess);

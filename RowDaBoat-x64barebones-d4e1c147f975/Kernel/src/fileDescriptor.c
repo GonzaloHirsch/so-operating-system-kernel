@@ -26,7 +26,7 @@ static int highestFileId;
 
 
 
-int createFds(int type, int pipe, void (*altRead)(char *, int),void (*altWrite)(char *, int)){
+int createFds(enum FdType type, int pipe, void (*altRead)(char *, int),void (*altWrite)(char *, int)){
     int i;
 
     //Buscamos hasta el que halla alguno null
