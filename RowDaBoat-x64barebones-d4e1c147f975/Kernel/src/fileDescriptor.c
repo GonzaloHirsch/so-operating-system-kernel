@@ -116,6 +116,27 @@ int write(int fd, char * src, int count){
 
 }
 
+int freeFd(int fd){
+
+    //El file descriptor 0 y 1 no se van a poder liberar.
+    if(fd <= 1 || fd > MAX_FILE_DESCRIPTORS)
+        return -1;
+
+    fds aux = fileList[fd];
+    if(aux == NULL)
+        return -1;
+
+    //Si es un pipe liberamos el pipe
+    if(aux->type == PIPE_FD){
+        freePipe(aux->pipe);
+    }
+
+    //Ese fd ya no esta ocupado.
+    fileList[fd] = NULL;
+    //Liberamos el espacio del fd per se.
+    return mFree(aux);
+}
+
 
 
 

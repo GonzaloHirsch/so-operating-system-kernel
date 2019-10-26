@@ -9,7 +9,7 @@ typedef struct pipeCDT * Pipe;
 int pipeFifo(char * name);
 int writePipe(int pipeNumber, char * src, int count);
 int readPipe(int pipeNumber, char * dest, int count);
-
+int freePipe(int pipe);
 void printPipes();
 
 #define MAX_PIPES 100

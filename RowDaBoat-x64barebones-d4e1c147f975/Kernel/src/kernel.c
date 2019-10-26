@@ -305,10 +305,18 @@ int main()
 {
 
 
-    testIntQueue();
+    //testIntQueue();
 
     print("Starting kernel main\n");
     sleep(2);
+
+    int fd1 = pipeFifo("hola");
+    int fd2 = pipeFifo("hola");
+    printInteger(fd1);
+    printPipes();
+    freeFd(fd1);
+    printPipes();
+    while(1){}
 
     Process initProcess = newProcess("init", init, 1, BACKGROUND);
     newPCB(initProcess);
