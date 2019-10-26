@@ -4,11 +4,22 @@
 #include <lib.h>
 #include <strings.h>
 #include <queueBuffer.h>
+#include "../include/pipes.h"
+#include "../include/queueBuffer.h"
+#include "../include/fileDescriptor.h"
+#include "../include/memManager.h"
+#include "../include/processes.h"
+
+extern void forceChangeProcess();
 
 typedef struct pipeCDT{
 
     char name[MAX_NAME_PIPE];
     int fd;
+    int beingAccessed;
+    //suponemos que solo 2 procesos usan el mismo pipe, por lo tanto
+    // en caso de bloqueo, hay 1 proceso esperando
+    int waitingProcess;
     QueueBuffer qb;
 
 
@@ -43,6 +54,8 @@ int pipeFifo(char * name){
     strcpy(aux->name,name);
     //Asignamos el espacio del pipe en el pipelist
     pipeList[firstNull] = aux;
+    aux->beingAccessed = 0;
+    aux->waitingProcess = 0;
 
     return aux->fd;
 
@@ -54,7 +67,23 @@ int writePipe(int pipeNumber, char * src, int count){
     
     Pipe pipe = pipeList[pipeNumber];
 
-    return putString(pipe->qb, src, count);
+    //si el pipe esta siendo accedido, bloquear
+    if(pipe->beingAccessed){
+        int pid = getPid();
+        pipe->waitingProcess = pid;
+        setProcessStateByPid(getPid(), STATE_BLOCKED);
+        forceChangeProcess();
+        //cuando me desbloquean, hago lo siguiente...
+        pipe->beingAccessed = 1;
+        pipe->waitingProcess = 0;
+    }
+    int retVal = putString(pipe->qb, src, count);
+    pipe->beingAccessed = 0;
+    //si hay un proceso esperando para leer, lo desbloqueo
+    if(pipe->waitingProcess){
+        setProcessStateByPid(pipe->waitingProcess, STATE_READY);
+    }
+    return retVal;
 }
 
 int readPipe(int pipeNumber, char * dest, int count){
@@ -64,7 +93,23 @@ int readPipe(int pipeNumber, char * dest, int count){
     
     Pipe pipe = pipeList[pipeNumber];
 
-    return getString(pipe->qb, dest, count);
+    if(pipe->beingAccessed || isQueueBufferEmpty(pipe->qb)){
+        int pid = getPid();
+        pipe->waitingProcess = pid;
+        setProcessStateByPid(getPid(), STATE_BLOCKED);
+        forceChangeProcess();
+        //cuando me desbloquean, hago lo siguiente...
+        pipe->beingAccessed = 1;
+        pipe->waitingProcess = 0;
+    }
+
+    int retVal = getString(pipe->qb, dest, count);
+    pipe->beingAccessed = 0;
+    //si hay un proceso esperando para leer, lo desbloqueo
+    if(pipe->waitingProcess){
+        setProcessStateByPid(pipe->waitingProcess, STATE_READY);
+    }
+    return retVal;
 }
 
 

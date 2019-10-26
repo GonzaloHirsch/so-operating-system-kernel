@@ -7,6 +7,8 @@
 #include "../include/processes.h"
 #include "../include/scheduler.h"
 #include "../include/fileDescriptor.h"
+#include "../include/pipes.h"
+#include "../include/syscall.h"
 
 extern void hang();
 extern void over_clock(int rate);
@@ -38,6 +40,15 @@ void handle_sys_change_priority(int pid, int priority);
 void handle_sys_block_process(int pid);
 
 void handle_sys_unblock_process(int pid);
+
+const sem * handle_sys_create_sem(char * name);
+
+void handle_sys_post_sem(const sem * semaphore);
+
+void handle_sys_wait_sem(const sem * semaphore);
+
+
+int handle_sys_create_pipe(char * name);
 
 //Handler de la llamada a la int 80
 uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
@@ -93,6 +104,16 @@ uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, u
         break;
         case UNBLOCK_PROCESS:
             handle_sys_unblock_process(rsi);
+        break;
+        case CREATE_PIPE:
+            return handle_sys_create_pipe((char *)rsi);
+        case CREATE_SEM:
+            return handle_sys_create_sem((char *)rsi);
+        case WAIT_SEM:
+            handle_sys_wait_sem((const sem *)rsi);
+        break;
+        case POST_SEM:
+            handle_sys_post_sem((const sem *)rsi);
         break;
 	}
 	return 0;
@@ -172,7 +193,6 @@ int handle_sys_list_processes(){
 
 void handle_sys_kill_process(int pid){
     setProcessStateByPid(pid, STATE_TERMINATED);
-
 }
 
 void handle_sys_change_priority(int pid, int priority){
@@ -185,4 +205,20 @@ void handle_sys_block_process(int pid) {
 
 void handle_sys_unblock_process(int pid){
     setProcessStateByPid(pid, STATE_READY);
+}
+
+int handle_sys_create_pipe(char * name){
+    return pipeFifo(name);
+}
+
+const sem *handle_sys_create_sem(char *name) {
+    return openSemaphore(name);
+}
+
+void handle_sys_post_sem(const sem * semaphore){
+    semPost(semaphore);
+}
+
+void handle_sys_wait_sem(const sem * semaphore){
+    semWait(semaphore);
 }

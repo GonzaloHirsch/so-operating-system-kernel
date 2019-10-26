@@ -101,3 +101,7 @@ void sys_block(int pid) {
 void sys_unblock(int pid) {
     _int80(UNBLOCK_PROCESS, pid, 0, 0, 0, 0);
 }
+
+int sys_create_pipe(char *name) {
+    _int80(CREATE_PIPE, name, 0, 0, 0, 0);
+}

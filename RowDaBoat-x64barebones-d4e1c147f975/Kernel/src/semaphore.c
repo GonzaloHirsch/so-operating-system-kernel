@@ -123,3 +123,15 @@ void closeSemaphore(const sem *id) {
     }
 }
 
+void semPostById(int semId) {
+    semPost(&theSemaphoreList[semId]->semId);
+}
+
+sem *getSemaphoreById(int id) {
+    return &theSemaphoreList[id]->semId;
+}
+
+void semWaitById(int semId) {
+    semWait(&theSemaphoreList[semId]->semId);
+}
+
