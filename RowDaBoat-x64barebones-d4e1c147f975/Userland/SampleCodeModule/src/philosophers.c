@@ -29,9 +29,11 @@ int left(int i, int mod);
 int right(int i, int mod);
 
 void philosopher(){
-  //sys_wait_sem(mutex);
-  int i = actualPhilosopherCount - 1;
-  //sys_post_sem(mutex);
+  sys_wait_sem(mutex);
+  int pid = sys_get_pid();
+  int i = pidToId[pid];
+  sys_post_sem(mutex);
+
   while (problemRunning){
     think(i);
     // Trata de tomar los tenedores, si no puede se bloquea por el semaforo
@@ -144,6 +146,7 @@ int addPhilosopher(){
   sems[actualPhilosopherCount - 1] = sys_create_sem(name);
   int pid = sys_new_process(name, (uint64_t) philosopher, 2, FOREGROUND);
   philosophers[actualPhilosopherCount - 1] = pid;
+  pidToId[pid] = actualPhilosopherCount - 1;
   sys_post_sem(mutex);
   return 0;
 }
@@ -155,6 +158,8 @@ int removePhilosopher(){
   sys_wait_sem(mutex);
   actualPhilosopherCount--;
   sys_kill(philosophers[actualPhilosopherCount]);
+  sys_close_sem(sems[actualPhilosopherCount]);
+  pidToId[philosophers[actualPhilosopherCount]] = -1;
   philosophers[actualPhilosopherCount] = 0;
   sys_post_sem(mutex);
   return 0;
