@@ -206,9 +206,13 @@ int getPid(){
 
 void listProcesses(){
     Process aux;
+    char * resp;
     for(int i = 0; i<pidCounter; i++){
         if((aux=theProcessList[i])!=NULL){
-            print("Process %s\n    PID: %d\n    Priority: %d\n    StackPointer: %d\n    Foreground? %s\n", aux->name, aux->pid, aux->stackPointer, (aux->isForeground) ? "Yes" : "No");
+            print("Process %s\n    PID: %d\n    Priority: %d\n    StackPointer: %d\n    Foreground? ", aux->name, aux->pid, aux->stackPointer);
+            resp = (aux->isForeground) ? "Yes" : "No";
+            print(resp);
+            print("\n");
         }
     }
 }
