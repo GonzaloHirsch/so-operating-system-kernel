@@ -212,32 +212,5 @@ void initializeBuddyMemory(void * startDir, size_t totalSize){
 
 }
 
-//HELPERS
-
-size_t powerTo(size_t value,size_t pow){
-    if(pow == 0){
-        return 1;
-    }
-
-    int result = 1;
-    while(pow > 0){
-        result *= value;
-        pow--;
-
-    }
-
-    return result;
-}
-
-//Devuelve la potencia tomando el techo del resultado
-size_t logBase2Ceil(size_t value){
-    int i = 0;
-    while((int) powerTo(2,i) < value){
-        i++;
-    }
-    return i;
-}
-
-
 
 

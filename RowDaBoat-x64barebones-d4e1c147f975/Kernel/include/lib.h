@@ -15,6 +15,8 @@ char *cpuVendor(char *result);
 int getSeconds();
 int getKeyboard();
 
+size_t powerTo(size_t value, size_t pow);
+size_t logBase2Ceil(size_t value);
 
 
 #endif
