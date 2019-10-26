@@ -5,13 +5,50 @@
 #include "../include/sh.h"
 #include "../include/shell.h"
 #include "../../../Kernel/include/processes.h"
+#include "../include/processes.h"
+#include "../include/utils.h"
 
+const char * commands[] = {
+  "help",
+  "snake",
+  "shutdown",
+  "invalid",
+  "time",
+  "beep",
+  "sleep",
+  "date",
+  "clear",
+  "div",
+  "credits",
+  "starwars",
+  "mario",
+  "tp",
+  "lp",
+  "getpid",
+  "kill",
+  "block",
+  "unblock",
+  "mem",
+  "ps",
+  "pipe",
+  "sem",
+  "phylo",
+  "nice",
+  "cat",
+  "wc",
+  "filter",
+  "loop"
+};
+
+const void * funs[] = {
+
+};
+
+const int commandCount = 29;
 
 static void runCommand(char * buffer);
 
 void shellMain(){
-
-
     print("arquiOS@ITBA: ");
     //Comando elegido
     int command = INVALID_COMMAND;
@@ -82,21 +119,29 @@ void shellMain(){
 static void runCommand(char * buffer){
 
     int i = 0, j = 0, k = 0, p=0;
+    int isBG = 0;
     //todo 10 es el max number of programs
     // 256 es el max nombre de programs.
     // por ahora es para evitar errores.
     char programName[256];
-    void * processFunctions[10];
-    char pendingPipes[9];
+    void * processFunctions[MAX_NUMBER_OF_PROGRAMS];
+    int pids[MAX_NUMBER_OF_PROGRAMS];
+    char pendingPipes[MAX_NUMBER_OF_PROGRAMS - 1] = {0};
 
+    // Parseando los comandos
     while(buffer[i]){
-
         //si es espacio
         if(buffer[i]==' '){
             programName[j]=0;
-            if((processFunctions[k++] = getProgramFunctionFromName(programName))==NULL){
-                print("Invalid Command\n");
-                return;
+            // Verificacion para ver que no nos pasemos de la cantidad maxima de comandos
+            if (k < MAX_NUMBER_OF_PROGRAMS){
+              if((processFunctions[k++] = getProgramFunctionFromName(programName))==NULL){
+                  print("Invalid Command\n");
+                  return;
+              }
+            } else {
+              print("Max number of commands reached\n");
+              return;
             }
 
             j=0;
@@ -105,11 +150,70 @@ static void runCommand(char * buffer){
         else if(buffer[i]=='|'){
             //indica que se pipea el proceso de antes del | con el de despues
             pendingPipes[k-1]=1;
+            i++;
             //leo hasta el proximo caracter no space
-
         }
         else{
             programName[j++] = buffer[i++];
         }
     }
+
+    // Capturamos el ultimo comando, que no se capturaria por no terminar en un espacio
+    programName[j]=0;
+
+    // Flaggea la ejecucion en background
+    if (programName[j - 1] == '&'){
+      isBG = 1;
+    } else {
+      // Verificacion para ver que no nos pasemos de la cantidad maxima de comandos
+      if (k < MAX_NUMBER_OF_PROGRAMS){
+        if((processFunctions[k++] = getProgramFunctionFromName(programName))==NULL){
+            print("Invalid Command\n");
+            return;
+        }
+      } else {
+        print("Max number of commands reached\n");
+        return;
+      }
+    }
+
+    int l = 0;
+    int pipefd = 0;
+    while(l < k){
+      // Genera el nombre del proceso/pipe
+      char num[2];
+      itoa(l, num, 10);
+      char name[3 + 2 + 1] = {0};
+      concat(name, "sh_");
+      concat(name + 3, num);
+
+      pids[l] = sys_new_process(name, (uint64_t) processFunctions[l], 1, BACKGROUND);
+
+      // En el caso de que el comando anterior queria pipearse con este
+      if (l - 1 >= 0 && pendingPipes[l - 1] == 1){
+        sys_set_process_fd(pids[l], 0, pipefd);
+      }
+
+      // En el caso de que tenga un pipe con el proximo comando
+      if (pendingPipes[l] == 1){
+        pipefd = sys_create_pipe(name);
+        sys_set_process_fd(pids[l], 1, pipefd);
+      }
+    }
+
+    // Ejecutando los comandos
+    for (int l = 0; l < k; l++){
+
+    }
+}
+
+void * getProgramFunctionFromName(char * command){
+  void * res = NULL;
+  for (int i = 0; i < commandCount && result == INVALID_COMMAND; i++){
+		//En el caso de que sean iguales
+		if (!strcmp(command, commands[i])){
+			res = funs[i];
+		}
+	}
+  return res;
 }
