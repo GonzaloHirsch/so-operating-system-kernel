@@ -31,6 +31,8 @@
 #define WAIT_SEM 21
 #define CREATE_PIPE 22
 #define SET_PROCESS_FD 23
+#define PRINT_PIPE_INFO 24
+#define PRINT_SEM_INFO 25
 
 void sys_write(int fd, const char *buf, int count);
 
@@ -39,6 +41,8 @@ sem * sys_create_sem(const char * name);
 void sys_post_sem(const sem * semaphore);
 
 void sys_wait_sem(const sem * semaphore);
+
+void sys_print_sem_info();
 
 void sys_write_key(int fd, const char * buf);
 
@@ -79,5 +83,7 @@ void sys_unblock(int pid);
 int sys_create_pipe(char * name);
 
 int sys_set_process_fd(int pid, int fdPosition, int fd);
+
+void sys_print_pipe_info();
 
 #endif

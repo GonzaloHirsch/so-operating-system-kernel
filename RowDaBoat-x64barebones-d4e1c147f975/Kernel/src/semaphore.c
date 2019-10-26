@@ -103,7 +103,8 @@ void printAllSemaphores() {
     Semaphore aux;
     for(int i = 0; i<highestSemId; i++){
         aux = theSemaphoreList[i];
-        print("Semaphore %s\n    Value: %d\n", aux->name, aux->value);
+        print("Semaphore %s\n    Value: %d\nWaiting Processes: ", aux->name, aux->value);
+        printQueue(aux->waitingProcesses);
     }
 }
 

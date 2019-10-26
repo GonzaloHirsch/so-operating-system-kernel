@@ -109,3 +109,11 @@ int sys_create_pipe(char *name) {
 int sys_set_process_fd(int pid, int fdPosition, int fd) {
     return _int80(SET_PROCESS_FD, pid, fdPosition, fd, 0, 0);
 }
+
+void sys_print_pipe_info() {
+    _int80(PRINT_PIPE_INFO, 0, 0, 0, 0, 0);
+}
+
+void sys_print_sem_info() {
+    _int80(PRINT_SEM_INFO, 0, 0, 0, 0, 0);
+}

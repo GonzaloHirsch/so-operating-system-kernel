@@ -36,6 +36,8 @@
 #define WAIT_SEM 21
 #define CREATE_PIPE 22
 #define SET_PROCESS_FD 23
+#define PRINT_PIPE_INFO 24
+#define PRINT_SEM_INFO 25
 
 uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
 

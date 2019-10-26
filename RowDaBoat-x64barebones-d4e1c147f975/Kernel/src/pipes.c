@@ -9,6 +9,7 @@
 #include "../include/fileDescriptor.h"
 #include "../include/memManager.h"
 #include "../include/processes.h"
+#include "../include/console.h"
 
 extern void forceChangeProcess();
 
@@ -110,6 +111,16 @@ int readPipe(int pipeNumber, char * dest, int count){
         setProcessStateByPid(pipe->waitingProcess, STATE_READY);
     }
     return retVal;
+}
+
+void printPipes() {
+    for(int i = 0; i<MAX_PIPES; i++){
+        if(pipeList[i]!=NULL) {
+            Pipe aux = pipeList[i];
+            print("Pipe %d/n    Name: %s\n    Being Accessed: %d\n    Waiting Process:%d\n", aux->fd, aux->name, aux->beingAccessed, aux->waitingProcess);
+        }
+        print("\n");
+    }
 }
 
 

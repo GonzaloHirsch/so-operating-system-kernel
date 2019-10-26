@@ -51,6 +51,11 @@ int handle_sys_create_pipe(char * name);
 
 int handle_sys_set_process_fd(int pid, int fdPosition, int fd);
 
+void handle_sys_print_sem_info();
+
+void handle_sys_print_pipe_info();
+
+
 //Handler de la llamada a la int 80
 uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
     switch(rdi){
@@ -118,7 +123,12 @@ uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, u
         break;
         case SET_PROCESS_FD:
             return handle_sys_set_process_fd(rsi, rdx, rcx);
-
+        case PRINT_PIPE_INFO:
+            handle_sys_print_pipe_info();
+            break;
+        case PRINT_SEM_INFO:
+            handle_sys_print_sem_info();
+            break;
 	}
 	return 0;
 }
@@ -228,5 +238,13 @@ void handle_sys_wait_sem(const sem * semaphore){
 }
 
 int handle_sys_set_process_fd(int pid, int fdPosition, int fd) {
-    setProcessFd(pid, fdPosition, fd);
+    return setProcessFd(pid, fdPosition, fd);
+}
+
+void handle_sys_print_sem_info() {
+    printAllSemaphores();
+}
+
+void handle_sys_print_pipe_info() {
+       printPipes();
 }
