@@ -15,7 +15,6 @@
 #include <pixelMap.h>
 #include <exceptions.h>
 #include <memManager.h>
-#include <buddyManager.h>
 #include <processes.h>
 #include <scheduler.h>
 #include "../include/processes.h"
@@ -230,6 +229,11 @@ void mainFunction(){
     newPCB(p15);
     */
 
+    Process p1 = newProcess("pipeTest1", (uint64_t) pipeTest1, 2, FOREGROUND);
+    Process p2 = newProcess("pipeTest2", (uint64_t) pipeTest2, 2, FOREGROUND);
+
+
+    
 
 
 
@@ -284,11 +288,11 @@ void init(){
 
     //initializeReaderDaemon();
 
-    Process dup21 = newProcess("dup21", dup2Test1, 2, BACKGROUND);
-    Process dup22 = newProcess("dup22", dup2Test2, 2, BACKGROUND);
+    //Process dup21 = newProcess("dup21", dup2Test1, 2, BACKGROUND);
+    //Process dup22 = newProcess("dup22", dup2Test2, 2, BACKGROUND);
 
-    newPCB(dup22);
-    newPCB(dup21);
+    //newPCB(dup22);
+    //newPCB(dup21);
 
     Process shellProcess = newProcess("shell", (uint64_t) sampleCodeModuleAddress, 10, FOREGROUND);
     newPCB(shellProcess);
@@ -301,22 +305,22 @@ int main()
 {
 
 
-    testIntQueue();
+    //testIntQueue();
 
     print("Starting kernel main\n");
     sleep(2);
 
+    int fd1 = pipeFifo("hola");
+    int fd2 = pipeFifo("hola");
+    printInteger(fd1);
+    printPipes();
+    freeFd(fd1);
+    printPipes();
+    while(1){}
+
     Process initProcess = newProcess("init", init, 1, BACKGROUND);
     newPCB(initProcess);
 
-
-    //Process mainProcess = newProcess("mainProcess", (uint64_t) mainFunction, 5, FOREGROUND);
-    //newPCB(mainProcess);
-
-    //mFree(array);
-    //goToUserland();
-    for(int i = 0; i<10; i++)
-        print("Hey I'm done here\n");
 	print("kernel stop\n");
     return 0;
 

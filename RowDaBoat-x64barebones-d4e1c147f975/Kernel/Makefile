@@ -10,6 +10,7 @@ LOADERSRC=loader.asm
 LOADEROBJECT=$(LOADERSRC:.asm=.o)
 STATICLIBS=
 
+
 all: $(KERNEL)
 
 $(KERNEL): $(LOADEROBJECT) $(OBJECTS) $(STATICLIBS) $(OBJECTS_ASM)
@@ -17,7 +18,16 @@ $(KERNEL): $(LOADEROBJECT) $(OBJECTS) $(STATICLIBS) $(OBJECTS_ASM)
 	$(LD) $(LDFLAGS) -T kernel.ld --oformat=elf64-x86-64 -o kernel.elf $(LOADEROBJECT) $(OBJECTS) $(OBJECTS_ASM) $(STATICLIBS)
 	#-o kernel.elf
 %.o: %.c
-	$(GCC) $(GCCFLAGS) -I./include -c $< -o $@ -lm
+ifeq ($(MEM_MANAGER), FIRST_FIT)
+	$(GCC) $(GCCFLAGS) -I./include -c $< -o $@ -DMEM_MANAGER=0 -lm
+	echo "FIRST FIT MANAGER"
+else ifeq ($(MEM_MANAGER), BUDDY)
+	$(GCC) $(GCCFLAGS) -I./include -c $< -o $@ -DMEM_MANAGER=1 -lm
+	echo "BUDDY MANAGER"
+else
+	$(GCC) $(GCCFLAGS) -I./include -c $< -o $@ -DMEM_MANAGER=1 -lm
+	echo "DEFAULT MANAGER"
+endif
 
 %.o : %.asm
 	$(ASM) $(ASMFLAGS) $< -o $@

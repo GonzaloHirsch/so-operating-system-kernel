@@ -19,7 +19,14 @@
     |MEM
     |....mas MEM
 */
-#include <buddyManager.h>
+
+#if (MEM_MANAGER == 1)
+
+#include <memManager.h>
+
+enum BUDDY_STATE {B_FREE = 1, B_NOT_FREE = 0, B_PARENT = 2};
+#define SMALLEST_SIZE 1024 //1mb
+
 
 //Tipo nodo.
 typedef struct nodeType{
@@ -123,7 +130,7 @@ void * reserveMemory(size_t newSize, buddy_node_t * node){
     return NULL;
 }
 
-void * buddyMalloc(size_t newSize){
+void * mAlloc(size_t newSize){
     return reserveMemory(newSize, buddyTree->head);
 }
 
@@ -177,12 +184,12 @@ int buddyFreeMemory(void * ptr, buddy_node_t * node){
 }
 
 
-int buddyFree(void * ptr){
+int mFree(void * ptr){
     return buddyFreeMemory(ptr, buddyTree->head);
 }
 
 
-void initializeBuddyMemory(void * startDir, size_t totalSize){
+void initializeMemManagerList(void * startDir, size_t totalSize){
 
     if(totalSize<SMALLEST_SIZE) totalSize=SMALLEST_SIZE;
 
@@ -212,32 +219,4 @@ void initializeBuddyMemory(void * startDir, size_t totalSize){
 
 }
 
-//HELPERS
-
-size_t powerTo(size_t value,size_t pow){
-    if(pow == 0){
-        return 1;
-    }
-
-    int result = 1;
-    while(pow > 0){
-        result *= value;
-        pow--;
-
-    }
-
-    return result;
-}
-
-//Devuelve la potencia tomando el techo del resultado
-size_t logBase2Ceil(size_t value){
-    int i = 0;
-    while((int) powerTo(2,i) < value){
-        i++;
-    }
-    return i;
-}
-
-
-
-
+#endif

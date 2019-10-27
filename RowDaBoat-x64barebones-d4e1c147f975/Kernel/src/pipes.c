@@ -113,6 +113,26 @@ int readPipe(int pipeNumber, char * dest, int count){
     return retVal;
 }
 
+int freePipe(int pipe){
+    if(pipe < 0 || pipe >= MAX_PIPES)
+        return -1;
+    
+    Pipe aux = pipeList[pipe];
+    if(aux == NULL)
+        return -1;
+    
+    //Liberamos el queue buffer.
+    mFree(aux->qb);
+    //Liberamos el pipe per se.
+    mFree(aux);
+    //Ahora no hay nada en su antigua posicion.
+    pipeList[pipe] = NULL;
+    
+    return 0;
+    
+
+}
+
 void printPipes() {
     for(int i = 0; i<MAX_PIPES; i++){
         if(pipeList[i]!=NULL) {
@@ -121,7 +141,6 @@ void printPipes() {
         }
 
     }
-    print("\n");
 }
 
 
