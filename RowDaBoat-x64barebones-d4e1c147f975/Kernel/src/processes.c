@@ -249,6 +249,11 @@ int setProcessFd(int pid, int fdPosition, int fd){
     return 0;
 }
 
+int getProcessFd(int pid, int fdPosition) {
+    return theProcessList[pid]->filesDescriptors[fdPosition];
+}
+
+
 int getParentPid(int pid){
     return theProcessList[pid]->ppid;
 }

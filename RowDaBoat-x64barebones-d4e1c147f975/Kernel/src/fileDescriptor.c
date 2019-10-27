@@ -11,6 +11,7 @@
 #include "../include/memManager.h"
 #include "../include/semaphore.h"
 #include "../include/readerDaemon.h"
+#include "../include/processes.h"
 
 
 typedef struct fileDescriptorCDT{
@@ -58,14 +59,23 @@ int read(int fd, char * dest, int count){
         return -1;
 
     fds fileDesc = fileList[fd];
+    int pfd;
 
     switch (fileDesc->type)
     {
     case STDIN_FD:
+
+        if((pfd=getProcessFd(getPid(), STDIN_FD)) == 0) {
+            for (int i = 0; i < count; i++) {
+                *(dest + i) = getChar();
+            }
+        }
+        else{
+            read(pfd, dest, count);
+        }
+
         //Uso el que estaba antes en la syscalls..
-        for (int i = 0; i < count; i++){
-		    *(dest + i) = getChar();
-	    }
+
 
         /*
         //primer semaforo: para evitar concurrencia al settear length y buffer
@@ -96,11 +106,16 @@ int write(int fd, char * src, int count){
         return -1;
 
     fds fileDesc = fileList[fd];
+    int pfd;
 
     switch (fileDesc->type)
     {
     case STDOUT_FD:
-        print_N(src, count);
+        if((pfd=getProcessFd(getPid(), STDOUT_FD)) == 1)
+            print_N(src, count);
+        else{
+            write(pfd, src, count);
+        }
         break;
     case PIPE_FD:
         return writePipe(fileDesc->pipe, src, count);
