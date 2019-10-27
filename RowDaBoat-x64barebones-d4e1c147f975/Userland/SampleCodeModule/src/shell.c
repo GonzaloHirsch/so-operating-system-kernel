@@ -39,8 +39,7 @@ const char * commands[] = {
   "cat",
   "wc",
   "filter",
-  "loop",
-  "sh"
+  "loop"
 };
 
 const char * commandsInfo[] = {
@@ -73,7 +72,6 @@ const char * commandsInfo[] = {
   "wc - Counts amount of lines in input\n",
   "filter - Filters vowels from input\n",
   "loop - Prints PID with a message every 5 seconds\n",
-  "sh - Inits a secondary shell\n",
 };
 
 const int commandCount = 29;
