@@ -69,4 +69,6 @@ int removeSemaphoreById(int pid, sem semaphore);
 
 int setProcessFd(int pid, int fdPosition, int fd);
 
+int getProcessFd(int pid, int fdPosition);
+
 #endif //SO_TP2_PROCESS_H
