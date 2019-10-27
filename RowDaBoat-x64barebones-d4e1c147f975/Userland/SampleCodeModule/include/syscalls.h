@@ -40,6 +40,8 @@
 #define MALLOC 29
 #define MFREE 30
 #define GET_P_PID 31
+#define CREATE_PROCESS 32
+#define START_PROCESS 33
 
 void sys_write(int fd, const char *buf, int count);
 
@@ -104,5 +106,9 @@ void * sys_malloc(size_t size);
 void sys_mfree(void * address);
 
 int sys_get_p_pid(const int pid);
+
+int sys_create_process(char * name, uint64_t functionAddress, int priority, enum Visibility isForeground);
+
+void sys_start_process(int pid);
 
 #endif

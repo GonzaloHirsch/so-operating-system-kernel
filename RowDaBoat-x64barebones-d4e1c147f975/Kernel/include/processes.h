@@ -73,4 +73,6 @@ int getParentPid(int pid);
 
 int getProcessFd(int pid, int fdPosition);
 
+Process getProcessByPid(int pid);
+
 #endif //SO_TP2_PROCESS_H

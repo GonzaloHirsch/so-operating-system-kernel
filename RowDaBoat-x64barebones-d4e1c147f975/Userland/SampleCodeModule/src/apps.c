@@ -53,6 +53,7 @@ void unblockOnExit(){
 
 void help_command(void){
   blockOnEntry();
+  print("hwlp");
 	for (int i = 0; i < cCount; i++){
     sys_write(1, commandsInfo[i], strlen(commandsInfo[i]));
 		//print(commandsInfo[i]);
@@ -63,7 +64,7 @@ void help_command(void){
 int wc_command(void){
   blockOnEntry();
   int count = 0;
-  char buff[1];
+  char buff[2] = {0};
   sys_read(0, buff, 1);
   while(buff[0] != 0){
     if (buff[0] == '\n') count++;

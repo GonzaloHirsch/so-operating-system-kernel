@@ -253,7 +253,10 @@ int getProcessFd(int pid, int fdPosition) {
     return theProcessList[pid]->filesDescriptors[fdPosition];
 }
 
-
 int getParentPid(int pid){
     return theProcessList[pid]->ppid;
+}
+
+Process getProcessByPid(int pid){
+  return theProcessList[pid];
 }

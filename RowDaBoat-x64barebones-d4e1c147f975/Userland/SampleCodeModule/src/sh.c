@@ -156,7 +156,6 @@ static void runCommand(char * buffer){
               // Verificacion para ver que no nos pasemos de la cantidad maxima de comandos
               if (k < MAX_NUMBER_OF_PROGRAMS){
                 if((processFunctions[k++] = getProgramFunctionFromName(programName))==NULL){
-                  print("fuk");
                     print("Invalid Command\n");
                     return;
                 }
@@ -190,7 +189,6 @@ static void runCommand(char * buffer){
       // Verificacion para ver que no nos pasemos de la cantidad maxima de comandos
       if (k < MAX_NUMBER_OF_PROGRAMS){
         if((processFunctions[k++] = getProgramFunctionFromName(programName))==NULL){
-          print("fu");
             print("Invalid Command\n");
             return;
         }
@@ -200,9 +198,8 @@ static void runCommand(char * buffer){
       }
     }
 
-    int l = 0;
     int pipefd = 0;
-    while(l < k){
+    for (int l = 0; l < k; l++){
       // Genera el nombre del proceso/pipe
       char num[2];
       itoa(l, num, 10);
@@ -210,7 +207,8 @@ static void runCommand(char * buffer){
       concat(name, "sh_");
       concat(name + 3, num);
 
-      pids[l] = sys_new_process(name, (uint64_t) processFunctions[l], 1, FOREGROUND);
+      // Crea el proceso pero no lo ejecuta, para poder settear los fds
+      pids[l] = sys_create_process(name, (uint64_t) processFunctions[l], 1, FOREGROUND);
 
       // En el caso de que el comando anterior queria pipearse con este
       if (l - 1 >= 0 && pendingPipes[l - 1] == 1){
@@ -218,12 +216,13 @@ static void runCommand(char * buffer){
       }
 
       // En el caso de que tenga un pipe con el proximo comando
-      if (pendingPipes[l] == 1){
+      if (l < k - 1 && pendingPipes[l] == 1){
         pipefd = sys_create_pipe(name);
         sys_set_process_fd(pids[l], 1, pipefd);
       }
 
-      l++;
+      // Inicia el proceso con los fds ya setteados
+      sys_start_process(pids[l]);
     }
 }
 

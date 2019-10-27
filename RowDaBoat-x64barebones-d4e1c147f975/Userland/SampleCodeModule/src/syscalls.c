@@ -142,3 +142,11 @@ void sys_mfree(void *address) {
 int sys_get_p_pid(const int pid){
 		return _int80(GET_P_PID, pid, 0, 0, 0, 0);
 }
+
+int sys_create_process(char * name, uint64_t functionAddress, int priority, enum Visibility isForeground){
+	return _int80(CREATE_PROCESS, (uint64_t) name, functionAddress, priority, isForeground, 0);
+}
+
+void sys_start_process(int pid){
+	_int80(START_PROCESS, pid, 0, 0, 0, 0);
+}

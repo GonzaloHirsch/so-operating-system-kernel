@@ -69,6 +69,10 @@ void handle_sys_mfree(void * address);
 
 int handle_sys_get_p_pid();
 
+int handle_sys_create_process(char *name, void *functionAddress, int priority, enum Visibility isForeground);
+
+void handle_sys_start_process(int pid);
+
 //Handler de la llamada a la int 80
 uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
     switch(rdi){
@@ -159,6 +163,10 @@ uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, u
         case GET_P_PID:
             handle_sys_get_p_pid(rsi);
         break;
+        case CREATE_PROCESS:
+            return handle_sys_create_process(rsi, rdx, rcx, r8);
+        case START_PROCESS:
+            handle_sys_start_process(rsi);
     }
 	return 0;
 }
@@ -308,4 +316,14 @@ void handle_sys_mfree(void * address){
 
 int handle_sys_get_p_pid(int pid){
     return getParentPid(pid);
+}
+
+int handle_sys_create_process(char *name, void *functionAddress, int priority, enum Visibility isForeground) {
+  Process nP = newProcess(name, functionAddress, priority, isForeground);
+  return getProcessPid(nP);
+}
+
+void handle_sys_start_process(int pid){
+  Process p = getProcessPid(pid);
+  newPCB(p);
 }
