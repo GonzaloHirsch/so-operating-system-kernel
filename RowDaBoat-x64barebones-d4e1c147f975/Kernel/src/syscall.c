@@ -66,6 +66,8 @@ void * handle_sys_malloc(size_t size);
 
 void handle_sys_mfree(void * address);
 
+int handle_sys_get_p_pid();
+
 //Handler de la llamada a la int 80
 uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
     switch(rdi){
@@ -152,6 +154,9 @@ uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, u
             return handle_sys_malloc(rsi);
         case MFREE:
             handle_sys_mfree(rsi);
+        break;
+        case GET_P_PID:
+            handle_sys_get_p_pid(rsi);
         break;
     }
 	return 0;
@@ -292,4 +297,8 @@ void * handle_sys_malloc(size_t size){
 
 void handle_sys_mfree(void * address){
     mFree(address);
+}
+
+int handle_sys_get_p_pid(int pid){
+    return getParentPid(pid);
 }

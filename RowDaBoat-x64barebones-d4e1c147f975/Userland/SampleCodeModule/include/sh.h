@@ -7,4 +7,8 @@
 
 #define MAX_NUMBER_OF_PROGRAMS 10
 
+
+
+void shellMain();
+
 #endif //SO_TP2_SH_H

@@ -4,24 +4,18 @@
 
 #include "../include/sh.h"
 #include "../include/shell.h"
-#include "../../../Kernel/include/processes.h"
+#include "../include/apps.h"
+//#include "../../../Kernel/include/processes.h"
 #include "../include/processes.h"
 #include "../include/utils.h"
 
-const char * commands[] = {
+const char * allCommands[] = {
   "help",
-  "snake",
   "shutdown",
-  "invalid",
   "time",
   "beep",
-  "sleep",
   "date",
-  "clear",
-  "div",
   "credits",
-  "starwars",
-  "mario",
   "tp",
   "lp",
   "getpid",
@@ -32,7 +26,6 @@ const char * commands[] = {
   "ps",
   "pipe",
   "sem",
-  "phylo",
   "nice",
   "cat",
   "wc",
@@ -41,15 +34,36 @@ const char * commands[] = {
 };
 
 const void * funs[] = {
-
+  (void *)help_command,
+  "shutdown",
+  "time",
+  "beep",
+  "date",
+  "credits",
+  "tp",
+  "lp",
+  "getpid",
+  "kill",
+  "block",
+  "unblock",
+  "mem",
+  "ps",
+  "pipe",
+  "sem",
+  "nice",
+  "cat",
+  (void *)wc_command,
+  "filter",
+  "loop"
 };
 
-const int commandCount = 29;
+const int comCount = 29;
 
 static void runCommand(char * buffer);
+static void * getProgramFunctionFromName(char * command);
 
 void shellMain(){
-    print("arquiOS@ITBA: ");
+    print("arquiOS#ITBA: ");
     //Comando elegido
     int command = INVALID_COMMAND;
     //Buffer para el comando que se quiere escribir
@@ -76,7 +90,7 @@ void shellMain(){
             //Hace un reset del buffer de comando volviendo a la posicion 0
             commandBuffPos = 0;
             //Imprime el usuario de nuevo
-            print("\narquiOS@ITBA: ");
+            print("\narquiOS#ITBA: ");
         }
 
         //CASO ENTER
@@ -92,7 +106,7 @@ void shellMain(){
             //Hace un reset del buffer de comando volviendo a la posicion 0
             commandBuffPos = 0;
             //Vuelve a imprimir el usuario para que se vea bien
-            if(command!=SHUTDOWN_COMMAND) print("arquiOS@ITBA: ");
+            print("\narquiOS#ITBA: ");
         }
             //CASO BACKSPACE - DELETE
         else if (key == '\b'){
@@ -114,6 +128,11 @@ void shellMain(){
             commandBuffPos++;
         }
     }
+
+    int pid = sys_get_pid();
+    int ppid = sys_get_p_pid(pid);
+    sys_unblock(ppid);
+    sys_kill(pid);
 }
 
 static void runCommand(char * buffer){
@@ -133,15 +152,18 @@ static void runCommand(char * buffer){
         //si es espacio
         if(buffer[i]==' '){
             programName[j]=0;
-            // Verificacion para ver que no nos pasemos de la cantidad maxima de comandos
-            if (k < MAX_NUMBER_OF_PROGRAMS){
-              if((processFunctions[k++] = getProgramFunctionFromName(programName))==NULL){
-                  print("Invalid Command\n");
-                  return;
+            if (strlen(programName) != 0){
+              // Verificacion para ver que no nos pasemos de la cantidad maxima de comandos
+              if (k < MAX_NUMBER_OF_PROGRAMS){
+                if((processFunctions[k++] = getProgramFunctionFromName(programName))==NULL){
+                  print("fuk");
+                    print("Invalid Command\n");
+                    return;
+                }
+              } else {
+                print("Max number of commands reached\n");
+                return;
               }
-            } else {
-              print("Max number of commands reached\n");
-              return;
             }
 
             j=0;
@@ -168,6 +190,7 @@ static void runCommand(char * buffer){
       // Verificacion para ver que no nos pasemos de la cantidad maxima de comandos
       if (k < MAX_NUMBER_OF_PROGRAMS){
         if((processFunctions[k++] = getProgramFunctionFromName(programName))==NULL){
+          print("fu");
             print("Invalid Command\n");
             return;
         }
@@ -187,7 +210,7 @@ static void runCommand(char * buffer){
       concat(name, "sh_");
       concat(name + 3, num);
 
-      pids[l] = sys_new_process(name, (uint64_t) processFunctions[l], 1, BACKGROUND);
+      pids[l] = sys_new_process(name, (uint64_t) processFunctions[l], 1, FOREGROUND);
 
       // En el caso de que el comando anterior queria pipearse con este
       if (l - 1 >= 0 && pendingPipes[l - 1] == 1){
@@ -199,19 +222,16 @@ static void runCommand(char * buffer){
         pipefd = sys_create_pipe(name);
         sys_set_process_fd(pids[l], 1, pipefd);
       }
-    }
 
-    // Ejecutando los comandos
-    for (int l = 0; l < k; l++){
-
+      l++;
     }
 }
 
 void * getProgramFunctionFromName(char * command){
   void * res = NULL;
-  for (int i = 0; i < commandCount && result == INVALID_COMMAND; i++){
+  for (int i = 0; i < comCount; i++){
 		//En el caso de que sean iguales
-		if (!strcmp(command, commands[i])){
+		if (!strcmp(command, allCommands[i])){
 			res = funs[i];
 		}
 	}

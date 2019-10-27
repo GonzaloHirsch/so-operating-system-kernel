@@ -125,6 +125,11 @@ void philosopherProblem(){
       actualIters++;
     }
   }
+
+  int pid = sys_get_pid();
+  int ppid = sys_get_p_pid(pid);
+  sys_unblock(ppid);
+  sys_kill(pid);
 }
 
 int addPhilosopher(){

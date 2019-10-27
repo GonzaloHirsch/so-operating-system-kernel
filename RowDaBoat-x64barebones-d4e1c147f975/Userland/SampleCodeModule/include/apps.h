@@ -1,20 +1,8 @@
-#ifndef SHELL_H
-#define SHELL_H
+#ifndef APPS_H
+#define APPS_H
 
-#include <stdint.h>
-#include "naiveConsole.h"
 #include "utils.h"
-#include "graphicsLibrary.h"
-#include "types.h"
-#include "snakeGame.h"
-#include "philosophers.h"
-#include "sh.h"
-#include "apps.h"
 
-#define MAX_BUFF_SIZE 750
-#define MAX_NAME_SIZE 30
-
-/*
 //Constantes para los comandos
 #define INVALID_COMMAND -1
 #define HELP_COMMAND 0
@@ -47,31 +35,9 @@
 #define FILTER_COMMAND 27
 #define LOOP_COMMAND 28
 #define SH_COMMAND 29
-*/
 
-//Address original que devolvia el samplecoremodule
-#define RETURN_ADRESS 0xDEADC0DE
+void help_command(void);
 
-uint64_t * init_shell(void);
-
-void handle_command(int cmd, char * params);
-
-void display_welcome_message(void);
-
-//void display_help(void);
-
-void display_goodbye_message(void);
-
-void clear_buffer(char * buff);
-
-void display_time(void);
-
-void display_date(void);
-
-void make_sound(void);
-
-void sleep(void);
-
-void display_invalid_command(void);
+int wc_command(void);
 
 #endif

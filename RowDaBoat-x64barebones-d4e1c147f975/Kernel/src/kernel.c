@@ -233,7 +233,7 @@ void mainFunction(){
     Process p2 = newProcess("pipeTest2", (uint64_t) pipeTest2, 2, FOREGROUND);
 
 
-    
+
 
 
 
@@ -316,7 +316,7 @@ int main()
     printPipes();
     freeFd(fd1);
     printPipes();
-    while(1){}
+    //while(1){}
 
     Process initProcess = newProcess("init", init, 1, BACKGROUND);
     newPCB(initProcess);

@@ -39,9 +39,11 @@ const char * commands[] = {
   "cat",
   "wc",
   "filter",
-  "loop"
+  "loop",
+  "sh"
 };
 
+/*
 const char * commandsInfo[] = {
   "help - Displays available commands and their usage\n",
   "snake - Initiates the snake game\n",
@@ -72,9 +74,11 @@ const char * commandsInfo[] = {
   "wc - Counts amount of lines in input\n",
   "filter - Filters vowels from input\n",
   "loop - Prints PID with a message every 5 seconds\n",
+  "sh - Inits a secondary shell\n",
 };
+*/
 
-const int commandCount = 29;
+const int commandCount = 30;
 
 int getCommand(char * cmd, int * index);
 void generate_invalid_opc(void);
@@ -188,7 +192,7 @@ void handle_command(int cmd, char * params){
   char buff[256] = {0};
 	switch(cmd){
 		case HELP_COMMAND:
-			display_help();
+			help_command();
 		break;
 		case SNAKE_COMMAND:
 		w = initSnakeGame();
@@ -282,6 +286,11 @@ void handle_command(int cmd, char * params){
     case SEM_INFO_COMMAND:
         sys_print_sem_info();
         break;
+    case SH_COMMAND:
+      shellPID = sys_get_pid();
+      sys_new_process("sh_process", (uint64_t) shellMain, 1, FOREGROUND);
+      sys_block(shellPID);
+    break;
 	}
 	print("\n");
 }
@@ -313,11 +322,14 @@ void display_welcome_message(void){
 	print("										Type \"help\" to discover all available commands\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 }
 
+/*
 void display_help(void){
+  print("fun fun fun");
 	for (int i = 0; i < commandCount; i++){
 		print(commandsInfo[i]);
 	}
 }
+*/
 
 void display_time(void){
 	print("The time is ");

@@ -39,6 +39,7 @@
 #define PRINT_MEM_STATE 28
 #define MALLOC 29
 #define MFREE 30
+#define GET_P_PID 31
 
 void sys_write(int fd, const char *buf, int count);
 
@@ -101,5 +102,7 @@ void sys_print_mem_state();
 void * sys_malloc(size_t size);
 
 void sys_mfree(void * address);
+
+int sys_get_p_pid(const int pid);
 
 #endif
