@@ -69,6 +69,7 @@ int writePipe(int pipeNumber, char * src, int count){
     Pipe pipe = pipeList[pipeNumber];
 
     //si el pipe esta siendo accedido, bloquear
+
     if(pipe->beingAccessed){
         int pid = getPid();
         pipe->waitingProcess = pid;
@@ -76,16 +77,19 @@ int writePipe(int pipeNumber, char * src, int count){
         forceChangeProcess();
         //cuando me desbloquean, hago lo siguiente...
 
+        pipe->waitingProcess = 0;
     }
     pipe->beingAccessed = 1;
-    pipe->waitingProcess = 0;
+
     int retVal = putString(pipe->qb, src, count);
+
     pipe->beingAccessed = 0;
     //si hay un proceso esperando para leer, lo desbloqueo
 
     if(pipe->waitingProcess){
         setProcessStateByPid(pipe->waitingProcess, STATE_READY);
     }
+
     return retVal;
 }
 
@@ -95,17 +99,18 @@ int readPipe(int pipeNumber, char * dest, int count){
         return -1;
     
     Pipe pipe = pipeList[pipeNumber];
-
+     //todo bloqueo
     if(pipe->beingAccessed || isQueueBufferEmpty(pipe->qb)){
         int pid = getPid();
         pipe->waitingProcess = pid;
         setProcessStateByPid(getPid(), STATE_BLOCKED);
         forceChangeProcess();
         //cuando me desbloquean, hago lo siguiente...
-
+        pipe->waitingProcess = 0;
     }
+
     pipe->beingAccessed = 1;
-    pipe->waitingProcess = 0;
+
     int retVal = getString(pipe->qb, dest, count);
     pipe->beingAccessed = 0;
     //si hay un proceso esperando para leer, lo desbloqueo
