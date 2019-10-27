@@ -88,7 +88,7 @@ void philosopherProblem(){
 
   for (int i = 0; i < BASE_PHILOSOPHER_COUNT; i++){
     addPhilosopher();
-    goToSleep(30);
+    goToSleep(10);
   }
 
   int res;

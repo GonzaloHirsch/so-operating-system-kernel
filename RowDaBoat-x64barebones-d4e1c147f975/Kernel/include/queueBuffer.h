@@ -9,7 +9,7 @@ QueueBuffer createQueueBuffer();
 
 int putString(QueueBuffer qB, char * string, int count);
 
-int getString(QueueBuffer qB, char * dst, int count);
+int getString(QueueBuffer qB, char * dst);
 
 int isQueueBufferEmpty(QueueBuffer qB);
 

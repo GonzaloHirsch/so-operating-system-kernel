@@ -39,24 +39,23 @@ int putString(QueueBuffer qB, char * string, int count){
     qB->tail = (qB->tail+1)%MAX_BUFFER_SIZE;
 
     return 0;
-    
-}  
+}
 
-int getString(QueueBuffer qB, char * dst, int count){
-    
-    int i = 0;;
+int getString(QueueBuffer qB, char * dst){
+
+    int i = 0;
 
     //Iteraremos hasta encontrar el 0 o llegar a la cantidad de count
-    while((qB->buff[qB->head] != 0 || i==0) && i < count){
-        
+    while((qB->buff[qB->head] != -1 || i==0)){
+
         //Si no hay nada para leer, esperaremos.
-        if(qB->size > 0 && qB->buff[qB->head] != 0){
+        if(qB->size > 0 && qB->buff[qB->head] != -1){
             dst[i] = qB->buff[qB->head];
             qB->head = (qB->head + 1) % MAX_BUFFER_SIZE;
             i++;qB->size--;
         }
         //Esto es para abarcar el caso en que manda un 0 solamente.
-        else if(qB->size > 0 && qB->buff[qB->head] == 0){
+        else if(qB->size > 0 && qB->buff[qB->head] == -1){
             qB->size--;
             break;
         }
@@ -64,6 +63,7 @@ int getString(QueueBuffer qB, char * dst, int count){
 
     qB->head = (qB->head + 1)%MAX_BUFFER_SIZE;
     dst[i] = 0;
+
     return 0;
 }
 

@@ -42,6 +42,7 @@
 #define GET_P_PID 31
 #define CREATE_PROCESS 32
 #define START_PROCESS 33
+#define MARK_PIPE_END 34
 
 void sys_write(int fd, const char *buf, int count);
 
@@ -110,5 +111,7 @@ int sys_get_p_pid(const int pid);
 int sys_create_process(char * name, uint64_t functionAddress, int priority, enum Visibility isForeground);
 
 void sys_start_process(int pid);
+
+void sys_mark_pipe_end(int fd);
 
 #endif

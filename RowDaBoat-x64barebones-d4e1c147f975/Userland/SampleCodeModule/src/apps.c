@@ -53,25 +53,46 @@ void unblockOnExit(){
 
 void help_command(void){
   blockOnEntry();
-  print("hwlp");
 	for (int i = 0; i < cCount; i++){
     sys_write(1, commandsInfo[i], strlen(commandsInfo[i]));
 		//print(commandsInfo[i]);
 	}
+  sys_mark_pipe_end(1);
   unblockOnExit();
 }
 
 int wc_command(void){
   blockOnEntry();
+
   int count = 0;
-  char buff[2] = {0};
-  sys_read(0, buff, 1);
-  while(buff[0] != 0){
-    if (buff[0] == '\n') count++;
-    sys_read(0, buff, 1);
+  char buff[1024] = {0};
+  sys_read(0, buff, 1024);
+
+  //print("loop");
+  int index = 0;
+  while(index < 1024){
+    if (buff[index] == '\n'){
+      count++;
+    }
+    index++;
   }
-	char num[3] = {0};
+
+/*
+  while(strlen(buff) > 0){
+    //print("loop");
+    int index = 0;
+    while(index < 1024){
+      if (buff[index] == '\n'){
+        count++;
+      }
+      index++;
+    }
+    sys_read(0, buff, 1024);
+  }
+*/
+	char num[5] = {0};
   itoa(count, num, 10);
   sys_write(1, num, strlen(num));
+  print(num);
   unblockOnExit();
 }

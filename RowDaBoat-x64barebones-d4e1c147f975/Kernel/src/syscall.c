@@ -73,6 +73,8 @@ int handle_sys_create_process(char *name, void *functionAddress, int priority, e
 
 void handle_sys_start_process(int pid);
 
+void handle_sys_mark_pipe_end(int fd);
+
 //Handler de la llamada a la int 80
 uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
     switch(rdi){
@@ -167,6 +169,8 @@ uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, u
             return handle_sys_create_process(rsi, rdx, rcx, r8);
         case START_PROCESS:
             handle_sys_start_process(rsi);
+        case MARK_PIPE_END:
+            handle_sys_mark_pipe_end(rsi);
     }
 	return 0;
 }
@@ -326,4 +330,9 @@ int handle_sys_create_process(char *name, void *functionAddress, int priority, e
 void handle_sys_start_process(int pid){
   Process p = getProcessByPid(pid);
   newPCB(p);
+}
+
+void handle_sys_mark_pipe_end(int fd){
+  char buff[1] = {-1};
+  write(fd,buff,1);
 }

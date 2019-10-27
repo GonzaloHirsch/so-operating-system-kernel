@@ -127,7 +127,6 @@ void sys_set_sem_value(sem *semaphore, int newVal) {
 }
 
 void sys_print_mem_state(){
-
     _int80(PRINT_MEM_STATE, 0, 0, 0, 0, 0);
 }
 
@@ -149,4 +148,8 @@ int sys_create_process(char * name, uint64_t functionAddress, int priority, enum
 
 void sys_start_process(int pid){
 	_int80(START_PROCESS, pid, 0, 0, 0, 0);
+}
+
+void sys_mark_pipe_end(int fd){
+	_int80(MARK_PIPE_END, fd, 0, 0, 0, 0);
 }
