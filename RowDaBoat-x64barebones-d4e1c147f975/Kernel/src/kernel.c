@@ -323,17 +323,18 @@ int main()
 
     //printMemoryStatus();
 
-    int fd1 = pipeFifo("hola");
-    int fd2 = pipeFifo("hola");
-    printInteger(fd1);
-    printPipes();
-    freeFd(fd1);
-    printPipes();
+    //int fd1 = pipeFifo("hola");
+    //int fd2 = pipeFifo("hola");
+    //printInteger(fd1);
+    //printPipes();
+    //freeFd(fd1);
+    //printPipes();
 
 
-    printMemoryStatus();
-    while(1){
-    }
+
+    //printMemoryStatus();
+    //while(1){
+    //}
 
     Process initProcess = newProcess("init", init, 1, BACKGROUND);
     newPCB(initProcess);

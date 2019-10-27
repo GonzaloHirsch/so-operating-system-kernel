@@ -324,6 +324,6 @@ int handle_sys_create_process(char *name, void *functionAddress, int priority, e
 }
 
 void handle_sys_start_process(int pid){
-  Process p = getProcessPid(pid);
+  Process p = getProcessByPid(pid);
   newPCB(p);
 }
