@@ -248,3 +248,7 @@ int setProcessFd(int pid, int fdPosition, int fd){
     aux->filesDescriptors[fdPosition] = fd;
     return 0;
 }
+
+int getProcessFd(int pid, int fdPosition) {
+    return theProcessList[pid]->filesDescriptors[fdPosition];
+}
