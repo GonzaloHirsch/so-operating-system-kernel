@@ -85,13 +85,11 @@ void * initializeKernelBinary()
     print("Initializing Console\n");
     init_console();
     print("Initializing Memmanager list\n");
-    //todo nuestro memmanager
-    initializeMemManagerList(memoryStartAddress, 80*1048576); //80MB de memoria dinamica
-    //initialize_list(memoryStartAddress, 80*1048576);
+    initializeMemManagerList(memoryStartAddress,80*1048576); //80MB de memoria dinamica
     print("Initializing Processes\n");
     initProcesses();
-    print("Creating default fds\n"); //sacar despues
-    createDefaultFds();
+    print("Creating default fds\n"); 
+    createDefaultFds();                           
     print("Loading idt\n");
  	load_idt();
  	print("Loading exceptions\n");
@@ -301,6 +299,17 @@ void init(){
     //newPCB(mainProcess);
 }
 
+void memTest(){
+    int i=0;
+    void * ptr;
+    while((ptr =mAlloc(1024)) != NULL){
+        print("NUMERO: %d\n", i++);
+        if(i % 31 == 0 ){
+            mFree(ptr);
+        }
+    }
+}
+
 int main()
 {
 
@@ -310,17 +319,26 @@ int main()
     print("Starting kernel main\n");
     sleep(2);
 
+    //memTest();
+
+    //printMemoryStatus();
+
     int fd1 = pipeFifo("hola");
     int fd2 = pipeFifo("hola");
     printInteger(fd1);
     printPipes();
     freeFd(fd1);
     printPipes();
-    while(1){}
+
+
+    printMemoryStatus();
+    while(1){
+    }
 
     Process initProcess = newProcess("init", init, 1, BACKGROUND);
     newPCB(initProcess);
 
+    printMemoryStatus();
 	print("kernel stop\n");
     return 0;
 

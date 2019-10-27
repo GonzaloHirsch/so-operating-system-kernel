@@ -2,6 +2,7 @@
 
 #include <memManager.h>
 #include "../include/memManager.h"
+#include <console.h>
 
 /*
   Estructura del tipo Nodo
@@ -26,6 +27,8 @@ struct t_list {
   void * startDir;
   // Tamaño total de la memoria
   size_t totalSize;
+  //Size usado de la memoria
+  size_t usedSize;
 };
 
 // Redefinicion del puntero al tipo lista
@@ -57,6 +60,7 @@ Node firstFit(Node node, size_t size){
     if (node->size == size){
       // Marcamos al nodo como que NO esta libre
       node->state = NOT_FREE;
+      memBlocks->usedSize += node->size;
       return node;
     }
     else if (node->size > size){
@@ -79,10 +83,15 @@ Node firstFit(Node node, size_t size){
         // Le cambia el tamaño al bloque porque se corto la cantidad de memoria que tiene
         node->size = size;
         node->next = aux;
+
+        //Agregamos el size usado.
+        memBlocks->usedSize += sizeof(struct t_node);
       }
 
       // Lo marcamos como que NO esta libre
       node->state = NOT_FREE;
+      //Agregamos el size usado.
+      memBlocks->usedSize += node->size;
 
       return node;
     }
@@ -115,7 +124,8 @@ void * mAlloc(size_t size){
         Nodo Siguiente --> Ocupado/null
   --> Libero al encontrado
   Caso 2:
-        Nodo Anterior --> Libre
+        Nodo Anterior --> Libresize_t t_list::totalSize
+Tamaño total de la memoria
         Nodo Siguiente --> Ocupado/null
   --> Mergeo el actual al anterior
   Caso 3:
@@ -144,18 +154,22 @@ int freeMemory(Node actual, Node previous, void * ptr){
     // Caso de ANTERIOR --> OCUPADO o NULL y SIGUIENTE --> OCUPADO o NULL
     if ((previous == NULL || (previous != NULL && previous->state == NOT_FREE)) && ((actual->next != NULL && actual->next->state == NOT_FREE) || actual->next == NULL)){
       actual->state = FREE;
+      //Actualizamos el size usado de la memoria
+      memBlocks->usedSize -= (actual->size + sizeof(struct t_node));
       return 1;
     }
     // Caso de ANTERIOR --> LIBRE y SIGUIENTE --> OCUPADO o NULL
     else if (previous != NULL && previous->state == FREE && ((actual->next != NULL && actual->next->state == NOT_FREE) || actual->next == NULL)){
       previous->size = previous->size + actual->size + sizeof(struct t_node);
       previous->next = actual->next;
+      memBlocks->usedSize -= (actual->size + sizeof(struct t_node));
       return 1;
     }
     // Caso de ANTERIOR --> LIBRE y SIGUIENTE --> LIBRE
     else if (previous != NULL && actual->next != NULL && previous->state == FREE && actual->next->state == FREE){
       previous->size = previous->size + actual->size + actual->next->size + (2 * sizeof(struct t_node));
       previous->next = actual->next->next;
+      memBlocks->usedSize -= (actual->size + 2*sizeof(struct t_node));
       return 1;
     }
     // Caso de ANTERIOR --> OCUPADO o NULL y SIGUIENTE --> LIBRE
@@ -164,6 +178,7 @@ int freeMemory(Node actual, Node previous, void * ptr){
       actual->size = actual->size + actual->next->size + sizeof(struct t_node);
       actual->next = actual->next->next;
       actual->state = FREE;
+      memBlocks->usedSize -= (actual->size + sizeof(struct t_node));
       return 1;
     } else {
       return 0;
@@ -204,5 +219,16 @@ void initializeMemManagerList(void * startDir, size_t totalSize){
   memBlocks->head->memPtr = (void * ) ((char *)memBlocks->head + sizeof(struct t_node));
   memBlocks->head->size = totalSize - sizeof(struct t_list) - sizeof(struct t_node);
   memBlocks->head->state = FREE;
+
+  memBlocks->usedSize = sizeof(struct t_list) + sizeof(struct t_node);
 }
+
+
+void printMemoryStatus(){
+  print("Memory State:\n");
+  print(" -Allocation type: firstFit\n");
+  print(" -Total size: %d \n", memBlocks->totalSize);
+  print(" -Used size: %d \n", memBlocks->usedSize);
+}
+
 #endif

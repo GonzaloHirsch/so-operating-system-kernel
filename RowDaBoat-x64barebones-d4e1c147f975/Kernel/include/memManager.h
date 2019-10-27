@@ -11,6 +11,7 @@ typedef struct t_node * Node;
 void * mAlloc(size_t size);
 int mFree(void * ptr);
 void initializeMemManagerList(void * startDir, size_t totalSize);
+void printMemoryStatus();
 
 
 #endif
