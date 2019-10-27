@@ -160,7 +160,7 @@ uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, u
 
 //Handler para la system write
 void handle_sys_write(int fd, const char * buf, int length){
-    write(STDOUT_FD,buf,length);
+    write(fd,buf,length);
 }
 
 //Handler para la system get ticks
@@ -186,7 +186,7 @@ void handle_sys_draw_pixel(int x, int y, int r, int g, int b){
 void handle_sys_read(int fd, char * buf, int length){
     //int pid = getProcessPid(getCurrentProcess());
     //setProcessStateByPid(pid, STATE_BLOCKED);
-    read(STDIN_FD,buf,length);
+    read(fd,buf,length);
     //setProcessStateByPid(pid, STATE_READY);
 }
 
