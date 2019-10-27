@@ -20,9 +20,9 @@
     |....mas MEM
 */
 
-#if (MEM_MANAGER == 1)
-
+#if (MEM_MANAGER == 1)   
 #include <memManager.h>
+#include <console.h>
 
 enum BUDDY_STATE {B_FREE = 1, B_NOT_FREE = 0, B_PARENT = 2};
 #define SMALLEST_SIZE 1024 //1mb
@@ -45,10 +45,12 @@ typedef struct treeType{
 
     buddy_node_t * head;
     void * startDir;
-    size_t totalSize;          //Total size available to be allocated
+    void * nodeAllocator;
+    size_t realSize;           //Total size used for the memory
+    size_t totalSize;            //Size available to allocate memory
+    size_t usedSize;            
     size_t smallestSize;       //Minimum size of the block
     int numberOfLevels;
-
 
 } buddy_tree_t;
 
@@ -81,8 +83,9 @@ void * reserveMemory(size_t newSize, buddy_node_t * node){
 
         //Si no podemos dividirlo mas(estamos en el menor size posible del nodo)
         //Lo allocamos.
-        if(node->level == buddyTree->numberOfLevels){
+        if(node->size == SMALLEST_SIZE){
             node->state = B_NOT_FREE;
+            buddyTree->usedSize += node->size;
             return node->memPtr;
         }
         //Si entra en uno de los nodos hijo, dividimos el nodo actual,
@@ -92,25 +95,28 @@ void * reserveMemory(size_t newSize, buddy_node_t * node){
             //Creamos los hijos en caso que nunca hayan sido creados.
             //Puede haber pasado que hayan sido creados y liberados anteriormente...
             if(node->left == NULL || node->right ==NULL){
-                buddy_node_t * auxL = node+sizeof(buddy_node_t);
+                buddy_node_t * auxL = buddyTree->nodeAllocator;
+                buddyTree->nodeAllocator = (void *)((char *)buddyTree->nodeAllocator + sizeof(buddy_node_t));
                 auxL->size = node->size/2;
                 auxL->left = auxL->right = NULL;
                 auxL->memPtr = node->memPtr;
                 auxL->state = B_FREE;
-                auxL->level = node->level-1;
+                auxL->level = node->level+1;
 
                 //El nodo de la derecha va a estar despues de todos los nodos hijos del nodo de la izquierda).
                 //Si se le ocurre una mejor forma de organizarlos digamela.
-                buddy_node_t * auxR = node + (powerTo(buddyTree->numberOfLevels - node->level + 1 , 2) - 1) * sizeof(buddy_node_t);
+                buddy_node_t * auxR = buddyTree->nodeAllocator;
+                buddyTree->nodeAllocator = (void *)((char *)buddyTree->nodeAllocator + sizeof(buddy_node_t));
                 auxR->size = node->size/2;
                 auxR->left = auxR->right = NULL;
                 auxR->memPtr = (void *)((char *) node->memPtr + node->size/2);
                 auxR->state = B_FREE;
-                auxR->level = node->level-1;
+                auxR->level = node->level+1;
 
-            //Asignamos ambos nodos hijos
-            node->left = auxL;
-            node->right = auxR;
+
+                //Asignamos ambos nodos hijos
+                node->left = auxL;
+                node->right = auxR;
 
             }
             // Lo cambiamos a estado parent. Va a ser papa!!!!. Allocamos en el nodo de la izquierda.
@@ -123,6 +129,7 @@ void * reserveMemory(size_t newSize, buddy_node_t * node){
         //Si solo entra en el tamanio del nodo actual y no en sus hijos
         else{
             node->state = B_NOT_FREE;
+            buddyTree->usedSize += node->size;
             return node->memPtr;
         }
     }
@@ -172,6 +179,7 @@ int buddyFreeMemory(void * ptr, buddy_node_t * node){
 
         if(node->memPtr == ptr){
             node->state=B_FREE;
+            buddyTree->usedSize -= node->size;
             return 1;
         }
         //Si no es la direccion que estoy buscando, simplemente vuelvo.
@@ -191,6 +199,8 @@ int mFree(void * ptr){
 
 void initializeMemManagerList(void * startDir, size_t totalSize){
 
+    print("%d %d \n", sizeof(buddy_node_t), sizeof(struct nodeType));
+
     if(totalSize<SMALLEST_SIZE) totalSize=SMALLEST_SIZE;
 
     size_t base = logBase2Ceil(totalSize); //El tamanio tiene que ser una potencia de 2
@@ -202,7 +212,8 @@ void initializeMemManagerList(void * startDir, size_t totalSize){
     buddyTree = startDir;
     //El tamanio total sera de el size requerido, mas el tamanio del tree mas el tamanio de todos los nodos posibles.
     //(el tamanio de los nodos esta reservado no los alocaremos hasta que sea necesario)
-    buddyTree->totalSize = totalSize + sizeof(buddy_tree_t)+ maxNodeCant *  sizeof(buddy_node_t);
+    buddyTree->realSize = totalSize + sizeof(buddy_tree_t)+ maxNodeCant *  sizeof(buddy_node_t);
+    buddyTree->totalSize = totalSize;
     buddyTree->smallestSize = SMALLEST_SIZE;
     buddyTree->head=(void *)((char *)startDir + sizeof(buddy_tree_t));
     buddyTree->startDir = startDir;
@@ -215,8 +226,19 @@ void initializeMemManagerList(void * startDir, size_t totalSize){
     buddyTree->head->memPtr = (void *)((char *)buddyTree->startDir + sizeof(buddy_tree_t)+ maxNodeCant * sizeof(buddy_node_t));
     buddyTree->head->state = B_FREE;
     buddyTree->head->level = 0;
-
+    //Apunta la primera posicion libre para un nodo.
+    buddyTree->nodeAllocator = (void *)((char *)startDir + sizeof(buddy_tree_t) + sizeof(buddy_node_t));
 
 }
+
+void printMemoryStatus(){
+  print("Memory State:\n");
+  print(" -Allocation type: buddy allocation. \n");
+  print(" -Total size available: %d \n", buddyTree->totalSize);
+  print(" -Used size: %d \n", buddyTree->usedSize);
+  print(" -Minimum size of block: %d \n", buddyTree->smallestSize);
+  print(" -Real size used to store all the memory: %d \n\n",buddyTree->realSize);
+}
+
 
 #endif
