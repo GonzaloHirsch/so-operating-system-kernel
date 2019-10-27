@@ -11,6 +11,7 @@
 #include "../include/syscall.h"
 #include "../include/memManager.h"
 
+extern void forceChangeProcess();
 extern void hang();
 extern void over_clock(int rate);
 
@@ -231,6 +232,12 @@ int handle_sys_list_processes(){
 
 void handle_sys_kill_process(int pid){
     setProcessStateByPid(pid, STATE_TERMINATED);
+
+    if(getPid()==pid){
+        forceChangeProcess();
+    }
+
+
 }
 
 void handle_sys_change_priority(int pid, int priority){

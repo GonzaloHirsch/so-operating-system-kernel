@@ -72,7 +72,7 @@ int writePipe(int pipeNumber, char * src, int count){
     if(pipe->beingAccessed){
         int pid = getPid();
         pipe->waitingProcess = pid;
-        setProcessStateByPid(getPid(), STATE_BLOCKED);
+        setProcessStateByPid(pid, STATE_BLOCKED);
         forceChangeProcess();
         //cuando me desbloquean, hago lo siguiente...
         pipe->beingAccessed = 1;
