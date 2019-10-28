@@ -43,6 +43,10 @@
 #define PRINT_MEM_STATE 28
 #define MALLOC 29
 #define MFREE 30
+#define GET_P_PID 31
+#define CREATE_PROCESS 32
+#define START_PROCESS 33
+#define CLOSE_FD 34
 
 uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
 

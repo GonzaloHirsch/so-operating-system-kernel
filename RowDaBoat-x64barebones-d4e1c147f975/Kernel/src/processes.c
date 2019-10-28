@@ -35,7 +35,7 @@ struct ProcessCDT{
     char name[MAX_NAME_LENGTH];
     IntQueue semaphores;
     int filesDescriptors[2]; //0 STDIN, 1 STDOUT.
-    
+
 };
 
 typedef struct ProcessStack{
@@ -251,4 +251,12 @@ int setProcessFd(int pid, int fdPosition, int fd){
 
 int getProcessFd(int pid, int fdPosition) {
     return theProcessList[pid]->filesDescriptors[fdPosition];
+}
+
+int getParentPid(int pid){
+    return theProcessList[pid]->ppid;
+}
+
+Process getProcessByPid(int pid){
+  return theProcessList[pid];
 }

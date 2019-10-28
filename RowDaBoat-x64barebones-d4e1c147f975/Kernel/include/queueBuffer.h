@@ -1,7 +1,8 @@
 #ifndef QUEUE_QUEUEBUFFER_H
 #define QUEUE_QUEUEBUFFER_H
 
-#define MAX_BUFFER_SIZE 200
+#define MAX_BUFFER_SIZE 2048
+#define EOF -1
 
 typedef struct QueueBufferCDT * QueueBuffer;
 

@@ -11,6 +11,8 @@ int writePipe(int pipeNumber, char * src, int count);
 int readPipe(int pipeNumber, char * dest, int count);
 int freePipe(int pipe);
 void printPipes();
+void closePipe(int pipe);
+
 
 #define MAX_PIPES 100
 #define MAX_NAME_PIPE 100

@@ -13,8 +13,8 @@ void sys_write(int fd, const char *buf, int count){
 	_int80((uint64_t)WRITE, (uint64_t)fd, (uint64_t)buf, (uint64_t)count, 0, 0);
 }
 
-void sys_read(int fd, char *buf, int count){
-	_int80((uint64_t)READ, (uint64_t)fd, (uint64_t)buf, (uint64_t)count, 0, 0);
+int sys_read(int fd, char *buf, int count){
+	return _int80((uint64_t)READ, (uint64_t)fd, (uint64_t)buf, (uint64_t)count, 0, 0);
 }
 
 void sys_get_key(int fd, char * buf){
@@ -137,4 +137,20 @@ void * sys_malloc(size_t size){
 
 void sys_mfree(void *address) {
     _int80(MFREE, address, 0, 0, 0, 0);
+}
+
+int sys_get_p_pid(const int pid){
+		return _int80(GET_P_PID, pid, 0, 0, 0, 0);
+}
+
+int sys_create_process(char * name, uint64_t functionAddress, int priority, enum Visibility isForeground){
+	return _int80(CREATE_PROCESS, (uint64_t) name, functionAddress, priority, isForeground, 0);
+}
+
+void sys_start_process(int pid){
+	_int80(START_PROCESS, pid, 0, 0, 0, 0);
+}
+
+void sys_close_fd(int fd) {
+    _int80(CLOSE_FD, fd, 0, 0, 0, 0);
 }

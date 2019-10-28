@@ -88,7 +88,7 @@ void philosopherProblem(){
 
   for (int i = 0; i < BASE_PHILOSOPHER_COUNT; i++){
     addPhilosopher();
-    goToSleep(30);
+    goToSleep(10);
   }
 
   int res;
@@ -125,6 +125,11 @@ void philosopherProblem(){
       actualIters++;
     }
   }
+
+  int pid = sys_get_pid();
+  int ppid = sys_get_p_pid(pid);
+  sys_unblock(ppid);
+  sys_kill(pid);
 }
 
 int addPhilosopher(){

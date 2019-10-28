@@ -17,7 +17,7 @@ extern void over_clock(int rate);
 
 void handle_sys_write(int fd, const char * buf, int length);
 
-void handle_sys_read(int fd, char * buf, int length);
+int handle_sys_read(int fd, char * buf, int length);
 
 void handle_sys_beep(int freq, int time);
 
@@ -67,6 +67,14 @@ void * handle_sys_malloc(size_t size);
 
 void handle_sys_mfree(void * address);
 
+int handle_sys_get_p_pid();
+
+int handle_sys_create_process(char *name, void *functionAddress, int priority, enum Visibility isForeground);
+
+void handle_sys_start_process(int pid);
+
+void handle_sys_close_fd(int fd);
+
 //Handler de la llamada a la int 80
 uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
     switch(rdi){
@@ -74,7 +82,7 @@ uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, u
 			handle_sys_write(rsi, (char *)rdx, rcx);
 		break;
 		case READ:
-			handle_sys_read(rsi, (char *)rdx, rcx);
+			return handle_sys_read(rsi, (char *)rdx, rcx);
 		break;
 		case TIME:
 			return handle_sys_time(rsi);
@@ -154,6 +162,15 @@ uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, u
         case MFREE:
             handle_sys_mfree(rsi);
         break;
+        case GET_P_PID:
+            handle_sys_get_p_pid(rsi);
+        break;
+        case CREATE_PROCESS:
+            return handle_sys_create_process(rsi, rdx, rcx, r8);
+        case START_PROCESS:
+            handle_sys_start_process(rsi);
+        case CLOSE_FD:
+            handle_sys_close_fd(rsi);
     }
 	return 0;
 }
@@ -183,10 +200,10 @@ void handle_sys_draw_pixel(int x, int y, int r, int g, int b){
 //Handler para la system read
 //El fd es el File Descriptor, no lo utilizamos porque no es necesario en nuestro caso
 //Esta para que se pueda implementar en el futuro
-void handle_sys_read(int fd, char * buf, int length){
+int handle_sys_read(int fd, char * buf, int length){
     //int pid = getProcessPid(getCurrentProcess());
     //setProcessStateByPid(pid, STATE_BLOCKED);
-    read(fd,buf,length);
+    return read(fd,buf,length);
     //setProcessStateByPid(pid, STATE_READY);
 }
 
@@ -299,4 +316,24 @@ void * handle_sys_malloc(size_t size){
 
 void handle_sys_mfree(void * address){
     mFree(address);
+}
+
+int handle_sys_get_p_pid(int pid){
+    return getParentPid(pid);
+}
+
+int handle_sys_create_process(char *name, void *functionAddress, int priority, enum Visibility isForeground) {
+  Process nP = newProcess(name, functionAddress, priority, isForeground);
+  return getProcessPid(nP);
+}
+
+void handle_sys_start_process(int pid){
+  Process p = getProcessByPid(pid);
+  newPCB(p);
+}
+
+void handle_sys_close_fd(int fd) {
+    if(fd == STDOUT_FD && getProcessFd(getPid(), fd) != STDOUT_FD){
+        closeFd(getProcessFd(getPid(), fd));
+    }
 }
