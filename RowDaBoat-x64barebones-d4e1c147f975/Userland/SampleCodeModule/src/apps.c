@@ -33,7 +33,15 @@ const char * commandsInfo[] = {
   "sh - Inits a secondary shell\n",
 };
 
+const char * creditsInfo[] = {
+  "The authors of this OS(Arquitectura de Computadoras Version) are:\n",
+  "Ignacio Ribas - Gonzalo Hirsch - Ignacio Villanueva\n",
+	"The authors of this OS(Sistemas Operativos Version) are:\n",
+  "Ignacio Ribas - Gonzalo Hirsch - Augusto Henestrosa\n"
+};
+
 const int cCount = 30;
+const int creditInfoCount = 4;
 
 void blockOnEntry();
 void unblockOnExit();
@@ -65,15 +73,10 @@ void get_pid_command(void){
 void credits_command(void){
   blockOnEntry();
 
-  char line1[] = "The authors of this OS(Arquitectura de Computadoras Version) are:\n";
-  char line2[] = "Ignacio Ribas - Gonzalo Hirsch - Ignacio Villanueva\n";
-	char line3[] = "The authors of this OS(Sistemas Operativos Version) are:\n";
-  char line4[] = "Ignacio Ribas - Gonzalo Hirsch - Augusto Henestrosa\n";
+  for (int i = 0; i < creditInfoCount; i++){
+    sys_write(1, creditsInfo[i], strlen(creditsInfo[i]));
+  }
 
-  sys_write(1, line1, strlen(line1));
-  sys_write(1, line2, strlen(line2));
-  sys_write(1, line3, strlen(line3));
-  sys_write(1, line4, strlen(line4));
   sys_close_fd(1);
 
   unblockOnExit();
@@ -191,29 +194,21 @@ void help_command(void){
   blockOnEntry();
 	for (int i = 0; i < cCount; i++){
     sys_write(1, commandsInfo[i], strlen(commandsInfo[i]));
-		//print(commandsInfo[i]);
 	}
   sys_close_fd(1);
   unblockOnExit();
 }
 
-int getCount(char * src, char ch){
-    int c=0;
-    while(*src){
-        if(*src==ch) c++;
-        src++;
-    }
-    return c;
-}
-
 int wc_command(void){
   blockOnEntry();
+
   int count = 0;
   char buff[1024] = {0};
   sys_read(0, buff, 10);
   while(sys_read(0, buff, 100)!=-1){
     count+=getCount(buff, '\n');
   }
+
 	char num[3] = {0};
   itoa(count, num, 10);
   sys_write(1, num, strlen(num));
