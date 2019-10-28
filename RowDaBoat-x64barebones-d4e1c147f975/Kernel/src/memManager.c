@@ -2,6 +2,8 @@
 
 #include <memManager.h>
 #include "../include/memManager.h"
+#include "../include/fileDescriptor.h"
+#include "../include/lib.h"
 #include <console.h>
 
 /*
@@ -225,10 +227,23 @@ void initializeMemManagerList(void * startDir, size_t totalSize){
 
 
 void printMemoryStatus(){
-  print("Memory State:\n");
-  print(" -Allocation type: firstFit\n");
-  print(" -Total size: %d \n", memBlocks->totalSize);
-  print(" -Used size: %d \n", memBlocks->usedSize);
+    if(getProcessCount()==0) {
+        print("Memory State:\n");
+        print(" -Allocation type: firstFit\n");
+        print(" -Total size: %d \n", memBlocks->totalSize);
+        print(" -Used size: %d \n", memBlocks->usedSize);
+    }
+    else{
+
+        write(1, "Memory State:\n  -Allocation type: firstFit\n -Total size: ", 100);
+        char buffer[15];
+        itoa(memBlocks->totalSize, buffer, 10);
+        write(1, buffer, 100);
+        write(1, " -Used size: ", 100);
+        itoa(memBlocks->usedSize, buffer, 10);
+        write(1, buffer, 100);
+        write(1, "\n", 100);
+    }
 }
 
 #endif
