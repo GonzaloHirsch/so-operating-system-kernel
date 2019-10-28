@@ -11,6 +11,7 @@ static sem * mutex;
 static int problemRunning;
 static int eatingTimes[MAX_PHILOSOPHER_COUNT];
 static int thinkingTimes[MAX_PHILOSOPHER_COUNT];
+static int pidToId[256] = {-1};
 
 static int maxIters = 500;
 static int actualIters = 0;
@@ -18,8 +19,8 @@ static int actualIters = 0;
 void philosopher();
 void takeForks(int i);
 void placeForks(int i);
-void think(int i);
-void eat(int i);
+int think(int i, int r);
+int eat(int i, int r);
 void check(int i);
 int addPhilosopher();
 int removePhilosopher();
@@ -28,14 +29,18 @@ int left(int i, int mod);
 int right(int i, int mod);
 
 void philosopher(){
-  //sys_wait_sem(mutex);
-  int i = actualPhilosopherCount - 1;
-  //sys_post_sem(mutex);
+  sys_wait_sem(mutex);
+  int pid = sys_get_pid();
+  int i = pidToId[pid];
+  sys_post_sem(mutex);
+
+  int r = i;
+
   while (problemRunning){
-    think(i);
+    r = think(i, r);
     // Trata de tomar los tenedores, si no puede se bloquea por el semaforo
     takeForks(i);
-    eat(i);
+    r = eat(i, r);
     // Trata de dejar los tenedores, si no puede se bloquea por el semaforo
     placeForks(i);
   }
@@ -62,12 +67,16 @@ void placeForks(int i){
   sys_post_sem(mutex);
 }
 
-void think(int i){
-  goToSleep(thinkingTimes[i]);
+int think(int i, int r){
+  r = (((r * 7621) + 1) % 32768);
+  goToSleep((r % 30) + 30);
+  return r;
 }
 
-void eat(int i){
-  goToSleep(eatingTimes[i]);
+int eat(int i, int r){
+  r = (((r * 7621) + 1) % 32768);
+  goToSleep((r % 30) + 30);
+  return r;
 }
 
 void check(int i){
@@ -88,7 +97,7 @@ void philosopherProblem(){
 
   for (int i = 0; i < BASE_PHILOSOPHER_COUNT; i++){
     addPhilosopher();
-    goToSleep(10);
+    //goToSleep(30);
   }
 
   int res;
@@ -125,11 +134,6 @@ void philosopherProblem(){
       actualIters++;
     }
   }
-
-  int pid = sys_get_pid();
-  int ppid = sys_get_p_pid(pid);
-  sys_unblock(ppid);
-  sys_kill(pid);
 }
 
 int addPhilosopher(){
@@ -148,6 +152,7 @@ int addPhilosopher(){
   sems[actualPhilosopherCount - 1] = sys_create_sem(name);
   int pid = sys_new_process(name, (uint64_t) philosopher, 2, FOREGROUND);
   philosophers[actualPhilosopherCount - 1] = pid;
+  pidToId[pid] = actualPhilosopherCount - 1;
   sys_post_sem(mutex);
   return 0;
 }
@@ -159,6 +164,8 @@ int removePhilosopher(){
   sys_wait_sem(mutex);
   actualPhilosopherCount--;
   sys_kill(philosophers[actualPhilosopherCount]);
+  sys_close_sem(sems[actualPhilosopherCount]);
+  pidToId[philosophers[actualPhilosopherCount]] = -1;
   philosophers[actualPhilosopherCount] = 0;
   sys_post_sem(mutex);
   return 0;

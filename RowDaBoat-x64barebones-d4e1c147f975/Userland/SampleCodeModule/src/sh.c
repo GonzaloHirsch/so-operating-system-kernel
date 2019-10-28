@@ -201,8 +201,13 @@ static void runCommand(char * buffer){
       concat(name, "sh_");
       concat(name + 3, num);
 
-      // Crea el proceso pero no lo ejecuta, para poder settear los fds
-      pids[l] = sys_create_process(name, (uint64_t) processFunctions[l], 1, FOREGROUND);
+      if (isBG){
+        // Crea el proceso pero no lo ejecuta, para poder settear los fds
+        pids[l] = sys_create_process(name, (uint64_t) processFunctions[l], 1, BACKGROUND);
+      } else {
+        // Crea el proceso pero no lo ejecuta, para poder settear los fds
+        pids[l] = sys_create_process(name, (uint64_t) processFunctions[l], 1, FOREGROUND);
+      }
 
       // En el caso de que el comando anterior queria pipearse con este
       if (l - 1 >= 0 && pendingPipes[l - 1] == 1){
