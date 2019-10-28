@@ -74,6 +74,7 @@ void credits_command(void){
   sys_write(1, line2, strlen(line2));
   sys_write(1, line3, strlen(line3));
   sys_write(1, line4, strlen(line4));
+  sys_close_fd(1);
 
   unblockOnExit();
 }
@@ -87,6 +88,7 @@ void date_command(void){
 	getDate(date);
   concat(msg + strlen(msg), date);
   sys_write(1, msg, strlen(msg));
+  sys_close_fd(1);
 
   unblockOnExit();
 }
@@ -99,6 +101,7 @@ void time_command(void){
 	getTime(time);
   concat(msg + strlen(msg), time);
   sys_write(1, msg, strlen(msg));
+  sys_close_fd(1);
 
   unblockOnExit();
 }
@@ -118,6 +121,7 @@ void loop_command(void){
     sys_write(1, msg, strlen(msg));
     goToSleep(75);
   }
+  sys_close_fd(1);
 
   unblockOnExit();
 }
@@ -139,6 +143,7 @@ void filter_command(void){
   }
 
   sys_write(1, buffOut, strlen(buffOut));
+  sys_close_fd(1);
   unblockOnExit();
 }
 
@@ -192,19 +197,22 @@ int wc_command(void){
   int count = 0;
   char buff[1024] = {0};
   sys_read(0, buff, 1024);
-
+  print("WC DATA \n");
+  //print(buff);
+char b[2] = {0};
   //print("loop");
   int index = 0;
   while(index < 1024){
+    b[0] = buff[index];
+    print(b);
     if (buff[index] == '\n'){
       count++;
     }
     index++;
   }
 
-	char num[5] = {0};
+	char num[3] = {0};
   itoa(count, num, 10);
   sys_write(1, num, strlen(num));
-  print(num);
   unblockOnExit();
 }
