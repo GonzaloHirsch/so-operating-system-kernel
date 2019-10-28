@@ -52,7 +52,7 @@ static void daemonMain(){
 
         for (int i = 0; i < currentLength;){
             ch = getChar();
-            if(ch!=NULL && ch!=EOF && ch!=' ') {
+            if(ch!=NULL && ch!=EOF) {
                 *(currentBuffer + i) = ch;
                 i++;
             }

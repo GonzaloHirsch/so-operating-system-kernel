@@ -95,11 +95,11 @@ _irq00Handler:
     popState
     pushState
     mov rdi, rsp
+    mov al, 20h
+    out 20h, al
     call getNextProcess
     mov rsp, rax
     popState
-    mov al, 20h
-    out 20h, al
     iretq
 
 _irq01Handler:
