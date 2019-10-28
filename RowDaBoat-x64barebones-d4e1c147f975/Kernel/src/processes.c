@@ -210,7 +210,7 @@ void listProcesses(){
     for(int i = 0; i<pidCounter; i++){
         if((aux=theProcessList[i])!=NULL){
             print("Process %s\n    PID: %d\n    Priority: %d\n    StackPointer: %d\n    Foreground? ", aux->name, aux->pid, aux->stackPointer);
-            resp = (aux->isForeground) ? "Yes" : "No";
+            resp = (aux->isForeground) ? "No" : "Yes";
             print(resp);
             print("\n");
         }

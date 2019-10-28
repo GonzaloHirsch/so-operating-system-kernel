@@ -80,7 +80,7 @@ void deleteCurrentProcessPCB(){
         aux->next->prev = aux->prev;
         aux->prev->next = aux->next;
         removeProcess(aux->process);
-        mFree(aux); //todo hacer con nuestro allocator
+        mFree(aux);
         //_popaqIretq(getStackPointer(thePCBList.currentPCB->process));
     }
 }

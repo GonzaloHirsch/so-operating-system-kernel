@@ -131,18 +131,24 @@ void filter_command(void){
 
   char buffOut[1024] = {0};
   char buffIn[1024] = {0};
-  sys_read(0, buffIn, 1024);
-
   int index = 0;
-  int indexOut = 0;
-  while(index < 1024){
-    if (!(buffIn[index] == 'a' || buffIn[index] == 'A' || buffIn[index] == 'e' || buffIn[index] == 'E' || buffIn[index] == 'i' || buffIn[index] == 'I' || buffIn[index] == 'o' || buffIn[index] == 'O' || buffIn[index] == 'u' || buffIn[index] == 'U')){
-      buffOut[indexOut++] = buffIn[index];
-    }
-    index++;
-  }
+    int indexOut = 0;
+  while(sys_read(0, buffIn, 1024)!=-1) {
 
-  sys_write(1, buffOut, strlen(buffOut));
+      index = 0;
+      indexOut = 0;
+
+      while (index < 1024) {
+          if (!(buffIn[index] == 'a' || buffIn[index] == 'A' || buffIn[index] == 'e' || buffIn[index] == 'E' ||
+                buffIn[index] == 'i' || buffIn[index] == 'I' || buffIn[index] == 'o' || buffIn[index] == 'O' ||
+                buffIn[index] == 'u' || buffIn[index] == 'U')) {
+              buffOut[indexOut++] = buffIn[index];
+          }
+          index++;
+      }
+
+      sys_write(1, buffOut, strlen(buffOut));
+  }
   sys_close_fd(1);
   unblockOnExit();
 }
@@ -176,8 +182,6 @@ void cat_command(void){
   char buff[1024] = {0};
   while(sys_read(0, buff, 1024) != -1){
       sys_write(1, buff, strlen(buff));
-      print(buff);
-
   }
   sys_close_fd(1);
   unblockOnExit();
