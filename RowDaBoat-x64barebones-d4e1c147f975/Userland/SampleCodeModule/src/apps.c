@@ -203,3 +203,13 @@ int wc_command(void){
   sys_write(1, num, strlen(num));
   unblockOnExit();
 }
+
+void quit_command(void){
+  int pid = sys_get_pid();
+  int ppid = sys_get_p_pid(pid);
+  char * goodbyeMess = "Goodbye!\n";
+  sleep(3000);
+  sys_write(1,goodbyeMess,strlen(goodbyeMess));
+  sys_unblock(ppid);
+  sys_kill(pid);
+}
