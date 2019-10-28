@@ -228,36 +228,36 @@ void handle_command(int cmd, char * params){
 		//--------------------- New commands added ----------------------------
 
 		case GET_PID_COMMAND:
-		printf("%d\n", sys_get_pid());
-		break;
+			printf("%d\n", sys_get_pid());
+			break;
 		case KILL_COMMAND:
-		//sscanf(params, "%d\n", &w);
-		scanf("%d\n", &w);
-		sys_kill(w);
-		printf("Killed Process %d\n", w);
-		break;
+			//sscanf(params, "%d\n", &w);
+			scanf("%d\n", &w);
+			sys_kill(w);
+			printf("Killed Process %d\n", w);
+			break;
 		case BLOCK_COMMAND:
-		//sscanf(params, "%d\n", &w);
-		scanf("%d\n", &w);
-		sys_block(w);
-		printf("Blocked Process %d\n", w);
+			//sscanf(params, "%d\n", &w);
+			scanf("%d\n", &w);
+			sys_block(w);
+			printf("Blocked Process %d\n", w);
 			break;
 		case UNBLOCK_COMMAND:
-		//sscanf(params,"%d\n", &w);
-		scanf("%d\n", &w);
-		sys_unblock(w);
-		printf("Unblocked Process %d\n", w);
+			//sscanf(params,"%d\n", &w);
+			scanf("%d\n", &w);
+			sys_unblock(w);
+			printf("Unblocked Process %d\n", w);
 			break;
 		case PHYLO_COMMAND:
-		shellPID = sys_get_pid();
-		sys_new_process("philosophers_problem", (uint64_t) philosopherProblem, 1, FOREGROUND);
-		sys_block(shellPID);
-		break;
+			shellPID = sys_get_pid();
+			sys_new_process("philosophers_problem", (uint64_t) philosopherProblem, 1, FOREGROUND);
+			sys_block(shellPID);
+			break;
 		case NICE_COMMAND:
-		//sscanf(params, "%d %d\n", &w, &x);
-		scanf("%d %d\n", &w, &x);
-		sys_change_priority(w, x);
-		break;
+			//sscanf(params, "%d %d\n", &w, &x);
+			scanf("%d %d\n", &w, &x);
+			sys_change_priority(w, x);
+			break;
 		case PIPE_INFO_COMMAND:
 			sys_print_pipe_info();
 			break;
@@ -265,10 +265,10 @@ void handle_command(int cmd, char * params){
 			sys_print_sem_info();
 			break;
 		case SH_COMMAND:
-		shellPID = sys_get_pid();
-		sys_new_process("sh_process", (uint64_t) shellMain, 1, FOREGROUND);
-		sys_block(shellPID);
-		break;
+			shellPID = sys_get_pid();
+			sys_new_process("sh_process", (uint64_t) shellMain, 1, FOREGROUND);
+			sys_block(shellPID);
+			break;
 		}
 	print("\n");
 }
