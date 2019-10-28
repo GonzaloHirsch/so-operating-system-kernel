@@ -101,6 +101,10 @@ void * initializeKernelBinary()
 	return getStackBase();
 }
 
+void init(){
+    Process shellProcess = newProcess("shell", (uint64_t) sampleCodeModuleAddress, 10, FOREGROUND);
+    newPCB(shellProcess);
+}
 
     const sem * testSem = openSemaphore("test");
     do{
@@ -314,26 +318,11 @@ int main()
 
     print("Starting kernel main\n");
  
+    printMemoryStatus();
 
-    //memTest();
-
-    //printMemoryStatus();
-
-    //int fd1 = pipeFifo("hola");
-    //int fd2 = pipeFifo("hola");
-    //printInteger(fd1);
-    //printPipes();
-    //freeFd(fd1);
-    //printPipes();
-
-
-
-    //printMemoryStatus();
-    //while(1){
-    //}
-
-    Process initProcess = newProcess("init", init, 1, BACKGROUND);
+    Process initProcess = newProcess("init", (uint64_t) init, 10, BACKGROUND);
     newPCB(initProcess);
+
 
     printMemoryStatus();
 	print("kernel stop\n");
