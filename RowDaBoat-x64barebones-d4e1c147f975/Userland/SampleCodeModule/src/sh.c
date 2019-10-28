@@ -41,7 +41,7 @@ const void * funs[] = {
   (void *)loop_command
 };
 
-const int comCount = 28;
+const int comCount = 12;
 
 static void runCommand(char * buffer);
 static void * getProgramFunctionFromName(char * command);
