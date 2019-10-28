@@ -103,7 +103,7 @@ void sys_unblock(int pid) {
 }
 
 int sys_create_pipe(char *name) {
-    _int80(CREATE_PIPE, name, 0, 0, 0, 0);
+    return _int80(CREATE_PIPE, (uint64_t)name, 0, 0, 0, 0);
 }
 
 int sys_set_process_fd(int pid, int fdPosition, int fd) {
@@ -119,24 +119,23 @@ void sys_print_sem_info() {
 }
 
 void sys_close_sem(const sem *semaphore) {
-    _int80(CLOSE_SEM, semaphore, 0, 0, 0, 0);
+    _int80(CLOSE_SEM, (uint64_t)semaphore, 0, 0, 0, 0);
 }
 
 void sys_set_sem_value(sem *semaphore, int newVal) {
-    _int80(SET_SEM_VALUE, semaphore, newVal, 0, 0, 0);
+    _int80(SET_SEM_VALUE, (uint64_t)semaphore, newVal, 0, 0, 0);
 }
 
 void sys_print_mem_state(){
-
     _int80(PRINT_MEM_STATE, 0, 0, 0, 0, 0);
 }
 
 void * sys_malloc(size_t size){
-    _int80(MALLOC, size, 0, 0, 0, 0);
+    return (void *)_int80(MALLOC, size, 0, 0, 0, 0);
 }
 
 void sys_mfree(void *address) {
-    _int80(MFREE, address, 0, 0, 0, 0);
+    _int80(MFREE, (uint64_t)address, 0, 0, 0, 0);
 }
 
 int sys_get_p_pid(const int pid){

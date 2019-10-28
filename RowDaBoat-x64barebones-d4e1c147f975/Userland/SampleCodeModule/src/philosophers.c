@@ -9,8 +9,6 @@ static int actualPhilosopherCount;
 static sem * sems[MAX_PHILOSOPHER_COUNT];
 static sem * mutex;
 static int problemRunning;
-static int eatingTimes[MAX_PHILOSOPHER_COUNT];
-static int thinkingTimes[MAX_PHILOSOPHER_COUNT];
 static int pidToId[256] = {-1};
 
 static int maxIters = 500;
@@ -91,8 +89,6 @@ void check(int i){
 
 void philosopherProblem(){
   problemRunning = 1;
-  createThinkingTimes();
-  createEatingTimes();
   mutex = sys_create_sem("philo_mutex");
 
   for (int i = 0; i < BASE_PHILOSOPHER_COUNT; i++){
@@ -169,18 +165,6 @@ int removePhilosopher(){
   philosophers[actualPhilosopherCount] = 0;
   sys_post_sem(mutex);
   return 0;
-}
-
-void createEatingTimes(){
-  for (int i = 0; i < MAX_PHILOSOPHER_COUNT; i++){
-    eatingTimes[i] = 40 + 2 * i;
-  }
-}
-
-void createThinkingTimes(){
-  for (int i = 0; i < MAX_PHILOSOPHER_COUNT; i++){
-    thinkingTimes[i] = 30 + 3 * i;
-  }
 }
 
 void printTable(){

@@ -16,7 +16,7 @@
 #define YEAR 6
 #define CENTURY 7
 
-#define NULL 0
+//#define NULL 0
 
 #define MAX_BUFFER 100
 

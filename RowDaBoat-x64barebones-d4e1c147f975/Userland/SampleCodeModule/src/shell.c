@@ -238,7 +238,7 @@ void handle_command(int cmd, char * params){
 			make_mario();
 		break;
     case TEST_PROCESSES_COMMAND:
-      processCreationTest();
+      //processCreationTest();
     break;
     case LIST_ALL_PROCESSES_COMMAND:
       sys_list_processes();
