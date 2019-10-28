@@ -65,6 +65,7 @@ int getString(QueueBuffer qB, char * dst, int count){
     if(qB->buff[qB->head] == EOF){
         dst[0] = EOF;
         dst[1] = 0;
+        qB->head = qB->tail = 0;
         return EOF;
     }
 
