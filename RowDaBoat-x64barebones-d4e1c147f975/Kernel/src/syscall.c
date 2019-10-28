@@ -294,7 +294,7 @@ void handle_sys_print_sem_info() {
 }
 
 void handle_sys_print_pipe_info() {
-       printPipes();
+    printPipes();
 }
 
 void handle_sys_close_sem(sem *semaphore) {
@@ -307,7 +307,7 @@ void handle_sys_set_sem_value(sem * semaphore, int newVal){
 }
 
 void handle_sys_print_mem_state(){
-    //TODO hacer la funcion que te liste todo de la memoria
+    printMemoryStatus();
 }
 
 void * handle_sys_malloc(size_t size){

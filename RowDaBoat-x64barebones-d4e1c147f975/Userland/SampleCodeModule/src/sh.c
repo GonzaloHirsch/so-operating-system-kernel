@@ -13,11 +13,8 @@ const char * allCommands[] = {
   "help",
   "shutdown",
   "time",
-  "beep",
   "date",
   "credits",
-  "tp",
-  "lp",
   "getpid",
   "kill",
   "block",
@@ -36,28 +33,25 @@ const char * allCommands[] = {
 const void * funs[] = {
   (void *)help_command,
   "shutdown",
-  "time",
-  "beep",
-  "date",
-  "credits",
-  "tp",
-  "lp",
-  "getpid",
+  (void *)time_command,
+  (void *)date_command,
+  (void *)credits_command,
+  (void *)get_pid_command,
   "kill",
   "block",
   "unblock",
-  "mem",
-  "ps",
-  "pipe",
-  "sem",
+  (void *)mem_command,
+  (void *)ps_command,
+  (void *)pipe_command,
+  (void *)sem_command,
   "nice",
-  "cat",
+  (void *)cat_command,
   (void *)wc_command,
-  "filter",
-  "loop"
+  (void *)filter_command,
+  (void *)loop_command
 };
 
-const int comCount = 29;
+const int comCount = 28;
 
 static void runCommand(char * buffer);
 static void * getProgramFunctionFromName(char * command);

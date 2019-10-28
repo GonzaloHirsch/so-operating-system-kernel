@@ -151,6 +151,5 @@ void printPipes() {
             Pipe aux = pipeList[i];
             print("Pipe %d\n    Name: %s\n    Being Accessed: %d\n    Waiting Process:%d\n", aux->fd, aux->name, aux->beingAccessed, aux->waitingProcess);
         }
-
     }
 }
