@@ -71,7 +71,7 @@ int read(int fd, char * dest, int count){
             }
         }
         else{
-            read(pfd, dest, count);
+            return read(pfd, dest, count);
         }
 
         //Uso el que estaba antes en la syscalls..
@@ -114,7 +114,7 @@ int write(int fd, char * src, int count){
         if((pfd=getProcessFd(getPid(), STDOUT_FD)) == 1)
             print_N(src, count);
         else{
-            write(pfd, src, count);
+            return write(pfd, src, count);
         }
         break;
     case PIPE_FD:
@@ -150,6 +150,13 @@ int freeFd(int fd){
     fileList[fd] = NULL;
     //Liberamos el espacio del fd per se.
     return mFree(aux);
+}
+
+void closeFd(int fd) {
+    fds aux = fileList[fd];
+    if(aux->type == PIPE_FD){
+        closePipe(aux->pipe);
+    }
 }
 
 

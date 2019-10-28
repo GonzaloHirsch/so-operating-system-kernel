@@ -58,17 +58,28 @@ void help_command(void){
     sys_write(1, commandsInfo[i], strlen(commandsInfo[i]));
 		//print(commandsInfo[i]);
 	}
+	sys_close_fd(1);
   unblockOnExit();
+}
+
+int getCount(char * src, char ch){
+    int c=0;
+    while(*src){
+        if(*src==ch) c++;
+        src++;
+    }
+    return c;
 }
 
 int wc_command(void){
   blockOnEntry();
   int count = 0;
-  char buff[2] = {0};
-  sys_read(0, buff, 1);
-  while(buff[0] != 0){
-    if (buff[0] == '\n') count++;
-    sys_read(0, buff, 1);
+  char buff[1024] = {0};
+  int retVal=0;
+  sys_read(0, buff, 10);
+  while(retVal != -1){
+    count+=getCount(buff, '\n');
+    retVal = sys_read(0, buff, 100);
   }
 	char num[3] = {0};
   itoa(count, num, 10);

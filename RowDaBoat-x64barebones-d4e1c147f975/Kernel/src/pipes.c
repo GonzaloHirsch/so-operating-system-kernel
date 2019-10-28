@@ -120,6 +120,12 @@ int readPipe(int pipeNumber, char * dest, int count){
     return retVal;
 }
 
+void closePipe(int pipe){
+    Pipe aux = pipeList[pipe];
+    char eofString[2] = {-1, 0};
+    putString(aux->qb, eofString, 1);
+}
+
 int freePipe(int pipe){
     if(pipe < 0 || pipe >= MAX_PIPES)
         return -1;

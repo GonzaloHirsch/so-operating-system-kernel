@@ -42,6 +42,7 @@
 #define GET_P_PID 31
 #define CREATE_PROCESS 32
 #define START_PROCESS 33
+#define CLOSE_FD 34
 
 void sys_write(int fd, const char *buf, int count);
 
@@ -61,7 +62,7 @@ void sys_get_key(int fd, char *buf);
 
 void sys_over_clock(int rate);
 
-void sys_read(int fd, char *buf, int count);
+int sys_read(int fd, char *buf, int count);
 
 void sys_sleep(int ticks);
 
@@ -110,5 +111,7 @@ int sys_get_p_pid(const int pid);
 int sys_create_process(char * name, uint64_t functionAddress, int priority, enum Visibility isForeground);
 
 void sys_start_process(int pid);
+
+void sys_close_fd(int fd);
 
 #endif

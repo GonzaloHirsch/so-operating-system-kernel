@@ -12,6 +12,7 @@ int createFds(enum FdType type, int pipe, void (*altRead)(char *, int),void (*al
 int createDefaultFds();
 int read(int fd, char * dest, int count);
 int write(int fd, char * src, int count);
+void closeFd(int fd);
 int freeFd(int fd);
 
 
