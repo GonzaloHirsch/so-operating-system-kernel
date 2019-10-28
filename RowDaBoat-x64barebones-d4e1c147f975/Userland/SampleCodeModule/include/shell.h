@@ -40,6 +40,7 @@
 #define PHYLO_COMMAND 21
 #define NICE_COMMAND 22
 #define SH_COMMAND 23
+#define LOOP_COMMAND 24
 
 
 //Address original que devolvia el samplecoremodule
@@ -60,6 +61,8 @@ void clear_buffer(char * buff);
 void display_time(void);
 
 void display_date(void);
+
+void loop_command_shell(void);
 
 void make_sound(void);
 

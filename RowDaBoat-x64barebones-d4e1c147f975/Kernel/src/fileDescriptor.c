@@ -73,19 +73,6 @@ int read(int fd, char * dest, int count){
         else{
             return read(pfd, dest, count);
         }
-
-        //Uso el que estaba antes en la syscalls..
-
-
-        /*
-        //primer semaforo: para evitar concurrencia al settear length y buffer
-        semWait(getSemaphoreById(0));   //los semId s 0 y 1 son reservados para el readerDaemon
-            setCurrentLength(count);
-            setCurrentBuffer(dest);
-            //segundo semaforo: bloquea el proceso actual,
-            wakeUpDaemon();
-            semWait(getSemaphoreById(1));
-        */
          break;
     case PIPE_FD:
         return readPipe(fileDesc->pipe, dest, count);

@@ -34,7 +34,8 @@ const char * commands[] = {
   "sem",
   "phylo",
   "nice",
-  "sh"
+  "sh",
+  "loop",
 };
 
 
@@ -63,10 +64,11 @@ const char * commandsInfo[] = {
   "phylo - Starts the phylosophers problem, exit the problem with \'q\'\n",
   "nice - Changes the priority of a process\n",
   "sh - Inits a secondary shell\n",
+  "loop - Loops every certains seconds and prints a salute and the process id\n",
 };
 
 
-const int commandCount = 24;
+const int commandCount = 25;
 
 int getCommand(char * cmd, int * index);
 void generate_invalid_opc(void);
@@ -275,6 +277,9 @@ void handle_command(int cmd, char * params){
 			sys_new_process("sh_process", (uint64_t) shellMain, 1, FOREGROUND);
 			sys_block(shellPID);
 			break;
+		case LOOP_COMMAND:
+			sys_new_process("loop_process", (uint64_t) loop_command_shell, 1, FOREGROUND);
+			break;
 		}
 	print("\n");
 }
@@ -353,6 +358,23 @@ int generate_zero_division(){
 
 void make_sound(void){
 	makeSound(800, 5);
+}
+
+void loop_command_shell(void){
+
+  char msg[] = "Hi! My PID is ";
+  print(msg);
+
+  int pid = sys_get_pid();
+  char num[4] = {0};
+  itoa(pid, num, 10);
+  concat(msg + strlen(msg), num);
+
+  while(1){
+    sys_write(1, msg, strlen(msg));
+    goToSleep(75);
+  }
+
 }
 
 void make_starwars(void){
