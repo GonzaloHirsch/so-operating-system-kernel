@@ -249,10 +249,10 @@ void printMemoryStatus(){
         write(1, "\n    -Used size: ", strlen("\n    -Used size: "));
         itoa(buddyTree->usedSize, buffer, 10);
         write(1, buffer, strlen(buffer));
-        write(1, "\n -Minimum size of block: ", strlen("\n -Minimum size of block: "));
+        write(1, "\n    -Minimum size of block: ", strlen("\n    -Minimum size of block: "));
         itoa(buddyTree->smallestSize, buffer, 10);
         write(1, buffer, strlen(buffer));
-        write(1, "\n -Real size used to store all the memory: ", strlen("\n -Real size used to store all the memory: "));
+        write(1, "\n    -Real size used to store all the memory: ", strlen("\n    -Real size used to store all the memory: "));
         itoa(buddyTree->realSize, buffer, 10);
         write(1, buffer, strlen(buffer));
         write(1, "\n\n", 2);
