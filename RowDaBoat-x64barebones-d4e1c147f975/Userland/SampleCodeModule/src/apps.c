@@ -58,6 +58,7 @@ void get_pid_command(void){
   char num[4] = {0};
   itoa(pid, num, 10);
   sys_write(1, num, strlen(num));
+    sys_close_fd(1);
 
   unblockOnExit();
 }
@@ -156,25 +157,31 @@ void filter_command(void){
 void sem_command(void){
   blockOnEntry();
   sys_print_sem_info();
-  unblockOnExit();
+    sys_close_fd(1);
+    unblockOnExit();
 }
 
 void pipe_command(void){
   blockOnEntry();
   sys_print_pipe_info();
-  unblockOnExit();
+    sys_close_fd(1);
+
+    unblockOnExit();
 }
 
 void ps_command(void){
   blockOnEntry();
   sys_list_processes();
-  unblockOnExit();
+    sys_close_fd(1);
+
+    unblockOnExit();
 }
 
 void mem_command(void){
   blockOnEntry();
   sys_print_mem_state();
-  unblockOnExit();
+    sys_close_fd(1);
+    unblockOnExit();
 }
 
 void cat_command(void){

@@ -131,6 +131,7 @@ int write(int fd, char * src, int count){
 
 }
 
+
 int freeFd(int fd){
 
     //El file descriptor 0 y 1 no se van a poder liberar.
