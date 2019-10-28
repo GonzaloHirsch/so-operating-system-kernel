@@ -206,11 +206,9 @@ int wc_command(void){
   blockOnEntry();
   int count = 0;
   char buff[1024] = {0};
-  int retVal=0;
   sys_read(0, buff, 10);
-  while(retVal != -1){
+  while(sys_read(0, buff, 100)!=-1){
     count+=getCount(buff, '\n');
-    retVal = sys_read(0, buff, 100);
   }
 	char num[3] = {0};
   itoa(count, num, 10);
