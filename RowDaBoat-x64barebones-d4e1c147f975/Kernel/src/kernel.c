@@ -101,17 +101,21 @@ void * initializeKernelBinary()
 	return getStackBase();
 }
 
+void init(){
+    Process shellProcess = newProcess("shell", (uint64_t) sampleCodeModuleAddress, 10, FOREGROUND);
+    newPCB(shellProcess);
+}
 
 int main()
 {
 
     print("Starting kernel main\n");
  
-
     printMemoryStatus();
 
-    Process shellProcess = newProcess("shell", (uint64_t) sampleCodeModuleAddress, 10, FOREGROUND);
-    newPCB(shellProcess);
+    Process initProcess = newProcess("init", (uint64_t) init, 10, BACKGROUND);
+    newPCB(initProcess);
+
 
     printMemoryStatus();
 	print("kernel stop\n");
