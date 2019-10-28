@@ -5,6 +5,8 @@
         "scheduler.h": "c",
         "strings.h": "c",
         "stddef.h": "c",
-        "queuebuffer.h": "c"
+        "queuebuffer.h": "c",
+        "shell.h": "c",
+        "syscalls.h": "c"
     }
 }

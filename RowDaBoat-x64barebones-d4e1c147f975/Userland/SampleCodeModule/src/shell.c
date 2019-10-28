@@ -24,8 +24,6 @@ const char * commands[] = {
   "credits",
   "starwars",
   "mario",
-  "tp",
-  "lp",
   "getpid",
   "kill",
   "block",
@@ -36,14 +34,10 @@ const char * commands[] = {
   "sem",
   "phylo",
   "nice",
-  "cat",
-  "wc",
-  "filter",
-  "loop",
   "sh"
 };
 
-/*
+
 const char * commandsInfo[] = {
   "help - Displays available commands and their usage\n",
   "snake - Initiates the snake game\n",
@@ -55,30 +49,24 @@ const char * commandsInfo[] = {
   "div - Performs a division by zero\n",
   "invalid - Executes an invalid operation\n",
   "clear - Clears the screen\n",
-  "credits - Displays info about the group\n",
+  "credits - Displays info about the group\n", //10
   "starwars - Makes a cool Star Wars sound!\n",
   "mario - Makes a cool Mario sound!\n",
-  "tp - \n",
-  "lp - \n",
   "getpid - \n",
   "kill - \n",
   "block - \n",
   "unblock - \n",
   "mem - Prints memory status\n",
-  "ps - Prints all active process information\n",
+  "ps - Prints all active process information\n", 
   "pipe - Prints all active pipes information\n",
-  "sem - Prints all active semaphores information\n",
+  "sem - Prints all active semaphores information\n", //20
   "phylo - Starts the phylosophers problem, exit the problem with \'q\'\n",
   "nice - Changes the priority of a process\n",
-  "cat - Prints to stdin as it receives data\n",
-  "wc - Counts amount of lines in input\n",
-  "filter - Filters vowels from input\n",
-  "loop - Prints PID with a message every 5 seconds\n",
   "sh - Inits a secondary shell\n",
 };
-*/
 
-const int commandCount = 30;
+
+const int commandCount = 24;
 
 int getCommand(char * cmd, int * index);
 void generate_invalid_opc(void);
@@ -192,7 +180,7 @@ void handle_command(int cmd, char * params){
   char buff[256] = {0};
 	switch(cmd){
 		case HELP_COMMAND:
-			help_command();
+			display_help();
 		break;
 		case SNAKE_COMMAND:
 		w = initSnakeGame();
@@ -237,61 +225,51 @@ void handle_command(int cmd, char * params){
 		case MARIO_COMMAND:
 			make_mario();
 		break;
-    case TEST_PROCESSES_COMMAND:
-      //processCreationTest();
-    break;
-    case LIST_ALL_PROCESSES_COMMAND:
-      sys_list_processes();
-    break;
-    case GET_PID_COMMAND:
-      printf("%d\n", sys_get_pid());
-    break;
-    case KILL_COMMAND:
-      //sscanf(params, "%d\n", &w);
-      scanf("%d\n", &w);
-      sys_kill(w);
-      printf("Killed Process %d\n", w);
-    break;
-    case BLOCK_COMMAND:
-      //sscanf(params, "%d\n", &w);
-      scanf("%d\n", &w);
-      sys_block(w);
-      printf("Blocked Process %d\n", w);
+		//--------------------- New commands added ----------------------------
+
+		case GET_PID_COMMAND:
+		printf("%d\n", sys_get_pid());
 		break;
-    case UNBLOCK_COMMAND:
-      //sscanf(params,"%d\n", &w);
-      scanf("%d\n", &w);
-      sys_unblock(w);
-      printf("Unblocked Process %d\n", w);
+		case KILL_COMMAND:
+		//sscanf(params, "%d\n", &w);
+		scanf("%d\n", &w);
+		sys_kill(w);
+		printf("Killed Process %d\n", w);
 		break;
-    case PHYLO_COMMAND:
-      shellPID = sys_get_pid();
-      sys_new_process("philosophers_problem", (uint64_t) philosopherProblem, 1, FOREGROUND);
-      sys_block(shellPID);
-    break;
-    case NICE_COMMAND:
-      //sscanf(params, "%d %d\n", &w, &x);
-      scanf("%d %d\n", &w, &x);
-      sys_change_priority(w, x);
-    break;
-    case LOOP_COMMAND:
-      //TODO: VER COMO SE HACE ESTO, SI ES CON OTRO PROCESO O LOOPEAMOS LA SHELL
-      //loop_process();
-      //sscanf(params, "%d %d\n", &w, &x);
-      //sys_change_priority(w, x);
-    break;
-    case PIPE_INFO_COMMAND:
-        sys_print_pipe_info();
-        break;
-    case SEM_INFO_COMMAND:
-        sys_print_sem_info();
-        break;
-    case SH_COMMAND:
-      shellPID = sys_get_pid();
-      sys_new_process("sh_process", (uint64_t) shellMain, 1, FOREGROUND);
-      sys_block(shellPID);
-    break;
-	}
+		case BLOCK_COMMAND:
+		//sscanf(params, "%d\n", &w);
+		scanf("%d\n", &w);
+		sys_block(w);
+		printf("Blocked Process %d\n", w);
+			break;
+		case UNBLOCK_COMMAND:
+		//sscanf(params,"%d\n", &w);
+		scanf("%d\n", &w);
+		sys_unblock(w);
+		printf("Unblocked Process %d\n", w);
+			break;
+		case PHYLO_COMMAND:
+		shellPID = sys_get_pid();
+		sys_new_process("philosophers_problem", (uint64_t) philosopherProblem, 1, FOREGROUND);
+		sys_block(shellPID);
+		break;
+		case NICE_COMMAND:
+		//sscanf(params, "%d %d\n", &w, &x);
+		scanf("%d %d\n", &w, &x);
+		sys_change_priority(w, x);
+		break;
+		case PIPE_INFO_COMMAND:
+			sys_print_pipe_info();
+			break;
+		case SEM_INFO_COMMAND:
+			sys_print_sem_info();
+			break;
+		case SH_COMMAND:
+		shellPID = sys_get_pid();
+		sys_new_process("sh_process", (uint64_t) shellMain, 1, FOREGROUND);
+		sys_block(shellPID);
+		break;
+		}
 	print("\n");
 }
 
@@ -322,14 +300,13 @@ void display_welcome_message(void){
 	print("										Type \"help\" to discover all available commands\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 }
 
-/*
+
 void display_help(void){
-  print("fun fun fun");
 	for (int i = 0; i < commandCount; i++){
 		print(commandsInfo[i]);
 	}
 }
-*/
+
 
 void display_time(void){
 	print("The time is ");
