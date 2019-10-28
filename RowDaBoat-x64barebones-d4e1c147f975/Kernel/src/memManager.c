@@ -155,7 +155,7 @@ int freeMemory(Node actual, Node previous, void * ptr){
     if ((previous == NULL || (previous != NULL && previous->state == NOT_FREE)) && ((actual->next != NULL && actual->next->state == NOT_FREE) || actual->next == NULL)){
       actual->state = FREE;
       //Actualizamos el size usado de la memoria
-      memBlocks->usedSize -= (actual->size + sizeof(struct t_node));
+      memBlocks->usedSize -= actual->size;
       return 1;
     }
     // Caso de ANTERIOR --> LIBRE y SIGUIENTE --> OCUPADO o NULL
@@ -175,10 +175,10 @@ int freeMemory(Node actual, Node previous, void * ptr){
     // Caso de ANTERIOR --> OCUPADO o NULL y SIGUIENTE --> LIBRE
     //else if ((previous == NULL || (previous != NULL && actual->next != NULL)) && previous->state == NOT_FREE && actual->next->state == FREE){
     else if ((previous == NULL || (previous->state == NOT_FREE)) && actual->next!= NULL && actual->next->state == FREE){
+      memBlocks->usedSize -= (actual->size + sizeof(struct t_node));
       actual->size = actual->size + actual->next->size + sizeof(struct t_node);
       actual->next = actual->next->next;
       actual->state = FREE;
-      memBlocks->usedSize -= (actual->size + sizeof(struct t_node));
       return 1;
     } else {
       return 0;
