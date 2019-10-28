@@ -110,7 +110,7 @@ int readPipe(int pipeNumber, char * dest, int count){
 
     pipe->beingAccessed = 1;
 
-    int retVal = getString(pipe->qb, dest);
+    int retVal = getString(pipe->qb, dest, count);
     pipe->beingAccessed = 0;
     //si hay un proceso esperando para leer, lo desbloqueo
     if(pipe->waitingProcess){
