@@ -232,12 +232,33 @@ void initializeMemManagerList(void * startDir, size_t totalSize){
 }
 
 void printMemoryStatus(){
-  print("Memory State:\n");
-  print(" -Allocation type: buddy allocation. \n");
-  print(" -Total size available: %d \n", buddyTree->totalSize);
-  print(" -Used size: %d \n", buddyTree->usedSize);
-  print(" -Minimum size of block: %d \n", buddyTree->smallestSize);
-  print(" -Real size used to store all the memory: %d \n\n",buddyTree->realSize);
+
+    if(getProcessCount()==0) {
+        print("Memory State:\n");
+        print(" -Allocation type: buddy allocation. \n");
+        print(" -Total size available: %d \n", buddyTree->totalSize);
+        print(" -Used size: %d \n", buddyTree->usedSize);
+        print(" -Minimum size of block: %d \n", buddyTree->smallestSize);
+        print(" -Real size used to store all the memory: %d \n\n",buddyTree->realSize);
+    }
+    else{
+        char buffer[50];
+        write(1, "Memory State:\n    -Allocation type: buddy allocation\n    -Total size: ", strlen("Memory State:\n    -Allocation type: buddy allocation\n    -Total size: "));
+        itoa(buddyTree->totalSize, buffer, 10);
+        write(1, buffer, strlen(buffer));
+        write(1, "\n    -Used size: ", strlen("\n    -Used size: "));
+        itoa(buddyTree->usedSize, buffer, 10);
+        write(1, buffer, strlen(buffer));
+        write(1, "\n    -Minimum size of block: ", strlen("\n    -Minimum size of block: "));
+        itoa(buddyTree->smallestSize, buffer, 10);
+        write(1, buffer, strlen(buffer));
+        write(1, "\n    -Real size used to store all the memory: ", strlen("\n    -Real size used to store all the memory: "));
+        itoa(buddyTree->realSize, buffer, 10);
+        write(1, buffer, strlen(buffer));
+        write(1, "\n\n", 2);
+    }
+
+
 }
 
 

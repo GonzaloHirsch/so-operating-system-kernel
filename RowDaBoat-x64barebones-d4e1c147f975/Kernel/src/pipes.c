@@ -146,11 +146,34 @@ int freePipe(int pipe){
 }
 
 void printPipes() {
-    for(int i = 0; i<MAX_PIPES; i++){
-        if(pipeList[i]!=NULL) {
-            Pipe aux = pipeList[i];
-            print("Pipe %d\n    Name: %s\n    Being Accessed: %d\n    Waiting Process:%d\n", aux->fd, aux->name, aux->beingAccessed, aux->waitingProcess);
-        }
+    if(getProcessCount()==0){
+        for(int i = 0; i<MAX_PIPES; i++){
+            if(pipeList[i]!=NULL) {
+                Pipe aux = pipeList[i];
+                print("Pipe %d\n    Name: %s\n    Being Accessed: %d\n    Waiting Process:%d\n", aux->fd, aux->name, aux->beingAccessed, aux->waitingProcess);
+            }
 
+        }
+    }
+    else{
+        char buffer[10];
+        for(int i = 0; i<MAX_PIPES; i++){
+            if(pipeList[i]!=NULL) {
+                Pipe aux = pipeList[i];
+                write(1, "Pipe ", strlen("Pipe"));
+                itoa(aux->fd, buffer, 10);
+                write(1, buffer, strlen(buffer));
+                write(1, "\n    Name: ", strlen("\n    Name: "));
+                write(1, aux->name, strlen(aux->name));
+                write(1, "\n    Being Accessed: ", strlen("\n    Being Accessed: "));
+                char * ans = (aux->beingAccessed) ? "Yes" : "No";
+                write(1, ans, strlen(ans));
+                write(1, "\n    Waiting Process: ", strlen("\n    Waiting Process:"));
+                itoa(aux->waitingProcess, buffer, 10);
+                write(1, buffer, strlen(buffer));
+                write(1, "\n", 1);
+            }
+
+        }
     }
 }

@@ -73,8 +73,19 @@ int size(IntQueue q) {
 }
 
 void printQueue(IntQueue q) {
-    for(int i = q->head; i!=q->tail; i = (i+1)%q->size){
-        print("%d ", q->queue[i]);
+    if(getProcessCount()==0) {
+        for (int i = q->head; i != q->tail; i = (i + 1) % q->size) {
+            print("%d ", q->queue[i]);
+        }
+        print("\n");
     }
-    print("\n");
+    else {
+        char buffer[20];
+        for (int i = q->head; i != q->tail; i = (i + 1) % q->size) {
+            itoa(q->queue[i], buffer, 10);
+            write(1, buffer, strlen(buffer));
+            write(1, " - ", strlen(" - "));
+        }
+        write(1, "\n", 1);
+    }
 }

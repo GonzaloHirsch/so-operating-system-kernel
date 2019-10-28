@@ -207,12 +207,38 @@ int getPid(){
 void listProcesses(){
     Process aux;
     char * resp;
-    for(int i = 0; i<pidCounter; i++){
-        if((aux=theProcessList[i])!=NULL){
-            print("Process %s\n    PID: %d\n    Priority: %d\n    StackPointer: %d\n    Foreground? ", aux->name, aux->pid, aux->stackPointer);
-            resp = (aux->isForeground) ? "No" : "Yes";
-            print(resp);
-            print("\n");
+    if(getProcessCount()==0) {
+        for (int i = 0; i < pidCounter; i++) {
+            if ((aux = theProcessList[i]) != NULL) {
+                print("Process %s\n    PID: %d\n    Priority: %d\n    StackPointer: %d\n    Foreground? ", aux->name,
+                      aux->pid, aux->stackPointer);
+                resp = (aux->isForeground) ? "No" : "Yes";
+                print(resp);
+                print("\n");
+            }
+        }
+    }
+    else {
+        char buffer[20];
+        for (int i = 0; i < pidCounter; i++) {
+            if ((aux = theProcessList[i]) != NULL) {
+                write(1, "Process ", strlen("Process "));
+                strcpy(buffer, aux->name);
+                write(1, buffer, strlen(buffer));
+                write(1, "\n    PID: ", strlen("\n    PID: "));
+                itoa(aux->pid, buffer, 10);
+                write(1, buffer, strlen(buffer));
+                write(1, "\n    Priority: ", strlen("\n    Priority: "));
+                itoa(aux->priority, buffer, 10);
+                write(1, buffer, strlen(buffer));
+                write(1, "\n    StackPointer: ", strlen("\n    StackPointer: "));
+                itoa(aux->stackPointer, buffer, 10);
+                write(1, buffer, strlen(buffer));
+                write(1, "\n    Foreground: ", strlen("\n    Foreground: "));
+                resp = (aux->isForeground) ? "No" : "Yes";
+                write(1, resp, strlen(resp));
+                print("\n");
+            }
         }
     }
 }

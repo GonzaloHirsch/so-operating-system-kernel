@@ -234,15 +234,15 @@ void printMemoryStatus(){
         print(" -Used size: %d \n", memBlocks->usedSize);
     }
     else{
+        char buffer[50];
+        write(1, "Memory State:\n    -Allocation type: firstFit\n    -Total size: ", strlen("Memory State:\n    -Allocation type: firstFit\n    -Total size: "));
 
-        write(1, "Memory State:\n  -Allocation type: firstFit\n -Total size: ", 100);
-        char buffer[15];
         itoa(memBlocks->totalSize, buffer, 10);
-        write(1, buffer, 100);
-        write(1, " -Used size: ", 100);
+        write(1, buffer, strlen(buffer));
+        write(1, "\n    -Used size: ", strlen("\n    -Used size: "));
         itoa(memBlocks->usedSize, buffer, 10);
-        write(1, buffer, 100);
-        write(1, "\n", 100);
+        write(1, buffer, strlen(buffer));
+        write(1, "\n", 1);
     }
 }
 

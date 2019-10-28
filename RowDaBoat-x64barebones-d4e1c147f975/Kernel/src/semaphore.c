@@ -101,10 +101,24 @@ void semPost(const sem *semaphore) {
 
 void printAllSemaphores() {
     Semaphore aux;
-    for(int i = 0; i<highestSemId; i++){
-        aux = theSemaphoreList[i];
-        print("Semaphore %s\n    Value: %d\nWaiting Processes: ", aux->name, aux->value);
-        printQueue(aux->waitingProcesses);
+    if(getProcessCount()==0) {
+        for (int i = 0; i < highestSemId; i++) {
+            aux = theSemaphoreList[i];
+            print("Semaphore %s\n    Value: %d\nWaiting Processes: ", aux->name, aux->value);
+            printQueue(aux->waitingProcesses);
+        }
+    }
+    else{
+        char buffer[10];
+        for (int i = 0; i < highestSemId; i++) {
+            aux = theSemaphoreList[i];
+            write(1, "Semaphore ", strlen("Semaphore "));
+            write(1, aux->name, strlen(aux->name));
+            write(1, "\n    Value: ", strlen("\n    Value: "));
+            itoa(aux->value, buffer, 10);
+            write(1, buffer, strlen(buffer));
+            printQueue(aux->waitingProcesses);
+        }
     }
 }
 
