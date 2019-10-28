@@ -1,3 +1,6 @@
+/*
+ARCHIVO DE PRUEBA DE FUNCIONES, ESTA COMENTADO PORQUE TIRA WARNINGS
+
 #include <stdint.h>
 //#include <string.h>
 #include <strings.h>
@@ -134,7 +137,7 @@ void pipeTest1(){
 
 
 void mainFunction(){
-    /*
+
     Process p1 = newProcess("semTest1", (uint64_t) semTest1, 2, FOREGROUND);
     Process p2 = newProcess("semTest2", (uint64_t) semTest2, 2, FOREGROUND);
     Process p3 = newProcess("semTest3", (uint64_t) semTest3, 2, FOREGROUND);
@@ -153,16 +156,10 @@ void mainFunction(){
     Process p15 = newProcess("pipeTest2", (uint64_t) pipeTest2, 2, FOREGROUND);
     newPCB(p14);
     newPCB(p15);
-    */
-
-    Process p1 = newProcess("pipeTest1", (uint64_t) pipeTest1, 2, FOREGROUND);
-    Process p2 = newProcess("pipeTest2", (uint64_t) pipeTest2, 2, FOREGROUND);
 
 
-
-
-
-
+    //Process p1 = newProcess("pipeTest1", (uint64_t) pipeTest1, 2, FOREGROUND);
+    //Process p2 = newProcess("pipeTest2", (uint64_t) pipeTest2, 2, FOREGROUND);
     while(1){}
 }
 
@@ -206,7 +203,7 @@ void dup2Test2(){
     }
 }
 
-/*
+
 void init(){
     //testIntQueue();
 
@@ -227,7 +224,7 @@ void init(){
     //Process mainProcess = newProcess("mainProcess", (uint64_t) mainFunction, 5, FOREGROUND);
     //newPCB(mainProcess);
 }
-*/
+
 
 void memTest(){
     int i=0;
@@ -239,4 +236,4 @@ void memTest(){
         }
     }
 }
-
+*/

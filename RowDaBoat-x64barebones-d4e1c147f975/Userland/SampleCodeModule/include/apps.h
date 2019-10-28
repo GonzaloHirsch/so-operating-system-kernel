@@ -5,7 +5,7 @@
 
 void help_command(void);
 
-int wc_command(void);
+void wc_command(void);
 
 void cat_command(void);
 

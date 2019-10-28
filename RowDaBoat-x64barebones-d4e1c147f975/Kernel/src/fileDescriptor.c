@@ -52,6 +52,7 @@ int createFds(enum FdType type, int pipe, void (*altRead)(char *, int),void (*al
 int createDefaultFds(){
      createFds(STDIN_FD,0,NULL,NULL);
      createFds(STDOUT_FD,0,NULL,NULL);
+     return 0;
 }
 
 int read(int fd, char * dest, int count){
@@ -98,7 +99,7 @@ int read(int fd, char * dest, int count){
     }
     return 0;
 
-   
+
 }
 
 int write(int fd, char * src, int count){
@@ -158,10 +159,3 @@ void closeFd(int fd) {
         closePipe(aux->pipe);
     }
 }
-
-
-
-
-
-
-

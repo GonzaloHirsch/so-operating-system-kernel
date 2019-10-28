@@ -130,6 +130,16 @@ void philosopherProblem(){
       actualIters++;
     }
   }
+
+  for (int i = 0; i < actualPhilosopherCount; i++){
+    sys_kill(philosophers[i]);
+    sys_close_sem(sems[i]);
+  }
+
+  int pid = sys_get_pid();
+  int ppid = sys_get_p_pid(pid);
+  sys_unblock(ppid);
+  sys_kill(pid);
 }
 
 int addPhilosopher(){

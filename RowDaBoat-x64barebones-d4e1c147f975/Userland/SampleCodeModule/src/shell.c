@@ -57,7 +57,7 @@ const char * commandsInfo[] = {
   "block - \n",
   "unblock - \n",
   "mem - Prints memory status\n",
-  "ps - Prints all active process information\n", 
+  "ps - Prints all active process information\n",
   "pipe - Prints all active pipes information\n",
   "sem - Prints all active semaphores information\n", //20
   "phylo - Starts the phylosophers problem, exit the problem with \'q\'\n",
@@ -177,7 +177,6 @@ int getCommand(char * cmd, int * index){
 //Recibe el comando como un parametro
 void handle_command(int cmd, char * params){
 	int w, x, shellPID;
-  char buff[256] = {0};
 	switch(cmd){
 		case HELP_COMMAND:
 			display_help();

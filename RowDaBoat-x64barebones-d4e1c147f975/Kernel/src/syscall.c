@@ -75,6 +75,8 @@ void handle_sys_start_process(int pid);
 
 void handle_sys_close_fd(int fd);
 
+int handle_sys_list_processes();
+
 //Handler de la llamada a la int 80
 uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
     switch(rdi){
@@ -112,7 +114,7 @@ uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, u
             hang();
         break;
         case NEW_PROCESS:
-            return handle_sys_new_process(rsi, rdx, rcx, r8);
+            return handle_sys_new_process((char *)rsi, (void *)rdx, rcx, r8);
         case GET_PID:
             return handle_sys_get_pid();
         case LIST_PROCESSES:
@@ -131,9 +133,9 @@ uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, u
             handle_sys_unblock_process(rsi);
         break;
         case CREATE_PIPE:
-            return handle_sys_create_pipe((char *)rsi);
+            return (uint64_t)handle_sys_create_pipe((char *)rsi);
         case CREATE_SEM:
-            return handle_sys_create_sem((char *)rsi);
+            return (uint64_t)handle_sys_create_sem((char *)rsi);
         case WAIT_SEM:
             handle_sys_wait_sem((const sem *)rsi);
         break;
@@ -141,7 +143,7 @@ uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, u
             handle_sys_post_sem((const sem *)rsi);
         break;
         case SET_PROCESS_FD:
-            return handle_sys_set_process_fd(rsi, rdx, rcx);
+            return (uint64_t)handle_sys_set_process_fd(rsi, rdx, rcx);
         case PRINT_PIPE_INFO:
             handle_sys_print_pipe_info();
         break;

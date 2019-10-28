@@ -11,30 +11,40 @@
 
 const char * allCommands[] = {
   "help",
-  "quit",
+  "shutdown",
   "time",
   "date",
   "credits",
   "getpid",
+  "kill",
+  "block",
+  "unblock",
   "mem",
   "ps",
   "pipe",
+  "sem",
+  "nice",
   "cat",
   "wc",
   "filter",
   "loop"
 };
 
-const void * funs[] = {
+void * funs[] = {
   (void *)help_command,
-  "quit",
+  "shutdown",
   (void *)time_command,
   (void *)date_command,
   (void *)credits_command,
   (void *)get_pid_command,
+  "kill",
+  "block",
+  "unblock",
   (void *)mem_command,
   (void *)ps_command,
   (void *)pipe_command,
+  (void *)sem_command,
+  "nice",
   (void *)cat_command,
   (void *)wc_command,
   (void *)filter_command,
@@ -56,8 +66,6 @@ void shellMain(){
     int commandBuffPos = 0;
     //Tecla que se toca
     char key;
-
-    int index;
 
     //while para la shell y su funcionamiento
     while(command != SHUTDOWN_COMMAND){
@@ -121,7 +129,7 @@ void shellMain(){
 
 static void runCommand(char * buffer){
 
-    int i = 0, j = 0, k = 0, p=0;
+    int i = 0, j = 0, k = 0;
     int isBG = 0;
     //todo 10 es el max number of programs
     // 256 es el max nombre de programs.
