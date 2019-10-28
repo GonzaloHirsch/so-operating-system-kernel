@@ -38,7 +38,7 @@ int pipeFifo(char * name){
     for(i=0;i<MAX_PIPES;i++){
         if(pipeList[i] != NULL && strcmp(name,pipeList[i]->name) == 0)
             return pipeList[i]->fd;
-        
+
         if(firstNull == -1 && pipeList[i]==NULL)
             firstNull = i;
 
@@ -50,7 +50,7 @@ int pipeFifo(char * name){
     aux->qb = createQueueBuffer();
     //Creamos el file descriptor que lo envuelve
     //Le pasamos que es de tipo pipe y el numero de pipe
-    aux->fd = createFds(PIPE_FD,firstNull,NULL,NULL); 
+    aux->fd = createFds(PIPE_FD,firstNull,NULL,NULL);
     //Asignamos el nombre
     strcpy(aux->name,name);
     //Asignamos el espacio del pipe en el pipelist
@@ -65,7 +65,7 @@ int pipeFifo(char * name){
 int writePipe(int pipeNumber, char * src, int count){
     if(pipeNumber > MAX_PIPES || pipeList[pipeNumber] == NULL)
         return -1;
-    
+
     Pipe pipe = pipeList[pipeNumber];
 
     //si el pipe esta siendo accedido, bloquear
@@ -94,10 +94,9 @@ int writePipe(int pipeNumber, char * src, int count){
 }
 
 int readPipe(int pipeNumber, char * dest, int count){
-
     if(pipeNumber > MAX_PIPES || pipeList[pipeNumber] == NULL)
         return -1;
-    
+
     Pipe pipe = pipeList[pipeNumber];
      //todo bloqueo
     if(pipe->beingAccessed || isQueueBufferEmpty(pipe->qb)){
@@ -111,7 +110,7 @@ int readPipe(int pipeNumber, char * dest, int count){
 
     pipe->beingAccessed = 1;
 
-    int retVal = getString(pipe->qb, dest, count);
+    int retVal = getString(pipe->qb, dest);
     pipe->beingAccessed = 0;
     //si hay un proceso esperando para leer, lo desbloqueo
     if(pipe->waitingProcess){
@@ -129,20 +128,20 @@ void closePipe(int pipe){
 int freePipe(int pipe){
     if(pipe < 0 || pipe >= MAX_PIPES)
         return -1;
-    
+
     Pipe aux = pipeList[pipe];
     if(aux == NULL)
         return -1;
-    
+
     //Liberamos el queue buffer.
     mFree(aux->qb);
     //Liberamos el pipe per se.
     mFree(aux);
     //Ahora no hay nada en su antigua posicion.
     pipeList[pipe] = NULL;
-    
+
     return 0;
-    
+
 
 }
 
@@ -155,16 +154,3 @@ void printPipes() {
 
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

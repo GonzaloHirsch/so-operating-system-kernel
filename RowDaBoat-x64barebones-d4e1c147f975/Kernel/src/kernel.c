@@ -88,8 +88,8 @@ void * initializeKernelBinary()
     initializeMemManagerList(memoryStartAddress,80*1048576); //80MB de memoria dinamica
     print("Initializing Processes\n");
     initProcesses();
-    print("Creating default fds\n"); 
-    createDefaultFds();                           
+    print("Creating default fds\n");
+    createDefaultFds();
     print("Loading idt\n");
  	load_idt();
  	print("Loading exceptions\n");
