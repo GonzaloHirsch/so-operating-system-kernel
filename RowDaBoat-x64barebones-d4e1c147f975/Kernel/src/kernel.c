@@ -106,6 +106,8 @@ void init(){
     newPCB(shellProcess);
 }
 
+void semTest1(){
+
     const sem * testSem = openSemaphore("test");
     do{
 
@@ -281,6 +283,7 @@ void dup2Test2(){
     }
 }
 
+/*
 void init(){
     //testIntQueue();
 
@@ -301,6 +304,7 @@ void init(){
     //Process mainProcess = newProcess("mainProcess", (uint64_t) mainFunction, 5, FOREGROUND);
     //newPCB(mainProcess);
 }
+*/
 
 void memTest(){
     int i=0;
@@ -317,7 +321,7 @@ int main()
 {
 
     print("Starting kernel main\n");
- 
+
     printMemoryStatus();
 
     Process initProcess = newProcess("init", (uint64_t) init, 10, BACKGROUND);
