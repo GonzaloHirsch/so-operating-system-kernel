@@ -1,39 +1,23 @@
 #include "../include/apps.h"
 
-const char * commandsInfo[] = {
-  "help - Displays available commands and their usage\n",
-  "snake - Initiates the snake game\n",
-  "shutdown - Shuts down the system\n",
-  "time - Displays current system time\n",
-  "date - Displays current system date\n",
-  "beep - Makes the system go Beep!\n",
-  "sleep - Makes the system sleep for 5 seconds\n",
-  "div - Performs a division by zero\n",
-  "invalid - Executes an invalid operation\n",
-  "clear - Clears the screen\n",
-  "credits - Displays info about the group\n",
-  "starwars - Makes a cool Star Wars sound!\n",
-  "mario - Makes a cool Mario sound!\n",
-  "tp - \n",
-  "lp - \n",
-  "getpid - \n",
-  "kill - \n",
-  "block - \n",
-  "unblock - \n",
-  "mem - Prints memory status\n",
-  "ps - Prints all active process information\n",
-  "pipe - Prints all active pipes information\n",
-  "sem - Prints all active semaphores information\n",
-  "phylo - Starts the phylosophers problem, exit the problem with \'q\'\n",
-  "nice - Changes the priority of a process\n",
-  "cat - Prints to stdin as it receives data\n",
-  "wc - Counts amount of lines in input\n",
-  "filter - Filters vowels from input\n",
-  "loop - Prints PID with a message every 5 seconds\n",
-  "sh - Inits a secondary shell\n",
+const char * commandsInfoSh[] = {
+  "help- \n",
+  "quit- \n",
+  "time- \n",
+  "date- \n",
+  "credits- \n",
+  "getpid- \n",
+  "mem- \n",
+  "ps- \n",
+  "pipe- \n",
+  "sem- \n",
+  "cat- \n",
+  "wc- \n",
+  "filter- \n",
+  "loop- \n"
 };
 
-const int cCount = 30;
+const int cCount = 13;
 
 void blockOnEntry();
 void unblockOnExit();
@@ -190,7 +174,7 @@ void cat_command(void){
 void help_command(void){
   blockOnEntry();
 	for (int i = 0; i < cCount; i++){
-    sys_write(1, commandsInfo[i], strlen(commandsInfo[i]));
+    sys_write(1, commandsInfoSh[i], strlen(commandsInfoSh[i]));
 		//print(commandsInfo[i]);
 	}
   sys_close_fd(1);
