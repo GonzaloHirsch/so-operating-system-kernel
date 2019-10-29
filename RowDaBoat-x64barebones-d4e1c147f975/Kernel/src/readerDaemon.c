@@ -7,13 +7,13 @@
 #include "../include/keyboard.h"
 #include "../include/scheduler.h"
 
-extern forceChangeProcess();
+extern int forceChangeProcess();
 
 
 static int currentLength;
 static char * currentBuffer;
 static Process daemon;
-static int ch = 0;
+//static int ch = 0;
 
 static void daemonMain();
 
@@ -37,13 +37,14 @@ void setCurrentBuffer(char * buffer){
 }
 
 static void daemonMain(){
+    /*
+    ESTO ES CODIGO DEPRECADO, LO COMENTAMOS PARA EVITAR EL WARNING QUE TIRABA
 
-    sem * sem0 = openSemaphore("sysReadDataMutex");
-    sem * sem1 = openSemaphore("sysReadMutex");
+    const sem * sem0 = openSemaphore("sysReadDataMutex");
+    const sem * sem1 = openSemaphore("sysReadMutex");
 
     //setteo el valor inicial de sysReadMutex a 0
     semWait(sem1);
-
 
     while(1){
 
@@ -63,5 +64,5 @@ static void daemonMain(){
         semPost(sem0);
 
     }
-
+*/
 }

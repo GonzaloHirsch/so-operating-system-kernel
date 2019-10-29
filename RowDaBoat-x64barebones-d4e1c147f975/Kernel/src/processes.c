@@ -17,11 +17,6 @@
 
 extern void forceChangeProcess();
 
-//Settea el stack del proceso (con registros, frame de interrupt)
-//Devuelve el current rsp del proceso
-//El wrapper para ejecutar las funciones que son los procesos
-static void entryPoint(uint64_t functionAddress, uint64_t pid);
-
 struct ProcessCDT{
 
     int pid;

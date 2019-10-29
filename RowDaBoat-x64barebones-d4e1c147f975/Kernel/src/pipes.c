@@ -12,6 +12,7 @@
 #include "../include/console.h"
 
 extern void forceChangeProcess();
+extern int getProcessCount(); 
 
 typedef struct pipeCDT{
 

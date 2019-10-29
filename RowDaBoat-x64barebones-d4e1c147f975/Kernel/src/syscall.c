@@ -15,7 +15,7 @@ extern void forceChangeProcess();
 extern void hang();
 extern void over_clock(int rate);
 
-void handle_sys_write(int fd, const char * buf, int length);
+void handle_sys_write(int fd, char * buf, int length);
 
 int handle_sys_read(int fd, char * buf, int length);
 
@@ -75,7 +75,9 @@ void handle_sys_start_process(int pid);
 
 void handle_sys_close_fd(int fd);
 
-int handle_sys_list_processes();
+void handle_sys_list_processes();
+
+int handle_sys_get_pid();
 
 //Handler de la llamada a la int 80
 uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
@@ -151,24 +153,24 @@ uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, u
             handle_sys_print_sem_info();
         break;
         case CLOSE_SEM:
-            handle_sys_close_sem(rsi);
+            handle_sys_close_sem((sem *)rsi);
         break;
         case SET_SEM_VALUE:
-            handle_sys_set_sem_value(rsi, rdx);
+            handle_sys_set_sem_value((sem *)rsi, rdx);
         break;
         case PRINT_MEM_STATE:
             handle_sys_print_mem_state();
         break;
         case MALLOC:
-            return handle_sys_malloc(rsi);
+            return (uint64_t)handle_sys_malloc(rsi);
         case MFREE:
-            handle_sys_mfree(rsi);
+            handle_sys_mfree((void *)rsi);
         break;
         case GET_P_PID:
             return handle_sys_get_p_pid(rsi);
         break;
         case CREATE_PROCESS:
-            return handle_sys_create_process(rsi, rdx, rcx, r8);
+            return handle_sys_create_process((char *)rsi, (void *)rdx, rcx, r8);
         case START_PROCESS:
             handle_sys_start_process(rsi);
         case CLOSE_FD:
@@ -178,7 +180,7 @@ uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, u
 }
 
 //Handler para la system write
-void handle_sys_write(int fd, const char * buf, int length){
+void handle_sys_write(int fd, char * buf, int length){
     write(fd,buf,length);
 }
 
@@ -235,7 +237,7 @@ int handle_sys_time(uint64_t selector){
 }
 
 int handle_sys_new_process(char *name, void *functionAddress, int priority, enum Visibility isForeground) {
-    Process nP = newProcess(name, functionAddress, priority, isForeground);
+    Process nP = newProcess(name, (uint64_t)functionAddress, priority, isForeground);
     //todo mejorar esto
     newPCB(nP);
     return getProcessPid(nP);
@@ -245,18 +247,15 @@ int handle_sys_get_pid(){
     return getPid();
 }
 
-int handle_sys_list_processes(){
+void handle_sys_list_processes(){
     listProcesses();
 }
 
 void handle_sys_kill_process(int pid){
     setProcessStateByPid(pid, STATE_TERMINATED);
-
     if(getPid()==pid){
         forceChangeProcess();
     }
-
-
 }
 
 void handle_sys_change_priority(int pid, int priority){
@@ -326,7 +325,7 @@ int handle_sys_get_p_pid(int pid){
 }
 
 int handle_sys_create_process(char *name, void *functionAddress, int priority, enum Visibility isForeground) {
-  Process nP = newProcess(name, functionAddress, priority, isForeground);
+  Process nP = newProcess(name, (uint64_t)functionAddress, priority, isForeground);
   return getProcessPid(nP);
 }
 
