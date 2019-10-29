@@ -165,7 +165,7 @@ uint64_t handleSyscall(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, u
             handle_sys_mfree(rsi);
         break;
         case GET_P_PID:
-            handle_sys_get_p_pid(rsi);
+            return handle_sys_get_p_pid(rsi);
         break;
         case CREATE_PROCESS:
             return handle_sys_create_process(rsi, rdx, rcx, r8);

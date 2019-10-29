@@ -138,12 +138,14 @@ static void runCommand(char * buffer){
         if(buffer[i]==' '){
             programName[j]=0;
             if (strlen(programName) != 0){
+
               // Verificacion para ver que no nos pasemos de la cantidad maxima de comandos
               if (k < MAX_NUMBER_OF_PROGRAMS){
                 if((processFunctions[k++] = getProgramFunctionFromName(programName))==NULL){
                     print("Invalid Command\n");
                     return;
                 }
+
               } else {
                 print("Max number of commands reached\n");
                 return;
@@ -191,6 +193,10 @@ static void runCommand(char * buffer){
       char name[3 + 2 + 1] = {0};
       concat(name, "sh_");
       concat(name + 3, num);
+
+      if(processFunctions[l] == funs[1]){
+          unblockOnExit();
+      };
 
       if (isBG){
         // Crea el proceso pero no lo ejecuta, para poder settear los fds

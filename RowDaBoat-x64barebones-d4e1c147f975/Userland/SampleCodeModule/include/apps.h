@@ -31,4 +31,7 @@ void get_pid_command(void);
 
 void quit_command(void);
 
+void blockOnEntry();
+void unblockOnExit();
+
 #endif

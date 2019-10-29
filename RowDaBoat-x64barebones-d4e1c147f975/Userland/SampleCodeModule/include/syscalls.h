@@ -106,7 +106,7 @@ void * sys_malloc(size_t size);
 
 void sys_mfree(void * address);
 
-int sys_get_p_pid(const int pid);
+int sys_get_p_pid(int pid);
 
 int sys_create_process(char * name, uint64_t functionAddress, int priority, enum Visibility isForeground);
 

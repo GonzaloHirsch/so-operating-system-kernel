@@ -138,7 +138,7 @@ void sys_mfree(void *address) {
     _int80(MFREE, (uint64_t)address, 0, 0, 0, 0);
 }
 
-int sys_get_p_pid(const int pid){
+int sys_get_p_pid(int pid){
 		return _int80(GET_P_PID, pid, 0, 0, 0, 0);
 }
 
