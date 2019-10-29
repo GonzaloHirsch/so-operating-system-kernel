@@ -9,49 +9,42 @@
 #include "../include/processes.h"
 #include "../include/utils.h"
 
-const char * allCommands[] = {
+#define COMCOUNT 14
+
+const char * allCommands[COMCOUNT] = {
   "help",
-  "shutdown",
+  "quit",
   "time",
   "date",
   "credits",
   "getpid",
-  "kill",
-  "block",
-  "unblock",
   "mem",
   "ps",
   "pipe",
   "sem",
-  "nice",
   "cat",
   "wc",
   "filter",
   "loop"
 };
 
-void * funs[] = {
+void * funs[COMCOUNT] = {
   (void *)help_command,
-  "shutdown",
+  "quit",
   (void *)time_command,
   (void *)date_command,
   (void *)credits_command,
   (void *)get_pid_command,
-  "kill",
-  "block",
-  "unblock",
   (void *)mem_command,
   (void *)ps_command,
   (void *)pipe_command,
   (void *)sem_command,
-  "nice",
   (void *)cat_command,
   (void *)wc_command,
   (void *)filter_command,
   (void *)loop_command
 };
 
-const int comCount = 12;
 
 static void runCommand(char * buffer);
 static void * getProgramFunctionFromName(char * command);
@@ -225,7 +218,7 @@ static void runCommand(char * buffer){
 
 void * getProgramFunctionFromName(char * command){
   void * res = NULL;
-  for (int i = 0; i < comCount; i++){
+  for (int i = 0; i < COMCOUNT; i++){
 		//En el caso de que sean iguales
 		if (!strcmp(command, allCommands[i])){
 			res = funs[i];
