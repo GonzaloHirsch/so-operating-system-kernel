@@ -265,6 +265,7 @@ void handle_sys_change_priority(int pid, int priority){
 
 void handle_sys_block_process(int pid) {
     setProcessStateByPid(pid, STATE_BLOCKED);
+    if(getPid() == pid) forceChangeProcess();
 }
 
 void handle_sys_unblock_process(int pid){
