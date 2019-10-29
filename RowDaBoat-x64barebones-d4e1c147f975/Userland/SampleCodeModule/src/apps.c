@@ -94,7 +94,7 @@ void time_command(void){
 }
 
 void loop_command(void){
-  blockOnEntry();
+  //blockOnEntry();
 
   char msg[] = "Hi! My PID is ";
   print(msg);
