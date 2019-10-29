@@ -184,6 +184,21 @@ void listProcesses(){
                 write(1, "Process ", strlen("Process "));
                 strcpy(buffer, aux->name);
                 write(1, buffer, strlen(buffer));
+                write(1, "\n    State: ", strlen("\n    State: "));
+                switch(aux->state){
+                    case STATE_TERMINATED:
+                        write(1, "Terminated", strlen("Terminated"));
+                        break;
+                    case STATE_BLOCKED:
+                        write(1, "Blocked", strlen("Blocked"));
+                        break;
+                    case STATE_READY:
+                        write(1, "Ready", strlen("Ready"));
+                        break;
+                    case STATE_RUNNING:
+                        write(1, "Running", strlen("Running"));
+                        break;
+                }
                 write(1, "\n    PID: ", strlen("\n    PID: "));
                 itoa(aux->pid, buffer, 10);
                 write(1, buffer, strlen(buffer));
