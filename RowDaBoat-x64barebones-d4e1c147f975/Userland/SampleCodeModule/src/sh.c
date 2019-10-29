@@ -30,7 +30,7 @@ const char * allCommands[COMCOUNT] = {
 
 void * funs[COMCOUNT] = {
   (void *)help_command,
-  "quit",
+  (void *)quit_command,
   (void *)time_command,
   (void *)date_command,
   (void *)credits_command,

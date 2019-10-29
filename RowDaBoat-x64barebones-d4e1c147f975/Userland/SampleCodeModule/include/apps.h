@@ -29,4 +29,6 @@ void credits_command(void);
 
 void get_pid_command(void);
 
+void quit_command(void);
+
 #endif
