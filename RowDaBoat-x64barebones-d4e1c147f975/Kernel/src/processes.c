@@ -31,7 +31,6 @@ struct ProcessCDT{
     enum Visibility isForeground;
     uint64_t stackBaseAddress;
     uint64_t stackPointer;
-    uint64_t functionAddress;
     char name[MAX_NAME_LENGTH];
     IntQueue semaphores;
     int filesDescriptors[2]; //0 STDIN, 1 STDOUT.
