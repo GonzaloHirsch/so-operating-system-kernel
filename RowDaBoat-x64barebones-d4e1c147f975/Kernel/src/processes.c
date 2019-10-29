@@ -93,7 +93,6 @@ Process newProcess(char *processName, uint64_t functionAddress, int priority, en
     aux->priority = priority;
     aux->isForeground = isForeground;
     aux->ppid = (pidCounter>0) ? getCurrentProcess()->pid : -1;
-    aux->functionAddress = functionAddress;
     aux->stackBaseAddress = (uint64_t) mAlloc(PROCESS_STACK_SIZE);
     aux->stackPointer = initializeProcessStack(aux->stackBaseAddress, functionAddress, (uint64_t) aux);
     aux->state = STATE_READY;
