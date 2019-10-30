@@ -41,7 +41,7 @@
 #define NICE_COMMAND 22
 #define SH_COMMAND 23
 #define LOOP_COMMAND 24
-
+#define CREATE_SEM_COMMAND 25
 
 //Address original que devolvia el samplecoremodule
 #define RETURN_ADRESS 0xDEADC0DE

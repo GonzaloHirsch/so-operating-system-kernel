@@ -91,6 +91,11 @@ void philosopherProblem(){
   problemRunning = 1;
   mutex = sys_create_sem("philo_mutex");
 
+  print("Welcome to the Philosophers Problem\n");
+  print("You start with 5 philosophers, and have a minimum of 5 and maximum of 10 philosophers.\n");
+  print("You can add them with \'a\', delete them with \'d\' and exit the problem with \'q\'.\n");
+  print("The state of each will be displayed as E (Eating), T (Thinking) and H (Hungry)\n\n");
+
   for (int i = 0; i < BASE_PHILOSOPHER_COUNT; i++){
     addPhilosopher();
     //goToSleep(30);
