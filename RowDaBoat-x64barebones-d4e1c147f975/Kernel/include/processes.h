@@ -10,7 +10,7 @@
 #define MAX_NAME_LENGTH 128
 #define PROCESS_STACK_SIZE 8192
 #define MAX_PROCESS_COUNT 256
-#define MAX_SEMAPHORE_COUNT 128
+//#define MAX_SEMAPHORE_COUNT 128
 #define FD_COUNT 2
 
 #include <stddef.h>

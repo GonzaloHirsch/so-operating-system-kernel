@@ -4,6 +4,12 @@
 
 #include "../include/intQueue.h"
 #include "../include/memManager.h"
+#include "../include/lib.h"
+#include "../include/fileDescriptor.h"
+#include "../include/strings.h"
+#include "../include/console.h"
+
+extern int getProcessCount();
 
 typedef struct IntQueueCDT{
 

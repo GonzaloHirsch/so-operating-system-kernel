@@ -3,6 +3,9 @@
 #include "../include/syscalls.h"
 #include "../include/shell.h"
 
+int semCount = 0;
+sem * mocksem;
+
 // ----------------------------------------------------------------------------------
 // Este modulo es el modulo principal de Userland
 // A partir de este modulo se pueden seleccionar otros modulos a traves de la terminal
@@ -36,6 +39,7 @@ const char * commands[] = {
   "nice",
   "sh",
   "loop",
+  "csem"
 };
 
 
@@ -65,10 +69,11 @@ const char * commandsInfo[] = {
   "nice - Changes the priority of a process\n",
   "sh - Inits a secondary shell\n",
   "loop - Loops every certains seconds and prints a salute and the process id\n",
+  "csem - Creates a mock semaphore\n"
 };
 
 
-const int commandCount = 25;
+const int commandCount = 26;
 
 int getCommand(char * cmd, int * index);
 void generate_invalid_opc(void);
@@ -179,6 +184,8 @@ int getCommand(char * cmd, int * index){
 //Recibe el comando como un parametro
 void handle_command(int cmd, char * params){
 	int w, x, shellPID;
+  char num[4] = {0};
+  char name[8 + 4 + 1] = {0};
 	switch(cmd){
 		case HELP_COMMAND:
 			display_help();
@@ -233,21 +240,24 @@ void handle_command(int cmd, char * params){
 			break;
 		case KILL_COMMAND:
 			//sscanf(params, "%d\n", &w);
+      print("Type PID of process to kill: ");
 			scanf("%d\n", &w);
 			sys_kill(w);
-			printf("Killed Process %d\n", w);
+			printf("\nKilled Process %d\n", w);
 			break;
 		case BLOCK_COMMAND:
 			//sscanf(params, "%d\n", &w);
+      print("Type PID of process to block: ");
 			scanf("%d\n", &w);
 			sys_block(w);
-			printf("Blocked Process %d\n", w);
+			printf("\nBlocked Process %d\n", w);
 			break;
 		case UNBLOCK_COMMAND:
 			//sscanf(params,"%d\n", &w);
+      print("Type PID of process to unblock: ");
 			scanf("%d\n", &w);
 			sys_unblock(w);
-			printf("Unblocked Process %d\n", w);
+			printf("\nUnblocked Process %d\n", w);
 			break;
 		case PHYLO_COMMAND:
 			shellPID = sys_get_pid();
@@ -256,6 +266,7 @@ void handle_command(int cmd, char * params){
 			break;
 		case NICE_COMMAND:
 			//sscanf(params, "%d %d\n", &w, &x);
+      print("Type PID and priority of process(PID PRIORITY): ");
 			scanf("%d %d\n", &w, &x);
 			sys_change_priority(w, x);
 			break;
@@ -279,6 +290,13 @@ void handle_command(int cmd, char * params){
 		case LOOP_COMMAND:
 			sys_new_process("loop_process", (uint64_t) loop_command_shell, 1, FOREGROUND);
 			break;
+    case CREATE_SEM_COMMAND:
+      itoa(semCount, num, 10);
+      concat(name, "mocksem_");
+      concat(name + 8, num);
+      mocksem = sys_create_sem(name);
+      semCount++;
+      break;
 		}
 	print("\n");
 }

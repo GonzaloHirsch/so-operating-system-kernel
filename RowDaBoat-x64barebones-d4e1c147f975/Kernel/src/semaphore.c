@@ -9,8 +9,9 @@
 #include "../include/console.h"
 #include "../include/lib.h"
 #include "../include/interrupts.h"
+#include "../include/fileDescriptor.h"
 
-extern forceChangeProcess();
+extern void forceChangeProcess();
 
 typedef struct SemaphoreCDT{
 
@@ -151,10 +152,9 @@ void semWaitById(int semId) {
 }
 
 void closeSemaphoreById(int semId) {
-    closeSemaphore(theSemaphoreList[semId]);
+    closeSemaphore((sem *)theSemaphoreList[semId]);
 }
 
 void setSemValue(const sem * semaphore, int newVal){
     ((Semaphore)semaphore)->value = newVal;
 }
-

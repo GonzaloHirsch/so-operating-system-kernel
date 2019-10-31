@@ -6,6 +6,8 @@
 #include "../include/lib.h"
 #include <console.h>
 
+extern int getProcessCount();
+
 /*
   Estructura del tipo Nodo
 */
