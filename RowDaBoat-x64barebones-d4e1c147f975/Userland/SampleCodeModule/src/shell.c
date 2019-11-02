@@ -233,27 +233,23 @@ void handle_command(int cmd, char * params){
 		case MARIO_COMMAND:
 			make_mario();
 		break;
-		//--------------------- New commands added ----------------------------
-
+		//--------------------- Comandos agregados para SO ----------------------------
 		case GET_PID_COMMAND:
 			printf("%d\n", sys_get_pid());
 			break;
 		case KILL_COMMAND:
-			//sscanf(params, "%d\n", &w);
       print("Type PID of process to kill: ");
 			scanf("%d\n", &w);
 			sys_kill(w);
 			printf("\nKilled Process %d\n", w);
 			break;
 		case BLOCK_COMMAND:
-			//sscanf(params, "%d\n", &w);
       print("Type PID of process to block: ");
 			scanf("%d\n", &w);
 			sys_block(w);
 			printf("\nBlocked Process %d\n", w);
 			break;
 		case UNBLOCK_COMMAND:
-			//sscanf(params,"%d\n", &w);
       print("Type PID of process to unblock: ");
 			scanf("%d\n", &w);
 			sys_unblock(w);
@@ -265,7 +261,6 @@ void handle_command(int cmd, char * params){
 			sys_block(shellPID);
 			break;
 		case NICE_COMMAND:
-			//sscanf(params, "%d %d\n", &w, &x);
       print("Type PID and priority of process(PID PRIORITY): ");
 			scanf("%d %d\n", &w, &x);
 			sys_change_priority(w, x);

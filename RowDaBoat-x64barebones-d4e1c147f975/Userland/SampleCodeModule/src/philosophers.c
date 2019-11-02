@@ -3,16 +3,16 @@
 
 // Implementacion adapatada a partir de la de Tanenbaum
 
-static int state[MAX_PHILOSOPHER_COUNT];
-static int philosophers[MAX_PHILOSOPHER_COUNT];
-static int actualPhilosopherCount;
-static sem * sems[MAX_PHILOSOPHER_COUNT];
-static sem * mutex;
-static int problemRunning;
-static int pidToId[256] = {-1};
+static int state[MAX_PHILOSOPHER_COUNT];          // Guarda el estado de cada filosofo
+static int philosophers[MAX_PHILOSOPHER_COUNT];   // Guarda los PID de cada filosofo
+static int actualPhilosopherCount;                // Guarda la cantidad actual de filosofos
+static sem * sems[MAX_PHILOSOPHER_COUNT];         // Guarda los semaforos de cada filosofo en la mesa
+static sem * mutex;                               // Guarda el semaforo de la mesa
+static int problemRunning;                        // Flag para saber si sigue corriendo el problema
+static int pidToId[256] = {-1};                   // Mapeo de PIDs a ids de filosofos
 
-static int maxIters = 500;
-static int actualIters = 0;
+static int maxIters = 500;                        // Limite de iteraciones, no es muy elegante, pero evita pedir la hora del sistema con una syscall
+static int actualIters = 0;                       // Guarda cuantas iteraciones pasamos
 
 void philosopher();
 void takeForks(int i);
@@ -27,6 +27,7 @@ int left(int i, int mod);
 int right(int i, int mod);
 
 void philosopher(){
+  // Se utiliza un mutex para esperar a que el padre(el proceso problema), escriba en el array
   sys_wait_sem(mutex);
   int pid = sys_get_pid();
   int i = pidToId[pid];
@@ -78,11 +79,8 @@ int eat(int i, int r){
 }
 
 void check(int i){
-  //printf("CHECK %d\n", i);
   if (state[i] == HUNGRY && state[left(i, actualPhilosopherCount)] != EATING && state[right(i, actualPhilosopherCount)] != EATING){
-    //printf("CHECK EAT %d\n", i);
     state[i] = EATING;
-    //printTable();
     sys_post_sem(sems[i]);
   }
 }
@@ -98,7 +96,6 @@ void philosopherProblem(){
 
   for (int i = 0; i < BASE_PHILOSOPHER_COUNT; i++){
     addPhilosopher();
-    //goToSleep(30);
   }
 
   int res;

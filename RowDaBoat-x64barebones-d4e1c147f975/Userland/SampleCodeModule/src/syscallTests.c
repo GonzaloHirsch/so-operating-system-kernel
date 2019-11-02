@@ -1,7 +1,3 @@
-//
-// Created by click on 19/10/19.
-//
-
 #include "../include/syscallTests.h"
 #include "../include/utils.h"
 #include "../include/processes.h"
