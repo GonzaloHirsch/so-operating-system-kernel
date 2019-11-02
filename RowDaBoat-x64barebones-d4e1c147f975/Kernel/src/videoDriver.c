@@ -1,7 +1,3 @@
-//
-// Created by nacho on 10/06/19.
-//
-
 #include <videoDriver.h>
 
 // Struct taken from https://wiki.osdev.org/Getting_VBE_Mode_Info

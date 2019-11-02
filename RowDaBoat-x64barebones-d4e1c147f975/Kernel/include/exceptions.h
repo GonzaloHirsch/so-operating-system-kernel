@@ -1,7 +1,3 @@
-//
-// Created by root on 6/12/19.
-//
-
 #ifndef ARQUI_TPE_EXCEPTIONDISPATCHER_H
 #define ARQUI_TPE_EXCEPTIONDISPATCHER_H
 

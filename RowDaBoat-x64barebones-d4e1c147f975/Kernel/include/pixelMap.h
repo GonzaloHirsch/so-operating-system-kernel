@@ -1,7 +1,3 @@
-//
-// Created by nacho on 11/06/19.
-//
-
 #ifndef ARQUI_TPE_PIXELMAP_H
 #define ARQUI_TPE_PIXELMAP_H
 

@@ -1,7 +1,3 @@
-//
-// Created by nacho on 10/06/19.
-//
-
 #ifndef ARQUI_TPE_VIDEODRIVER_H
 #define ARQUI_TPE_VIDEODRIVER_H
 

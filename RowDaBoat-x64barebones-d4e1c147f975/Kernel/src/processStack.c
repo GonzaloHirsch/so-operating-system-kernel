@@ -1,7 +1,3 @@
-//
-// Created by click on 29/10/19.
-//
-
 #include "../include/processStack.h"
 #include "../include/processes.h"
 

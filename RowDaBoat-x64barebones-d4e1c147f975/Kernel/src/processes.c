@@ -1,7 +1,3 @@
-//
-// Created by IR on 2/10/2019.
-//
-
 #include "../include/processes.h"
 #include "../include/memManager.h"
 #include "../include/lib.h"

@@ -1,7 +1,3 @@
-//
-// Created by click on 23/10/19.
-//
-
 #include "../include/readerDaemon.h"
 #include "../include/processes.h"
 #include "../include/keyboard.h"

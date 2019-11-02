@@ -1,7 +1,3 @@
-//
-// Created by nacho on 12/06/19.
-//
-
 #ifndef ARQUI_TPE_CONSOLE_H
 #define ARQUI_TPE_CONSOLE_H
 

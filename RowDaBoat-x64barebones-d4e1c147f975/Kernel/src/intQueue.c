@@ -1,7 +1,3 @@
-//
-// Created by click on 19/10/19.
-//
-
 #include "../include/intQueue.h"
 #include "../include/memManager.h"
 #include "../include/lib.h"

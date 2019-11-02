@@ -1,7 +1,3 @@
-//
-// Created by click on 29/10/19.
-//
-
 #ifndef SO_TP2_PROCESSSTACK_H
 #define SO_TP2_PROCESSSTACK_H
 
