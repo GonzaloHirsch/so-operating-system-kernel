@@ -161,6 +161,13 @@ void wc_command(void){
   sys_write(1, num, strlen(num));
 }
 
+void quit_command(){
+  unblockOnExit();
+}
+
+//------------------------------------------------------------------------------
+
+
 // Funciones built in, imprime el kernel y no sobre un FD
 
 void sem_command(void){
