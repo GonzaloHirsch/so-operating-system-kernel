@@ -1,11 +1,6 @@
-//
-// Created by click on 26/10/19.
-//
-
 #include "../include/sh.h"
 #include "../include/shell.h"
 #include "../include/apps.h"
-//#include "../../../Kernel/include/processes.h"
 #include "../include/processes.h"
 #include "../include/utils.h"
 
@@ -49,6 +44,7 @@ void * funs[COMCOUNT] = {
 static void runCommand(char * buffer);
 static void * getProgramFunctionFromName(char * command);
 
+// Tomamos el codigo de la shell y lo pusimos aca para usar de interprete
 void shellMain(){
     print("arquiOS#ITBA: ");
     //Comando elegido
@@ -114,6 +110,7 @@ void shellMain(){
         }
     }
 
+    // Desbloquea al padre y se mata a si mismo
     int pid = sys_get_pid();
     int ppid = sys_get_p_pid(pid);
     sys_unblock(ppid);
@@ -124,7 +121,7 @@ static void runCommand(char * buffer){
 
     int i = 0, j = 0, k = 0;
     int isBG = 0;
-    //todo 10 es el max number of programs
+    // 10 es el max number of programs
     // 256 es el max nombre de programs.
     // por ahora es para evitar errores.
     char programName[256];
