@@ -1,20 +1,20 @@
 #include "../include/apps.h"
 
 char * commandsData[] = {
-  "help- \n",
-  "quit- \n",
-  "time- \n",
-  "date- \n",
-  "credits- \n",
-  "getpid- \n",
-  "mem- \n",
-  "ps- \n",
-  "pipe- \n",
-  "sem- \n",
-  "cat- \n",
-  "wc- \n",
-  "filter- \n",
-  "loop- \n",
+        "help - Displays available commands and their usage\n",
+        "quit- Returns to shell\n",
+        "time- Displays current system time\n",
+        "date- Displays current system date\n",
+        "credits- Displays info about the group\n",
+        "getpid- Gets current process pid\n",
+        "mem- Prints memory status \n",
+        "ps- Prints all active process information\n",
+        "pipe- Prints all active pipes information\n",
+        "sem- Prints all active semaphores information\n",
+        "cat- Prints to screen\n",
+        "wc- Counts the lines\n",
+        "filter- Filters\n",
+        "loop- Loops every certains seconds and prints a salute and the process id\n",
 };
 
 char * creditsInfo[] = {
