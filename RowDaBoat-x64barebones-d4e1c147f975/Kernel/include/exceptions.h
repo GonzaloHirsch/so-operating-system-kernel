@@ -16,11 +16,6 @@ void _exception13Handler();
 void _exception14Handler();
 
 
-//Del este struct solo uso rip, pero lo pongo por si
-//llegamos a implementar algo mas con las excepciones
-//Estaria interesante poder hacer al rip igual al guardado
-//sumarle 1 (o ir a la proxima instr correspondiente) y
-//seguir de largo como si nada.
 typedef struct {
     uint64_t stack_segment;
     uint64_t stack_ptr;

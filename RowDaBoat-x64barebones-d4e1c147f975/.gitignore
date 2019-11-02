@@ -1,3 +1,17 @@
+#Binary Files
+*.bin
+*.sys
 
-.DS_Store
+#The images
+*.img
+*.qcow2
+*.vmdk
+
+#Object files
+*.o
+
+Kernel/.gdb_history
+Kernel/.gdbinit
+Kernel/breaks
+#breakpoint files
 *.bre

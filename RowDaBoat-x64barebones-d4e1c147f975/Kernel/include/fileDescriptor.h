@@ -2,9 +2,6 @@
 #define FILE_DESCRIPTOR_H
 
 #define MAX_FILE_DESCRIPTORS 100
-#define MAX_STRING_LENGTH 100
-
-//Que tipo de fd va a ser.
 
 enum FdType {STDIN_FD, STDOUT_FD, PIPE_FD, ALT_FD};
 

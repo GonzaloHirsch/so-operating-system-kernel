@@ -12,30 +12,21 @@ extern int getProcessCount();
   Estructura del tipo Nodo
 */
 struct t_node {
-  // Proximo nodo
   struct t_node * next;
-  // Puntero a memoria libre
   void * memPtr;
-  // Tamaño de esa memoria libre
   size_t size;
-  // Estado del bloque
   enum STATE state;
 };
 /*
   Estructura del tipo Lista
 */
 struct t_list {
-  // Primer elemento de la lista
   struct t_node * head;
-  // Puntero al comienzo de la memoria
   void * startDir;
-  // Tamaño total de la memoria
   size_t totalSize;
-  //Size usado de la memoria
   size_t usedSize;
 };
 
-// Redefinicion del puntero al tipo lista
 typedef struct t_list * List;
 
 Node firstFit(Node node, size_t size);

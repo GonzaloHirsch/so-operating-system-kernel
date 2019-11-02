@@ -15,10 +15,6 @@ typedef struct SemaphoreCDT * Semaphore;
 void initializeSemaphores();
 
 const sem * openSemaphore(char * name);
-// se supone que close cierra el semaforo para un proceso,
-// y semUnlink lo "desvincula" completamente del nombre: cualquier
-// proceso que use el semaphore pasaria a tener el sem* igual a NULL.
-// lo dejo como un todo.
 void closeSemaphore(const sem *id);
 void closeSemaphoreById(int semId);
 void semUnlink(char * name);

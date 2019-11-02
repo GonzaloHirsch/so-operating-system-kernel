@@ -45,14 +45,9 @@ int pipeFifo(char * name){
 
     }
 
-    //En caso que no exista lo creamos.
     Pipe aux = mAlloc(sizeof(struct pipeCDT));
-    //Creamos el queuebuffer donde escribe y lee datos
     aux->qb = createQueueBuffer();
-    //Creamos el file descriptor que lo envuelve
-    //Le pasamos que es de tipo pipe y el numero de pipe
     aux->fd = createFds(PIPE_FD,firstNull,NULL,NULL);
-    //Asignamos el nombre
     strcpy(aux->name,name);
     //Asignamos el espacio del pipe en el pipelist
     pipeList[firstNull] = aux;

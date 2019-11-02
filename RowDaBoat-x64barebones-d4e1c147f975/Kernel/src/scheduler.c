@@ -8,7 +8,6 @@
 #include <lib.h>
 #include <console.h>
 
-extern void _force_change_process();
 extern void _popaqIretq(uint64_t stackPtr);
 
 static void startProcess(Process process);
@@ -30,11 +29,11 @@ typedef struct PCBListCDT{
     int processCount;
 }PCBList;
 
-static PCBList thePCBList /*= {NULL, NULL, NULL}*/;
+static PCBList thePCBList;
 
 void newPCB(Process process){
 
-    PCB aux = mAlloc(sizeof(PCBCDT)); //TODO VER CON NUESTRO ALLOCATOR
+    PCB aux = mAlloc(sizeof(PCBCDT));
     aux->process = process;
     thePCBList.processCount++;
     aux->currentPriority=0;
@@ -57,7 +56,7 @@ void newPCB(Process process){
 
 void startProcess(Process process){
     setProcessState(process, STATE_RUNNING);
-    _popaqIretq(getStackPointer(process)); // [interrupts.asm jaja saludos]
+    _popaqIretq(getStackPointer(process));
 }
 
 void initializeScheduler(){
@@ -81,7 +80,6 @@ void deleteCurrentProcessPCB(){
         aux->prev->next = aux->next;
         removeProcess(aux->process);
         mFree(aux);
-        //_popaqIretq(getStackPointer(thePCBList.currentPCB->process));
     }
 }
 
@@ -114,18 +112,14 @@ uint64_t getNextProcess(uint64_t currentProcessStack){
 
                     switch (state) {
                         case STATE_BLOCKED:
-                            //print("blocked\n");
                             thePCBList.currentPCB = thePCBList.currentPCB->next;
                             break;
                         case STATE_TERMINATED:
-                            //print("Process %s : terminated\n", getProcessName(thePCBList.currentPCB->process));
                             deleteCurrentProcessPCB();
                             break;
                         case STATE_RUNNING:
-                            //print("Process %s : running\n", getProcessName(thePCBList.currentPCB->process));
-                            //if(getPid() == 1){return currentProcessStack;}
+
                             if (thePCBList.currentPCB->currentPriority < getPriority(thePCBList.currentPCB->process)) {
-                                //if(0){
                                 thePCBList.currentPCB->currentPriority++;
                                 return currentProcessStack;
                             }
@@ -141,9 +135,6 @@ uint64_t getNextProcess(uint64_t currentProcessStack){
 
 
                 }
-
-                //print("Current process PID: %d", getProcessPid(thePCBList.currentPCB->process));
-                //sleep(2);
 
                 setProcessState(thePCBList.currentPCB->process, STATE_RUNNING);
 

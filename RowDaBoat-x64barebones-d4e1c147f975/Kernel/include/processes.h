@@ -10,7 +10,6 @@
 #define MAX_NAME_LENGTH 128
 #define PROCESS_STACK_SIZE 8192
 #define MAX_PROCESS_COUNT 256
-//#define MAX_SEMAPHORE_COUNT 128
 #define FD_COUNT 2
 
 #include <stddef.h>
@@ -45,13 +44,9 @@ void setProcessState(Process process, enum State state);
 void setProcessStateByPid(int pid, enum State state);
 
 int getProcessPid(Process process);
-void setPid(Process process, int pid);
 
-char * getProcessName(Process process);
 
 int getPriority(Process process);
-
-void setPriorityByPid(int pid, int priority);
 
 int getPid();
 
@@ -60,8 +55,6 @@ void listProcesses();
 void setProcessPriorityByPid(int pid, int priority);
 
 enum Visibility getProcessVisibility(Process process);
-
-enum Visibility getProcessVisibilityById(int pid);
 
 void addSemaphoreById(int pid, sem semaphore);
 

@@ -39,6 +39,7 @@ void setCurrentBuffer(char * buffer){
 static void daemonMain(){
     /*
     ESTO ES CODIGO DEPRECADO, LO COMENTAMOS PARA EVITAR EL WARNING QUE TIRABA
+    LO DEJAMOS PORQUE SE MENCIONA EN EL INFORME
 
     const sem * sem0 = openSemaphore("sysReadDataMutex");
     const sem * sem1 = openSemaphore("sysReadMutex");

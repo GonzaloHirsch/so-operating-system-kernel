@@ -34,17 +34,6 @@ void sleep(uint64_t millis);
 void timer_wait(int ticks);
 void turn_on_rtc();
 
-
-/*
-void ncPrint(const char * string);
-void ncPrintChar(char character);
-void ncNewline();
-void ncPrintDec(uint64_t value);
-void ncPrintHex(uint64_t value);
-void ncPrintBin(uint64_t value);
-void ncPrintBase(uint64_t value, uint32_t base);
-void ncClear();
-*/
 int get_time(int selector);
 
 #endif

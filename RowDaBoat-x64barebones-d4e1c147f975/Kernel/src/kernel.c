@@ -114,8 +114,6 @@ int main()
 
     print("Starting kernel main\n");
 
-    //printMemoryStatus();
-
     Process initProcess = newProcess("init", (uint64_t) init, 10, BACKGROUND);
     newPCB(initProcess);
 
