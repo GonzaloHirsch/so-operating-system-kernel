@@ -167,7 +167,7 @@ static void runCommand(char * buffer){
     programName[j]=0;
 
     // Flaggea la ejecucion en background
-    if (programName[j - 1] == '&'){
+    if (j > 0 && programName[j - 1] == '&'){
       isBG = 1;
     } else {
       // Verificacion para ver que no nos pasemos de la cantidad maxima de comandos

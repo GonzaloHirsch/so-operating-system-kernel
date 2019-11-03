@@ -70,6 +70,7 @@ int sscanf(const char * src, const char * fmt, ...){
                             printf("%s\n", str);
                             aux = atoi(num, j);
                             *ptrD = aux;
+                            va_end(list);
                             return -1;
                         }
                     }
@@ -113,10 +114,14 @@ int sscanf(const char * src, const char * fmt, ...){
         }
         else {
             if(str[pos++]==fmt[i++]);
-            else return matches;
+
+            else {
+                va_end(list);
+                return matches;
+            }
         }
     }
-
+    va_end(list);
     return matches;
 }
 
@@ -168,6 +173,7 @@ int scanf(const char * fmt, ...){
 	                printf("%s\n", str);
 	                aux = atoi(num, j);
 	                *ptrD = aux;
+	                va_end(list);
 	                return -1;
 								}
 							}
@@ -258,6 +264,7 @@ void printf(char * str, ...){
 		newStr[len] = 0;
 		len++;
 		sys_write(1, newStr, len);
+		va_end(list);
 }
 
 /* ------------------------------- */
